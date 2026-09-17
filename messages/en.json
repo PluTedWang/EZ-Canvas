@@ -1,0 +1,20 @@
+{
+  "locale": {
+    "name": "English",
+    "language": "Language"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "courses": "Courses",
+    "groups": "Group projects",
+    "homework": "Homework helper",
+    "assistant": "Study assistant",
+    "settings": "Settings"
+  },
+  "topBar": {
+    "search": "Search",
+    "searchPlaceholder": "Search courses, files, deadlines",
+    "notifications": "Notifications"
+  }
+}

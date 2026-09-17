@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>EZCanvas · Group project · Work split & reminders</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Figtree', 'Noto Sans SC', system-ui, sans-serif; color: #1E1C19; background: #F8F7F3; -webkit-font-smoothing: antialiased; }
+    a { color: #2A6B6E; text-decoration: none; } a:hover { color: #215659; }
+    .serif { font-family: 'Instrument Serif', Georgia, serif; }
+    .nav { display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-radius: 12px; font-size: 16px; font-weight: 500; color: #3F3B35; white-space: nowrap; }
+    .nav:hover { background: #F4F2EE; color: #1E1C19; }
+    .nav.active { background: #EEF5F4; color: #1F5457; font-weight: 600; }
+    .nav svg { width: 22px; height: 22px; flex-shrink: 0; color: #7A756C; }
+    .nav.active svg { color: #2A6B6E; }
+    .card { background: #FFFFFF; border: 1px solid #E8E5DE; border-radius: 16px; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border-radius: 999px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .btn { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 9px; font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; border: 1px solid transparent; white-space: nowrap; }
+    .btn-primary { background: #2A6B6E; color: #FFFFFF; }
+    .btn-secondary { background: #FFFFFF; color: #1E1C19; border-color: #D9D4CA; }
+    .icon { width: 18px; height: 18px; flex-shrink: 0; }
+    .part { display: grid; grid-template-columns: minmax(0, 1fr) 84px 136px 92px 116px; gap: 10px; align-items: center; padding: 11px 20px; border-top: 1px solid #EEEBE4; font-size: 14.5px; }
+    .part .n { font-weight: 600; }
+    .part .m { font-size: 13px; color: #6B665E; }
+    .av { width: 26px; height: 26px; border-radius: 999px; color: #FFFFFF; font-size: 10.5px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .owner { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
+    .claim { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 8px; border: 1.5px dashed #2A6B6E; background: #F2F8F7; font: inherit; font-size: 13.5px; font-weight: 600; color: #2A6B6E; cursor: pointer; white-space: nowrap; }
+    .member { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+    .member .n { font-size: 14.5px; font-weight: 600; }
+    .member .e { font-size: 13px; color: #6B665E; }
+    .rem { display: flex; flex-direction: column; gap: 2px; padding: 7px 0; font-size: 13.5px; line-height: 1.4; }
+    .rem .rt { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .rem .w { color: #6B665E; font-weight: 600; white-space: nowrap; }
+    .switch { position: relative; width: 40px; height: 24px; flex-shrink: 0; display: inline-block; }
+    .switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+    .switch span { position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 999px; background: #C9C4B9; }
+    .switch span::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+    .switch input:checked + span { background: #2A6B6E; }
+    .switch input:checked + span::after { left: 19px; }
+    .field { display: flex; flex-direction: column; gap: 4px; flex-grow: 1; min-width: 0; }
+    .field span { font-size: 12.5px; font-weight: 600; color: #6B665E; }
+    .field input { height: 34px; padding: 0 10px; border-radius: 8px; border: 1px solid #D9D4CA; background: #FFFFFF; font: inherit; font-size: 14px; color: #1E1C19; outline: 0; }
+  </style>
+  <style>
+    html { background: #ECEAE4; }
+    body { padding: 24px 0; }
+  </style>
+</head>
+<body>
+<div style="width: 1440px; min-height: 1040px; margin: 0 auto; box-sizing: border-box; display: flex; background: #F8F7F3;">
+
+  <!-- Sidebar -->
+  <nav style="width: 248px; flex-shrink: 0; box-sizing: border-box; padding: 24px 14px 20px; display: flex; flex-direction: column; justify-content: space-between; background: #FFFFFF; border-right: 1px solid #ECE9E2;">
+    <div style="display: flex; flex-direction: column; gap: 22px;">
+      <a href="dashboard.html" style="display: flex; align-items: center; gap: 10px; padding: 4px 10px; color: #1E1C19;">
+        <span style="width: 34px; height: 34px; border-radius: 10px; background: #2A6B6E; display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><path d="M5 12l4.5 4.5L19 7"/></svg></span>
+        <span style="font-size: 21px; font-weight: 700; letter-spacing: -0.02em;">EZCanvas</span>
+      </a>
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <a class="nav" href="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Dashboard</a>
+        <a class="nav" href="calendar.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</a>
+        <a class="nav" href="course.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></svg>Courses</a>
+        <a class="nav active" href="group.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20a7 7 0 0 1 14 0M15 15a5 5 0 0 1 7 5"/></svg>Group projects</a>
+        <a class="nav" href="homework.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>Homework helper</a>
+        <a class="nav" href="assistant.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.4A8 8 0 1 1 21 12z"/></svg>Study assistant</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 6px; border-top: 1px solid #ECE9E2;">
+        <span style="font-size: 12.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6B665E; padding: 12px 14px 6px;">Group projects</span>
+        <a class="nav active" href="group.html" style="height: 42px; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #A3611F; flex-shrink: 0;"></span>Charter · Team 4</a>
+        <a class="nav" href="group.html" style="height: 42px; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #3B5F8C; flex-shrink: 0;"></span>Final project · CS 5780</a>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+        <a class="nav" href="settings.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M18 7h2M4 12h3M11 12h9M4 17h11M20 17h0"/><circle cx="15.5" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/></svg>Settings</a>
+      <button type="button" class="nav" style="border: 0; background: transparent; font: inherit; cursor: pointer; width: 100%; text-align: left;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span style="flex-grow: 1;">Language</span><span style="font-size: 14px; font-weight: 600; color: #2A6B6E;" lang="zh-Hans">中文</span></button>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 14px 14px 0; margin-top: 8px; border-top: 1px solid #ECE9E2;">
+        <span style="width: 36px; height: 36px; border-radius: 999px; background: #3B5F8C; color: #FFFFFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;">TW</span>
+        <span style="display: flex; flex-direction: column; line-height: 1.25;"><span style="font-size: 15px; font-weight: 600;">Ted Wang</span><span style="font-size: 13px; color: #6B665E;">Cornell · M.Eng.</span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 22px 32px 22px; display: flex; flex-direction: column; gap: 16px;">
+
+    <!-- Header -->
+    <header style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+      <div style="display: flex; align-items: center; gap: 16px; min-width: 0; flex-grow: 1;">
+        <span style="width: 6px; height: 52px; border-radius: 4px; background: #A3611F;"></span>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 14px; font-weight: 600; color: #A3611F; letter-spacing: 0.04em;">SYSEN 5930 · GROUP PROJECT · TEAM 4</span>
+          <h1 class="serif" style="margin: 0; font-size: 30px; font-weight: 400; letter-spacing: -0.01em;">Project charter draft</h1>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+            <span class="chip" style="background: #F9ECE3; color: #9A4A1A;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width: 13px; height: 13px;"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Due Mon Sep 21, 11:59 PM</span>
+            <span class="chip" style="background: #F1EFE9; color: #4A4640;">100 pts · one submission per team</span>
+            <span class="chip" style="background: #EEF5F4; color: #2A6B6E;">Predicted 14.5 h total</span>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-shrink: 0;">
+        <button type="button" class="btn btn-secondary"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;"><path d="M14 4h6v6M20 4l-9 9M18 13v7H4V6h7"/></svg>Open in Canvas</button>
+        <button type="button" class="btn btn-primary">Share team link</button>
+      </div>
+    </header>
+
+    <div style="flex-grow: 1; min-height: 0; display: flex; gap: 20px;">
+
+      <!-- Work split -->
+      <section class="card" style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden;">
+        <div style="display: flex; align-items: flex-start; gap: 16px; padding: 16px 20px 12px;">
+          <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+            <h2 style="margin: 0; font-size: 17px; font-weight: 600;">Work split · from the rubric</h2>
+            <span style="font-size: 14px; color: #6B665E; line-height: 1.45;">EZCanvas split the charter into the rubric's 6 sections, weighted by points and predicted hours. Nobody is assigned anything: each person claims the parts they want, and the split rebalances.</span>
+          </div>
+          <button type="button" class="btn btn-secondary">Edit parts</button>
+          <button type="button" class="btn btn-secondary"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width: 15px; height: 15px;"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>Re-split</button>
+        </div>
+
+        <div class="part" style="border-top: 0; padding-top: 4px; padding-bottom: 6px; font-size: 12.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #6B665E;">
+          <span>Part</span><span>Predicted</span><span>Owner</span><span>Team due</span><span>Status</span>
+        </div>
+
+        <div class="part">
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span class="n">1 · Purpose and objectives</span><span class="m">15 pts · Why the project exists, 3 measurable objectives</span></span><span>about 2 h</span>
+          <span class="owner"><span class="av" style="background: #6A4C8F;">MK</span>Mina K.</span>
+          <span>Sat Sep 19</span>
+          <span class="chip" style="background: #EEF5F4; color: #2A6B6E;">In progress</span>
+        </div>
+        <div class="part">
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span class="n">2 · Scope statement and deliverables</span><span class="m">20 pts · In scope, out of scope, deliverable list</span></span><span>about 3 h</span>
+          <span class="owner"><span class="av" style="background: #2A6B6E;">DR</span>Diego R.</span>
+          <span>Sat Sep 19</span>
+          <span class="chip" style="background: #F1EFE9; color: #4A4640;">Not started</span>
+        </div>
+        <div class="part">
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span class="n">3 · Stakeholder register</span><span class="m">15 pts · Reuses the SYSEN 5100 stakeholder method</span></span><span>about 2 h</span>
+          <span class="owner"><span class="av" style="background: #6A4C8F;">MK</span>Mina K.</span>
+          <span>Sat Sep 19</span>
+          <span class="chip" style="background: #E3F1E5; color: #2F7A3E;">Done</span>
+        </div>
+        <div class="part" style="background: #FCFBF9;">
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span class="n">4 · Milestones and high level schedule</span><span class="m">20 pts · Gantt style table, 5 milestones</span></span><span>about 3 h</span>
+          <span class="owner"><span class="av" style="background: #3B5F8C;">TW</span>Ted (you)</span>
+          <span>Sat Sep 19</span>
+          <span class="chip" style="background: #EEF5F4; color: #2A6B6E;">In progress</span>
+        </div>
+        <div class="part">
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span class="n">5 · Risks and assumptions</span><span class="m">15 pts · Top 5 risks with likelihood and response</span></span><span>about 2 h</span>
+          <button type="button" class="claim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width: 13px; height: 13px;"><path d="M12 5v14M5 12h14"/></svg>Claim this part</button>
+          <span>Sat Sep 19</span>
+          <span class="chip" style="background: #F9ECE3; color: #9A4A1A;">Unclaimed</span>
+        </div>
+        <div class="part">
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;"><span class="n">6 · Integration and final edit</span><span class="m">15 pts · Merge parts, one voice, format check, submit</span></span><span>about 2.5 h</span>
+          <span class="owner"><span class="av" style="background: #A3611F;">YT</span>Yuki T.</span>
+          <span>Sun Sep 20</span>
+          <span class="chip" style="background: #F1EFE9; color: #4A4640;">Waits for 1 to 5</span>
+        </div>
+
+        <div style="flex-grow: 1;"></div>
+
+        <!-- Balance -->
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 20px 16px; border-top: 1px solid #EEEBE4; background: #FCFBF9;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 14px; font-weight: 600;">Balance · predicted hours per person</span>
+            <span style="font-size: 13.5px; color: #6B665E;">Fair share is about 3.6 h each · 2 h still unclaimed</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 5px;"><span style="display: flex; justify-content: space-between; font-size: 13.5px;"><span style="font-weight: 600;">Mina</span><span style="color: #4A4640;">4 h</span></span><span style="display: block; height: 6px; border-radius: 999px; background: #EEEBE4; overflow: hidden;"><span style="display: block; width: 80%; height: 100%; background: #6A4C8F;"></span></span></div>
+            <div style="display: flex; flex-direction: column; gap: 5px;"><span style="display: flex; justify-content: space-between; font-size: 13.5px;"><span style="font-weight: 600;">Diego</span><span style="color: #4A4640;">3 h</span></span><span style="display: block; height: 6px; border-radius: 999px; background: #EEEBE4; overflow: hidden;"><span style="display: block; width: 60%; height: 100%; background: #2A6B6E;"></span></span></div>
+            <div style="display: flex; flex-direction: column; gap: 5px;"><span style="display: flex; justify-content: space-between; font-size: 13.5px;"><span style="font-weight: 600;">Ted</span><span style="color: #4A4640;">3 h</span></span><span style="display: block; height: 6px; border-radius: 999px; background: #EEEBE4; overflow: hidden;"><span style="display: block; width: 60%; height: 100%; background: #3B5F8C;"></span></span></div>
+            <div style="display: flex; flex-direction: column; gap: 5px;"><span style="display: flex; justify-content: space-between; font-size: 13.5px;"><span style="font-weight: 600;">Yuki</span><span style="color: #4A4640;">2.5 h</span></span><span style="display: block; height: 6px; border-radius: 999px; background: #EEEBE4; overflow: hidden;"><span style="display: block; width: 50%; height: 100%; background: #A3611F;"></span></span></div>
+          </div>
+          <span style="font-size: 13.5px; color: #4A4640;">Diego, Ted and Yuki are lightest. If nobody claims part 5 by Friday 9 AM, the Friday reminder will say so to the whole team without naming anyone.</span>
+        </div>
+      </section>
+
+      <!-- Right column -->
+      <aside style="width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;">
+
+        <!-- Teammates -->
+        <section class="card" style="padding: 14px 18px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600; white-space: nowrap;">Team 4 · 4 people</h2>
+            <span style="font-size: 13.5px; color: #6B665E; white-space: nowrap;">from Canvas</span>
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <div class="member"><span class="av" style="background: #3B5F8C;">TW</span><span style="flex-grow: 1; display: flex; flex-direction: column; gap: 1px;"><span class="n">Ted Wang (you)</span><span class="e">zw···@cornell.edu</span></span><span class="chip" style="background: #F1EFE9; color: #4A4640;">Organizer</span></div>
+            <div class="member"><span class="av" style="background: #6A4C8F;">MK</span><span style="flex-grow: 1; display: flex; flex-direction: column; gap: 1px;"><span class="n">Mina K.</span><span class="e">mk···@cornell.edu</span></span><span class="chip" style="background: #E3F1E5; color: #2F7A3E;">Joined</span></div>
+            <div class="member"><span class="av" style="background: #2A6B6E;">DR</span><span style="flex-grow: 1; display: flex; flex-direction: column; gap: 1px;"><span class="n">Diego R.</span><span class="e">dr···@cornell.edu</span></span><span class="chip" style="background: #E3F1E5; color: #2F7A3E;">Joined</span></div>
+            <div class="member"><span class="av" style="background: #A3611F;">YT</span><span style="flex-grow: 1; display: flex; flex-direction: column; gap: 1px;"><span class="n">Yuki T.</span><span class="e">yt···@cornell.edu</span></span><span class="chip" style="background: #F9ECE3; color: #9A4A1A;">Invited · by email</span></div>
+          </div>
+          <div style="display: flex; align-items: flex-end; gap: 8px; padding-top: 6px; border-top: 1px solid #EEEBE4;">
+            <label class="field"><span>Name</span><input type="text" placeholder="Teammate name"></label>
+            <label class="field"><span>Email</span><input type="email" placeholder="netid@cornell.edu"></label>
+            <button type="button" class="btn btn-primary" style="height: 34px; padding: 0 12px;">Invite</button>
+          </div>
+          <span style="font-size: 13px; line-height: 1.45; color: #6B665E;">Teammates do not need EZCanvas: they get an email link to claim parts and mark them done.</span>
+        </section>
+
+        <!-- Reminders -->
+        <section class="card" style="padding: 14px 18px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600; flex-grow: 1;">Reminders · sent by EZCanvas</h2>
+            <label class="switch"><input type="checkbox" checked aria-label="Send team reminders"><span></span></label>
+          </div>
+          <span style="font-size: 13.5px; line-height: 1.45; color: #4A4640;">Group messages never single anyone out. A person whose part is late gets a private nudge from EZCanvas, not from you.</span>
+          <div style="display: flex; flex-direction: column; border-top: 1px solid #EEEBE4; border-bottom: 1px solid #EEEBE4;">
+            <div class="rem"><div class="rt"><span class="w">Fri 9:00 AM</span><span class="chip" style="background: #F1EFE9; color: #4A4640;">Scheduled</span></div><span><span style="font-weight: 600;">Everyone</span> · parts 1 to 5 are due to the team Saturday 6 PM</span></div>
+            <div class="rem"><div class="rt"><span class="w">Sat 6:00 PM</span><span class="chip" style="background: #F1EFE9; color: #4A4640;">Scheduled</span></div><span><span style="font-weight: 600;">Anyone not done</span> · private nudge with a link to their part</span></div>
+            <div class="rem"><div class="rt"><span class="w">When parts 1 to 5 are in</span><span class="chip" style="background: #F1EFE9; color: #4A4640;">Waits</span></div><span><span style="font-weight: 600;">Yuki</span> · all parts are in, integration can start</span></div>
+            <div class="rem"><div class="rt"><span class="w">Mon 9:00 AM</span><span class="chip" style="background: #F1EFE9; color: #4A4640;">Scheduled</span></div><span><span style="font-weight: 600;">Everyone</span> · submit on Canvas by 11:59 PM</span></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 10px; background: #F8F7F3; border: 1px solid #EEEBE4;">
+            <span style="font-size: 12.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #6B665E;">Friday's message · preview</span>
+            <p style="margin: 0; font-size: 13.5px; line-height: 1.5;">Hi Team 4, reminder from EZCanvas: parts 1 to 5 of the charter are due to the team by Saturday 6 PM so integration can happen Sunday. Right now 1 of 6 parts is done, 2 are in progress, and part 5 (Risks and assumptions) is still open. Reply to this email to claim it or swap a part.</p>
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: auto;">
+            <button type="button" class="btn btn-secondary" style="flex-grow: 1;">Edit schedule</button>
+            <button type="button" class="btn btn-secondary" style="flex-grow: 1;">Send one now</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

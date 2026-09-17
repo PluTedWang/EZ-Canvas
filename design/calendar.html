@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>EZCanvas · Calendar · Week</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Figtree', 'Noto Sans SC', system-ui, sans-serif; color: #1E1C19; background: #F8F7F3; -webkit-font-smoothing: antialiased; }
+    a { color: #2A6B6E; text-decoration: none; } a:hover { color: #215659; }
+    .serif { font-family: 'Instrument Serif', Georgia, serif; }
+    .nav { display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-radius: 12px; font-size: 16px; font-weight: 500; color: #3F3B35; white-space: nowrap; }
+    .nav:hover { background: #F4F2EE; color: #1E1C19; }
+    .nav.active { background: #EEF5F4; color: #1F5457; font-weight: 600; }
+    .nav svg { width: 22px; height: 22px; flex-shrink: 0; color: #7A756C; }
+    .nav.active svg { color: #2A6B6E; }
+    .card { background: #FFFFFF; border: 1px solid #E8E5DE; border-radius: 16px; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; font-size: 13.5px; font-weight: 600; white-space: nowrap; }
+    .btn { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 10px; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; border: 1px solid transparent; white-space: nowrap; }
+    .btn-primary { background: #2A6B6E; color: #FFFFFF; }
+    .btn-secondary { background: #FFFFFF; color: #1E1C19; border-color: #D9D4CA; }
+    .icon { width: 18px; height: 18px; flex-shrink: 0; }
+    .seg { height: 36px; padding: 0 14px; border: 0; background: transparent; font: inherit; font-size: 14.5px; font-weight: 600; color: #4A4640; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+    .seg.on { background: #FFFFFF; color: #1E1C19; box-shadow: 0 1px 2px rgba(30,28,25,0.08); }
+    .filter { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid #D9D4CA; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; color: #1E1C19; cursor: pointer; white-space: nowrap; }
+    .dot { width: 9px; height: 9px; border-radius: 999px; display: inline-block; }
+    .dayhead { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: 56px; border-left: 1px solid #EEEBE4; }
+    .allday { min-height: 56px; box-sizing: border-box; padding: 6px; border-left: 1px solid #EEEBE4; display: flex; flex-direction: column; gap: 4px; }
+    .col { position: relative; height: 520px; border-left: 1px solid #EEEBE4; background-image: repeating-linear-gradient(to bottom, #EEEBE4 0 1px, transparent 1px 52px); }
+    .ev { position: absolute; left: 4px; right: 4px; box-sizing: border-box; padding: 6px 8px; border-radius: 8px; font-size: 13px; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; gap: 1px; }
+    .ev .t { font-weight: 600; }
+    .ev .s { opacity: 0.85; font-size: 12.5px; }
+    .study { border: 1.5px dashed #2A6B6E; background: #F2F8F7; color: #1F5457; }
+    .due { padding: 5px 8px; border-radius: 7px; font-size: 13px; font-weight: 600; line-height: 1.25; }
+    .hour { height: 52px; box-sizing: border-box; padding: 2px 8px 0 0; font-size: 12.5px; color: #6B665E; text-align: right; }
+  </style>
+  <style>
+    html { background: #ECEAE4; }
+    body { padding: 24px 0; }
+  </style>
+</head>
+<body>
+<div style="width: 1440px; min-height: 960px; margin: 0 auto; box-sizing: border-box; display: flex; background: #F8F7F3;">
+
+  <!-- Sidebar -->
+  <nav style="width: 248px; flex-shrink: 0; box-sizing: border-box; padding: 24px 14px 20px; display: flex; flex-direction: column; justify-content: space-between; background: #FFFFFF; border-right: 1px solid #ECE9E2;">
+    <div style="display: flex; flex-direction: column; gap: 22px;">
+      <a href="dashboard.html" style="display: flex; align-items: center; gap: 10px; padding: 4px 10px; color: #1E1C19;">
+        <span style="width: 34px; height: 34px; border-radius: 10px; background: #2A6B6E; display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><path d="M5 12l4.5 4.5L19 7"/></svg></span>
+        <span style="font-size: 21px; font-weight: 700; letter-spacing: -0.02em;">EZCanvas</span>
+      </a>
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <a class="nav" href="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Dashboard</a>
+        <a class="nav active" href="calendar.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</a>
+        <a class="nav" href="course.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></svg>Courses</a>
+        <a class="nav" href="group.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20a7 7 0 0 1 14 0M15 15a5 5 0 0 1 7 5"/></svg>Group projects</a>
+        <a class="nav" href="homework.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>Homework helper</a>
+        <a class="nav" href="assistant.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.4A8 8 0 1 1 21 12z"/></svg>Study assistant</a>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+        <a class="nav" href="settings.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M18 7h2M4 12h3M11 12h9M4 17h11M20 17h0"/><circle cx="15.5" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/></svg>Settings</a>
+      <button type="button" class="nav" style="border: 0; background: transparent; font: inherit; cursor: pointer; width: 100%; text-align: left;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span style="flex-grow: 1;">Language</span><span style="font-size: 14px; font-weight: 600; color: #2A6B6E;" lang="zh-Hans">中文</span></button>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 14px 14px 0; margin-top: 8px; border-top: 1px solid #ECE9E2;">
+        <span style="width: 36px; height: 36px; border-radius: 999px; background: #3B5F8C; color: #FFFFFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;">TW</span>
+        <span style="display: flex; flex-direction: column; line-height: 1.25;"><span style="font-size: 15px; font-weight: 600;">Ted Wang</span><span style="font-size: 13px; color: #6B665E;">Cornell · M.Eng.</span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 20px 32px 24px; display: flex; flex-direction: column; gap: 16px;">
+
+    <!-- Header -->
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <h1 class="serif" style="margin: 0; font-size: 32px; font-weight: 400; letter-spacing: -0.01em;">September 2026</h1>
+      <div style="display: flex; gap: 4px;">
+        <button type="button" aria-label="Previous week" style="width: 36px; height: 36px; border-radius: 9px; border: 1px solid #E6E2DA; background: #FFFFFF; color: #4A4640; display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button type="button" aria-label="Next week" style="width: 36px; height: 36px; border-radius: 9px; border: 1px solid #E6E2DA; background: #FFFFFF; color: #4A4640; display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+      <button type="button" class="btn btn-secondary" style="height: 36px;">Today</button>
+      <div style="flex-grow: 1;"></div>
+      <div style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: #F1F0EC;">
+        <button type="button" class="seg">Month</button>
+        <button type="button" class="seg on">Week</button>
+        <button type="button" class="seg">Agenda</button>
+      </div>
+      <button type="button" class="btn btn-secondary" style="height: 36px;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M14 4h6v6M20 4l-9 9M18 13v7H4V6h7"/></svg>Export</button>
+    </div>
+
+    <!-- Filters -->
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <button type="button" class="filter"><span class="dot" style="background: #2A6B6E;"></span>SYSEN 5100</button>
+      <button type="button" class="filter"><span class="dot" style="background: #6A4C8F;"></span>SYSEN 5200</button>
+      <button type="button" class="filter"><span class="dot" style="background: #A3611F;"></span>SYSEN 5930</button>
+      <button type="button" class="filter"><span class="dot" style="background: #3B5F8C;"></span>CS 5780</button>
+      <span style="width: 1px; height: 22px; background: #D9D4CA; margin: 0 4px;"></span>
+      <button type="button" class="filter">Lectures</button>
+      <button type="button" class="filter" style="border-style: dashed; border-color: #2A6B6E; color: #2A6B6E;">Suggested study blocks</button>
+      <div style="flex-grow: 1;"></div>
+      <span class="chip" style="background: #E3F1E5; color: #2F7A3E;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width: 14px; height: 14px;"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>Canvas synced 4 min ago</span>
+    </div>
+
+    <!-- Body -->
+    <div style="flex-grow: 1; min-height: 0; display: flex; gap: 20px;">
+
+      <!-- Week grid -->
+      <section class="card" style="flex-grow: 1; min-width: 0; align-self: flex-start; overflow: hidden; display: grid; grid-template-columns: 56px repeat(7, minmax(0, 1fr)); grid-template-rows: 56px auto 520px; background: #FFFFFF;">
+        <!-- day headers -->
+        <div></div>
+        <div class="dayhead"><span style="font-size: 12.5px; font-weight: 600; color: #6B665E; letter-spacing: 0.04em;">MON</span><span style="font-size: 18px; font-weight: 600;">14</span></div>
+        <div class="dayhead"><span style="font-size: 12.5px; font-weight: 600; color: #6B665E; letter-spacing: 0.04em;">TUE</span><span style="font-size: 18px; font-weight: 600;">15</span></div>
+        <div class="dayhead"><span style="font-size: 12.5px; font-weight: 600; color: #6B665E; letter-spacing: 0.04em;">WED</span><span style="font-size: 18px; font-weight: 600;">16</span></div>
+        <div class="dayhead" style="background: #EEF5F4;"><span style="font-size: 12.5px; font-weight: 600; color: #2A6B6E; letter-spacing: 0.04em;">THU</span><span style="width: 30px; height: 30px; border-radius: 999px; background: #2A6B6E; color: #FFFFFF; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center;">17</span></div>
+        <div class="dayhead"><span style="font-size: 12.5px; font-weight: 600; color: #6B665E; letter-spacing: 0.04em;">FRI</span><span style="font-size: 18px; font-weight: 600;">18</span></div>
+        <div class="dayhead"><span style="font-size: 12.5px; font-weight: 600; color: #6B665E; letter-spacing: 0.04em;">SAT</span><span style="font-size: 18px; font-weight: 600;">19</span></div>
+        <div class="dayhead"><span style="font-size: 12.5px; font-weight: 600; color: #6B665E; letter-spacing: 0.04em;">SUN</span><span style="font-size: 18px; font-weight: 600;">20</span></div>
+
+        <!-- all-day / due row -->
+        <div style="display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 12px; font-weight: 600; color: #6B665E; border-top: 1px solid #EEEBE4; border-bottom: 1px solid #EEEBE4;">DUE</div>
+        <div class="allday" style="border-top: 1px solid #EEEBE4; border-bottom: 1px solid #EEEBE4;"></div>
+        <div class="allday" style="border-top: 1px solid #EEEBE4; border-bottom: 1px solid #EEEBE4;"><span class="due" style="background: #E7ECF3; color: #3B5F8C; text-decoration: line-through; opacity: 0.8;">PS 2 submitted</span></div>
+        <div class="allday" style="border-top: 1px solid #EEEBE4; border-bottom: 1px solid #EEEBE4;"></div>
+        <div class="allday" style="border-top: 1px solid #EEEBE4; border-bottom: 1px solid #EEEBE4; background: #EEF5F4;"></div>
+        <div class="allday" style="border-top: 1px solid #EEEBE4; border-bottom: 1px solid #EEEBE4;"><span class="due" style="background: #2A6B6E; color: #FFFFFF; display: flex; flex-direction: column; gap: 1px;"><span>HW 2 due · 11:59 PM</span><span style="font-weight: 500; opacity: 0.85; font-size: 12px;">about 2 h left of 6</span></span></div>
+        <div class="allday" style="border-top: 1px solid #EEEBE4; border-bottom: 1px solid #EEEBE4;"></div>
+        <div class="allday" style="border-top: 1px solid #EEEBE4; border-bottom: 1px solid #EEEBE4;"><span class="due" style="background: #F3EEF8; color: #6A4C8F; display: flex; flex-direction: column; gap: 1px;"><span>Ch. 5 reading</span><span style="font-weight: 500; opacity: 0.85; font-size: 12px;">about 1.5 h</span></span></div>
+
+        <!-- hours column -->
+        <div style="display: flex; flex-direction: column;">
+          <div class="hour">9 AM</div><div class="hour">10 AM</div><div class="hour">11 AM</div><div class="hour">12 PM</div><div class="hour">1 PM</div><div class="hour">2 PM</div><div class="hour">3 PM</div><div class="hour">4 PM</div><div class="hour">5 PM</div><div class="hour">6 PM</div>
+        </div>
+        <!-- Mon -->
+        <div class="col">
+          <div class="ev" style="top: 61px; height: 65px; background: #2A6B6E; color: #FFFFFF;"><span class="t">SYSEN 5100</span><span class="s">10:10 – 11:25 · Hollister 110</span></div>
+          <div class="ev" style="top: 230px; height: 65px; background: #3B5F8C; color: #FFFFFF;"><span class="t">CS 5780</span><span class="s">1:25 – 2:40 · Bailey Hall</span></div>
+        </div>
+        <!-- Tue -->
+        <div class="col">
+          <div class="ev" style="top: 139px; height: 65px; background: #6A4C8F; color: #FFFFFF;"><span class="t">SYSEN 5200</span><span class="s">11:40 – 12:55</span></div>
+          <div class="ev" style="top: 308px; height: 65px; background: #A3611F; color: #FFFFFF;"><span class="t">SYSEN 5930 studio</span><span class="s">2:55 – 4:10</span></div>
+        </div>
+        <!-- Wed -->
+        <div class="col">
+          <div class="ev" style="top: 61px; height: 65px; background: #2A6B6E; color: #FFFFFF;"><span class="t">SYSEN 5100</span><span class="s">10:10 – 11:25</span></div>
+          <div class="ev" style="top: 230px; height: 65px; background: #3B5F8C; color: #FFFFFF;"><span class="t">CS 5780</span><span class="s">1:25 – 2:40</span></div>
+        </div>
+        <!-- Thu (today) -->
+        <div class="col" style="background-color: #F6FAF9;">
+          <div class="ev" style="top: 139px; height: 65px; background: #6A4C8F; color: #FFFFFF;"><span class="t">SYSEN 5200</span><span class="s">11:40 – 12:55</span></div>
+          <div class="ev study" style="top: 312px; height: 104px;"><span class="t">HW 2 · finish use cases</span><span class="s">3:00 – 5:00 · suggested</span></div>
+          <div style="position: absolute; left: 0; right: 0; top: 286px; height: 2px; background: #B0352F;"></div>
+          <div style="position: absolute; left: -4px; top: 282px; width: 10px; height: 10px; border-radius: 999px; background: #B0352F;"></div>
+        </div>
+        <!-- Fri -->
+        <div class="col">
+          <div class="ev" style="top: 61px; height: 65px; background: #2A6B6E; color: #FFFFFF;"><span class="t">SYSEN 5100</span><span class="s">10:10 – 11:25</span></div>
+          <div class="ev study" style="top: 208px; height: 104px;"><span class="t">HW 2 · final review</span><span class="s">1:00 – 3:00 · suggested</span></div>
+        </div>
+        <!-- Sat -->
+        <div class="col">
+          <div class="ev study" style="top: 52px; height: 104px;"><span class="t">PS 3 · questions 1–2</span><span class="s">10:00 – 12:00 · suggested</span></div>
+          <div class="ev study" style="top: 260px; height: 78px;"><span class="t">Ch. 5 reading</span><span class="s">2:00 – 3:30 · suggested</span></div>
+        </div>
+        <!-- Sun -->
+        <div class="col">
+          <div class="ev study" style="top: 260px; height: 104px;"><span class="t">Project charter draft</span><span class="s">2:00 – 4:00 · suggested</span></div>
+        </div>
+      </section>
+
+      <!-- Right panel -->
+      <aside style="width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;">
+        <section class="card" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 13.5px; font-weight: 600; color: #2A6B6E; letter-spacing: 0.04em; text-transform: uppercase;">Today</span>
+            <h2 class="serif" style="margin: 0; font-size: 24px; font-weight: 400;">Thursday, September 17</h2>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <span style="width: 54px; flex-shrink: 0; font-size: 13.5px; color: #6B665E; padding-top: 2px;">11:40</span>
+              <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600; color: #6B665E; text-decoration: line-through;">SYSEN 5200 lecture</span><span style="font-size: 13.5px; color: #6B665E;">Recording transcript ready</span></span>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <span style="width: 54px; flex-shrink: 0; font-size: 13.5px; color: #6B665E; padding-top: 2px;">3:00 PM</span>
+              <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">HW 2 · finish use cases</span><span style="font-size: 13.5px; color: #6B665E;">2 h study block · questions 3 and 4 left</span></span>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <span style="width: 54px; flex-shrink: 0; font-size: 13.5px; color: #9A4A1A; font-weight: 600; padding-top: 2px;">Tmrw</span>
+              <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; font-weight: 600;">HW 2 due 11:59 PM</span><span style="font-size: 13.5px; color: #6B665E;">SYSEN 5100 · late policy: 10% per day</span></span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" style="padding: 16px 20px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Time needed · predicted</h2>
+            <span style="font-size: 13.5px; color: #6B665E;">11.5 h left this week</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;"><span class="dot" style="background: #2A6B6E;"></span><span style="flex-grow: 1; font-weight: 600;">HW 2 · Requirements &amp; Use Cases</span><span style="color: #4A4640;">2 h left of 6</span></div>
+              <span style="display: block; height: 6px; border-radius: 999px; background: #EEEBE4; overflow: hidden;"><span style="display: block; width: 67%; height: 100%; background: #2A6B6E;"></span></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;"><span class="dot" style="background: #A3611F;"></span><span style="flex-grow: 1; font-weight: 600;">Project charter draft (your part)</span><span style="color: #4A4640;">about 3 h</span></div>
+              <span style="display: block; height: 6px; border-radius: 999px; background: #EEEBE4; overflow: hidden;"><span style="display: block; width: 0%; height: 100%; background: #A3611F;"></span></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;"><span class="dot" style="background: #3B5F8C;"></span><span style="flex-grow: 1; font-weight: 600;">Problem Set 3</span><span style="color: #4A4640;">about 5 h</span></div>
+              <span style="display: block; height: 6px; border-radius: 999px; background: #EEEBE4; overflow: hidden;"><span style="display: block; width: 0%; height: 100%; background: #3B5F8C;"></span></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;"><span class="dot" style="background: #6A4C8F;"></span><span style="flex-grow: 1; font-weight: 600;">Ch. 5 reading</span><span style="color: #4A4640;">about 1.5 h</span></div>
+              <span style="display: block; height: 6px; border-radius: 999px; background: #EEEBE4; overflow: hidden;"><span style="display: block; width: 0%; height: 100%; background: #6A4C8F;"></span></span>
+            </div>
+          </div>
+          <span style="font-size: 13px; line-height: 1.45; color: #6B665E;">Predicted from assignment length, rubric weight and your pace. HW 1 took 5.5 h against a 5 h prediction.</span>
+        </section>
+
+        <section class="card" style="padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; background: #FFFFFF; border-color: #C9DCDB;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 28px; height: 28px; border-radius: 8px; background: #2A6B6E; color: #FFFFFF; display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" style="width: 15px; height: 15px;"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg></span>
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600;">This week's plan</h2>
+          </div>
+          <p style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #1E1C19;">I placed 5 study blocks around your lectures to cover the 11.5 hours, kept Saturday evening free, and put HW 2 first because it is due tomorrow.</p>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn btn-primary" style="height: 36px; flex-grow: 1;">Add blocks to calendar</button>
+            <button type="button" class="btn btn-secondary" style="height: 36px;">Adjust</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

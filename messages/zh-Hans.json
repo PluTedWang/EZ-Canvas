@@ -1,0 +1,20 @@
+{
+  "locale": {
+    "name": "中文",
+    "language": "语言"
+  },
+  "nav": {
+    "dashboard": "首页",
+    "calendar": "日历",
+    "courses": "课程",
+    "groups": "小组项目",
+    "homework": "作业助手",
+    "assistant": "学习助手",
+    "settings": "设置"
+  },
+  "topBar": {
+    "search": "搜索",
+    "searchPlaceholder": "搜索课程、文件和截止日期",
+    "notifications": "通知"
+  }
+}

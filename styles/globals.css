@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@import "../design/tokens.css";
+
+/* next/font self hosts the fonts and exposes them on these variables. */
+:root {
+  --ez-font-ui: var(--font-figtree), var(--font-noto-sans-sc), system-ui, sans-serif;
+  --ez-font-title: var(--font-instrument-serif), Georgia, serif;
+  --ez-font-cjk: var(--font-noto-sans-sc), system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-ground: var(--ez-ground);
+  --color-surface: var(--ez-surface);
+  --color-surface-soft: var(--ez-surface-soft);
+  --color-prompt: var(--ez-prompt);
+  --color-track: var(--ez-track);
+  --color-hover: var(--ez-hover);
+  --color-row-hover: var(--ez-row-hover);
+  --color-border: var(--ez-border);
+  --color-divider: var(--ez-divider);
+  --color-line: var(--ez-line);
+  --color-control-border: var(--ez-control-border);
+  --color-switch-off: var(--ez-switch-off);
+  --color-text: var(--ez-text);
+  --color-text-2: var(--ez-text-2);
+  --color-text-3: var(--ez-text-3);
+  --color-nav: var(--ez-nav);
+  --color-icon: var(--ez-icon);
+  --color-teal: var(--ez-teal);
+  --color-teal-deep: var(--ez-teal-deep);
+  --color-teal-hover: var(--ez-teal-hover);
+  --color-teal-soft: var(--ez-teal-soft);
+  --color-teal-tint: var(--ez-teal-tint);
+  --color-teal-border: var(--ez-teal-border);
+  --color-warn: var(--ez-warn);
+  --color-warn-soft: var(--ez-warn-soft);
+  --color-ok: var(--ez-ok);
+  --color-ok-soft: var(--ez-ok-soft);
+  --color-danger: var(--ez-danger);
+  --color-danger-soft: var(--ez-danger-soft);
+  --color-neutral-soft: var(--ez-neutral-soft);
+  --color-course-1: var(--ez-course-1);
+  --color-course-1-soft: var(--ez-course-1-soft);
+  --color-course-2: var(--ez-course-2);
+  --color-course-2-soft: var(--ez-course-2-soft);
+  --color-course-3: var(--ez-course-3);
+  --color-course-3-soft: var(--ez-course-3-soft);
+  --color-course-4: var(--ez-course-4);
+  --color-course-4-soft: var(--ez-course-4-soft);
+
+  --font-*: initial;
+  --font-ui: var(--ez-font-ui);
+  --font-title: var(--ez-font-title);
+  --font-cjk: var(--ez-font-cjk);
+
+  --radius-card: var(--ez-radius-card);
+  --radius-control: var(--ez-radius-control);
+  --radius-nav: var(--ez-radius-nav);
+  --radius-chip: var(--ez-radius-chip);
+  --shadow-1: var(--ez-shadow-1);
+}
+
+body {
+  background: var(--ez-ground);
+  color: var(--ez-text);
+  font-family: var(--ez-font-ui);
+  line-height: var(--ez-line-height);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ez-teal);
+  outline-offset: 2px;
+}

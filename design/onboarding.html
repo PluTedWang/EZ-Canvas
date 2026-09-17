@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>EZCanvas · Onboarding · Language</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Figtree', 'Noto Sans SC', system-ui, sans-serif; color: #1E1C19; background: #F8F7F3; -webkit-font-smoothing: antialiased; }
+    a { color: #2A6B6E; text-decoration: none; } a:hover { color: #215659; }
+    .serif { font-family: 'Instrument Serif', Georgia, serif; }
+    .lang { display: flex; flex-direction: column; justify-content: center; gap: 3px; height: 64px; padding: 0 18px; border-radius: 12px; border: 1px solid #E6E2DA; background: #FFFFFF; text-align: left; font: inherit; color: #1E1C19; cursor: pointer; white-space: nowrap; }
+    .lang:hover { border-color: #B9C9C8; }
+    .lang.selected { border: 2px solid #2A6B6E; background: #EEF5F4; padding: 0 17px; }
+    .lang .native { font-size: 18px; font-weight: 600; }
+    .lang .en { font-size: 13.5px; color: #6B665E; }
+    .btn { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 10px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; border: 1px solid transparent; white-space: nowrap; }
+    .btn-primary { background: #2A6B6E; color: #FFFFFF; }
+    .btn-secondary { background: #FFFFFF; color: #1E1C19; border-color: #D9D4CA; }
+    input[type="checkbox"] { width: 18px; height: 18px; accent-color: #2A6B6E; margin: 0; }
+  </style>
+  <style>
+    html { background: #ECEAE4; }
+    body { padding: 24px 0; }
+  </style>
+</head>
+<body>
+<div style="width: 1440px; min-height: 960px; margin: 0 auto; box-sizing: border-box; display: flex; background: #F8F7F3;">
+
+  <!-- Left: brand and steps -->
+  <aside style="width: 480px; box-sizing: border-box; padding: 56px 56px 48px; display: flex; flex-direction: column; justify-content: space-between; background: #F1F0EC; border-right: 1px solid #E6E2DA;">
+    <div style="display: flex; flex-direction: column; gap: 40px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 36px; height: 36px; border-radius: 10px; background: #2A6B6E; display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px;"><path d="M5 12l4.5 4.5L19 7"/></svg>
+        </div>
+        <span style="font-size: 23px; font-weight: 700; letter-spacing: -0.02em;">EZCanvas</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <h1 class="serif" style="margin: 0; font-size: 44px; line-height: 1.08; font-weight: 400; letter-spacing: -0.01em;">Your Canvas, in your language.</h1>
+        <p style="margin: 0; font-size: 17px; line-height: 1.55; color: #4A4640;">EZCanvas reads your courses from Canvas, keeps every deadline in one calendar, and explains materials, homework and emails in the language you think in.</p>
+      </div>
+      <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px;">
+        <li style="display: flex; align-items: center; gap: 14px; height: 48px; padding: 0 12px; border-radius: 10px;">
+          <span style="width: 28px; height: 28px; border-radius: 999px; background: #2F7A3E; display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M5 12l4.5 4.5L19 7"/></svg></span>
+          <span style="display: flex; flex-direction: column;"><span style="font-size: 16px; font-weight: 600;">Connect Canvas and Ed</span><span style="font-size: 13.5px; color: #6B665E;">cornell.instructure.com · 4 courses · Ed Discussion linked</span></span>
+        </li>
+        <li style="display: flex; align-items: center; gap: 14px; height: 48px; padding: 0 12px; border-radius: 10px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,28,25,0.06);">
+          <span style="width: 28px; height: 28px; border-radius: 999px; background: #2A6B6E; color: #FFFFFF; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center;">2</span>
+          <span style="display: flex; flex-direction: column;"><span style="font-size: 16px; font-weight: 600;">Choose your language</span><span style="font-size: 13.5px; color: #6B665E;">Interface, explanations and drafts</span></span>
+        </li>
+        <li style="display: flex; align-items: center; gap: 14px; height: 48px; padding: 0 12px; border-radius: 10px;">
+          <span style="width: 28px; height: 28px; border-radius: 999px; border: 1.5px solid #B7B2A8; color: #6B665E; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center;">3</span>
+          <span style="display: flex; flex-direction: column;"><span style="font-size: 16px; font-weight: 600; color: #4A4640;">Set up your AI helper</span><span style="font-size: 13.5px; color: #6B665E;">Pick a provider or bring your own key</span></span>
+        </li>
+      </ol>
+    </div>
+    <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #6B665E;">Your Canvas data is read with your own access token and is never used to train models.</p>
+  </aside>
+
+  <!-- Right: language picker -->
+  <main style="flex-grow: 1; box-sizing: border-box; padding: 72px 96px 48px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div style="display: flex; flex-direction: column; gap: 28px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #2A6B6E;">Step 2 of 3</span>
+        <h2 class="serif" style="margin: 0; font-size: 36px; font-weight: 400; letter-spacing: -0.01em;">Which language should EZCanvas speak to you in?</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A4640; max-width: 620px;">Your Canvas content stays exactly as your professor wrote it. EZCanvas summarizes, explains and drafts in the language you choose. You can change this anytime, or ask for both.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; max-width: 760px;">
+        <button class="lang" type="button"><span class="native">English</span><span class="en">English</span></button>
+        <button class="lang selected" type="button" aria-pressed="true"><span class="native" lang="zh-Hans">中文（简体）</span><span class="en">Chinese, Simplified</span></button>
+        <button class="lang" type="button"><span class="native" lang="zh-Hant">中文（繁體）</span><span class="en">Chinese, Traditional</span></button>
+        <button class="lang" type="button"><span class="native" lang="ko">한국어</span><span class="en">Korean</span></button>
+        <button class="lang" type="button"><span class="native" lang="ja">日本語</span><span class="en">Japanese</span></button>
+        <button class="lang" type="button"><span class="native" lang="es">Español</span><span class="en">Spanish</span></button>
+        <button class="lang" type="button"><span class="native" lang="hi">हिन्दी</span><span class="en">Hindi</span></button>
+        <button class="lang" type="button"><span class="native" lang="vi">Tiếng Việt</span><span class="en">Vietnamese</span></button>
+        <button class="lang" type="button"><span class="native" lang="pt">Português</span><span class="en">Portuguese</span></button>
+        <button class="lang" type="button"><span class="native" lang="fr">Français</span><span class="en">French</span></button>
+        <button class="lang" type="button"><span class="native" lang="ar">العربية</span><span class="en">Arabic</span></button>
+        <button class="lang" type="button"><span class="native" lang="de">Deutsch</span><span class="en">German</span></button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 760px;">
+        <label style="display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E6E2DA; cursor: pointer;">
+          <input type="checkbox" checked style="margin-top: 2px;">
+          <span style="display: flex; flex-direction: column; gap: 3px;">
+            <span style="font-size: 16px; font-weight: 600;">Keep academic terms in English</span>
+            <span style="font-size: 14.5px; line-height: 1.5; color: #4A4640;">Explanations use the term your professor uses and add the translation once, for example <span style="font-weight: 600;">traceability</span> <span lang="zh-Hans">(可追溯性)</span>, so you learn the vocabulary you will hear in class.</span>
+          </span>
+        </label>
+        <label style="display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E6E2DA; cursor: pointer;">
+          <input type="checkbox" checked style="margin-top: 2px;">
+          <span style="display: flex; flex-direction: column; gap: 3px;">
+            <span style="font-size: 16px; font-weight: 600;">Show a translation preview on emails</span>
+            <span style="font-size: 14.5px; line-height: 1.5; color: #4A4640;">Emails to professors are drafted in English. A side-by-side translation shows you exactly what you are sending.</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; max-width: 760px;">
+      <button class="btn btn-secondary" type="button">Back</button>
+      <a class="btn btn-primary" href="dashboard.html" style="color: #FFFFFF;">Continue<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+/* EZCanvas design tokens, v0.4. See docs/DESIGN_SYSTEM.md. */
+:root {
+  /* ground and surfaces */
+  --ez-ground: #F8F7F3;
+  --ez-surface: #FFFFFF;
+  --ez-surface-soft: #FCFBF9;
+  --ez-prompt: #FAF9F6;
+  --ez-track: #F1F0EC;
+  --ez-hover: #F4F2EE;
+  --ez-row-hover: #F6F4EF;
+  --ez-border: #E8E5DE;
+  --ez-divider: #ECE9E2;
+  --ez-line: #EEEBE4;
+  --ez-control-border: #D9D4CA;
+  --ez-switch-off: #C9C4B9;
+
+  /* text */
+  --ez-text: #1E1C19;
+  --ez-text-2: #4A4640;
+  --ez-text-3: #6B665E;
+  --ez-nav: #3F3B35;
+  --ez-icon: #7A756C;
+
+  /* accent */
+  --ez-teal: #2A6B6E;
+  --ez-teal-deep: #1F5457;
+  --ez-teal-hover: #215659;
+  --ez-teal-soft: #EEF5F4;
+  --ez-teal-tint: #F2F8F7;
+  --ez-teal-border: #C9DCDB;
+
+  /* semantic */
+  --ez-warn: #9A4A1A;
+  --ez-warn-soft: #F9ECE3;
+  --ez-ok: #2F7A3E;
+  --ez-ok-soft: #E3F1E5;
+  --ez-danger: #B0352F;
+  --ez-danger-soft: #FAE6E4;
+  --ez-neutral-soft: #F1EFE9;
+
+  /* course colors, assigned in order */
+  --ez-course-1: #2A6B6E; --ez-course-1-soft: #EEF5F4;
+  --ez-course-2: #6A4C8F; --ez-course-2-soft: #F3EEF8;
+  --ez-course-3: #A3611F; --ez-course-3-soft: #F9ECE3;
+  --ez-course-4: #3B5F8C; --ez-course-4-soft: #E7ECF3;
+
+  /* type */
+  --ez-font-ui: 'Figtree', 'Noto Sans SC', system-ui, sans-serif;
+  --ez-font-title: 'Instrument Serif', Georgia, serif;
+  --ez-font-cjk: 'Noto Sans SC', system-ui, sans-serif;
+  --ez-size-title: 32px;
+  --ez-size-section: 18px;
+  --ez-size-card-title: 16px;
+  --ez-size-body: 15px;
+  --ez-size-meta: 13.5px;
+  --ez-size-chip: 13px;
+  --ez-size-label: 12.5px;
+  --ez-size-nav: 16px;
+  --ez-line-height: 1.55;
+
+  /* shape and spacing */
+  --ez-radius-card: 16px;
+  --ez-radius-control: 10px;
+  --ez-radius-nav: 12px;
+  --ez-radius-chip: 999px;
+  --ez-sidebar-width: 248px;
+  --ez-nav-height: 48px;
+  --ez-page-pad-x: 32px;
+  --ez-page-pad-y: 22px;
+  --ez-gap: 16px;
+  --ez-shadow-1: 0 1px 2px rgba(30, 28, 25, 0.08);
+}

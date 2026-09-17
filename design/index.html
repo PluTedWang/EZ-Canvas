@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>EZCanvas · Design mockups</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Instrument+Serif&display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    body { margin: 0; font-family: var(--ez-font-ui); background: var(--ez-ground); color: var(--ez-text); -webkit-font-smoothing: antialiased; }
+    main { max-width: 1120px; margin: 0 auto; padding: 56px 32px 80px; }
+    h1 { font-family: var(--ez-font-title); font-weight: 400; font-size: 44px; margin: 0 0 8px; letter-spacing: -0.01em; }
+    p.lead { font-size: 17px; color: var(--ez-text-2); line-height: 1.55; margin: 0 0 32px; max-width: 760px; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .shot { display: flex; flex-direction: column; gap: 6px; padding: 18px 20px; background: var(--ez-surface); border: 1px solid var(--ez-border); border-radius: var(--ez-radius-card); color: var(--ez-text); text-decoration: none; }
+    .shot:hover { border-color: var(--ez-teal); }
+    .shot .t { font-size: 17px; font-weight: 600; }
+    .shot .d { font-size: 14px; color: var(--ez-text-2); line-height: 1.5; }
+    .shot .f { font-size: 12.5px; color: var(--ez-text-3); margin-top: 6px; }
+    .note { margin-top: 32px; font-size: 14px; color: var(--ez-text-3); line-height: 1.55; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>EZCanvas mockups</h1>
+    <p class="lead">Nine desktop screens at 1440px. Open any of them; the sidebar links move between screens, and the homework helper's English / 中文 toggle works. Tokens are in <code>tokens.css</code>; the specs are in <code>../docs</code>.</p>
+    <div class="grid">
+      <a class="shot" href="onboarding.html"><span class="t">Onboarding · Language</span><span class="d">Connect Canvas and Ed, choose the language EZCanvas speaks to you in.</span><span class="f">onboarding.html</span></a>
+      <a class="shot" href="dashboard.html"><span class="t">Dashboard</span><span class="d">Deadlines with predicted hours, new materials and Ed answers, assistant prompt, courses.</span><span class="f">dashboard.html</span></a>
+      <a class="shot" href="calendar.html"><span class="t">Calendar · Week</span><span class="d">Lectures, due dates, suggested study blocks, Time needed card, this week's plan.</span><span class="f">calendar.html</span></a>
+      <a class="shot" href="course.html"><span class="t">Course materials & AI notes</span><span class="d">Canvas modules on the left, generated notes with quiz flags and translated key terms on the right.</span><span class="f">course.html</span></a>
+      <a class="shot" href="homework.html"><span class="t">Homework helper</span><span class="d">Assignment parsed into questions, rubric, and a guided chat with a working English / 中文 toggle.</span><span class="f">homework.html</span></a>
+      <a class="shot" href="assistant.html"><span class="t">Study assistant · Missed deadline</span><span class="d">Grounded advice with sources, email draft in the natural style with a translation preview.</span><span class="f">assistant.html</span></a>
+      <a class="shot" href="discussions.html"><span class="t">Ed Discussion · Course thread</span><span class="d">Ed threads with answer status, the endorsed professor answer, and what it means for your homework.</span><span class="f">discussions.html</span></a>
+      <a class="shot" href="group.html"><span class="t">Group project · Work split & reminders</span><span class="d">Rubric based parts to claim, team balance, teammates by email, reminders sent by EZCanvas.</span><span class="f">group.html</span></a>
+      <a class="shot" href="settings.html"><span class="t">Settings · Language & AI</span><span class="d">Connections, three language settings, AI provider, helper mode, writing style.</span><span class="f">settings.html</span></a>
+    </div>
+    <p class="note">Sample content (Ted at Cornell, SYSEN 5100, Team 4, Mina K.) is placeholder data for the design. Instructor names and emails are bracketed placeholders.</p>
+  </main>
+</body>
+</html>

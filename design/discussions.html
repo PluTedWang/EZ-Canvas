@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1440">
+  <title>EZCanvas · Ed Discussion · Course thread</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Figtree', 'Noto Sans SC', system-ui, sans-serif; color: #1E1C19; background: #F8F7F3; -webkit-font-smoothing: antialiased; }
+    a { color: #2A6B6E; text-decoration: none; } a:hover { color: #215659; }
+    .serif { font-family: 'Instrument Serif', Georgia, serif; }
+    .nav { display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 14px; border-radius: 12px; font-size: 16px; font-weight: 500; color: #3F3B35; white-space: nowrap; }
+    .nav:hover { background: #F4F2EE; color: #1E1C19; }
+    .nav.active { background: #EEF5F4; color: #1F5457; font-weight: 600; }
+    .nav svg { width: 22px; height: 22px; flex-shrink: 0; color: #7A756C; }
+    .nav.active svg { color: #2A6B6E; }
+    .card { background: #FFFFFF; border: 1px solid #E8E5DE; border-radius: 16px; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border-radius: 999px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .btn { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 9px; font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; border: 1px solid transparent; white-space: nowrap; }
+    .btn-primary { background: #2A6B6E; color: #FFFFFF; }
+    .btn-secondary { background: #FFFFFF; color: #1E1C19; border-color: #D9D4CA; }
+    .icon { width: 18px; height: 18px; flex-shrink: 0; }
+    .tab { display: inline-flex; align-items: center; height: 40px; padding: 0 4px; border: 0; background: transparent; font: inherit; font-size: 15.5px; font-weight: 600; color: #6B665E; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; }
+    .tab.on { color: #1E1C19; border-bottom-color: #2A6B6E; }
+    .thread { display: flex; flex-direction: column; gap: 5px; padding: 11px 14px; border-radius: 10px; color: #1E1C19; }
+    .thread:hover { background: #F6F4EF; }
+    .thread.on { background: #EEF5F4; }
+    .thread .t { font-size: 15px; font-weight: 600; line-height: 1.35; }
+    .thread .m { font-size: 13px; color: #6B665E; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .who { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; }
+    .seg { height: 30px; padding: 0 12px; border: 0; background: transparent; font: inherit; font-size: 14px; font-weight: 600; color: #4A4640; border-radius: 7px; cursor: pointer; white-space: nowrap; }
+    .seg.on { background: #FFFFFF; color: #1E1C19; box-shadow: 0 1px 2px rgba(30,28,25,0.08); }
+    .post p { margin: 0; font-size: 15px; line-height: 1.55; }
+    .filter { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; border: 1px solid #D9D4CA; background: #FFFFFF; font: inherit; font-size: 13.5px; font-weight: 600; color: #4A4640; cursor: pointer; white-space: nowrap; }
+    .filter.on { background: #1E1C19; border-color: #1E1C19; color: #FFFFFF; }
+    input { font: inherit; }
+  </style>
+  <style>
+    html { background: #ECEAE4; }
+    body { padding: 24px 0; }
+  </style>
+</head>
+<body>
+<div style="width: 1440px; min-height: 960px; margin: 0 auto; box-sizing: border-box; display: flex; background: #F8F7F3;">
+
+  <!-- Sidebar -->
+  <nav style="width: 248px; flex-shrink: 0; box-sizing: border-box; padding: 24px 14px 20px; display: flex; flex-direction: column; justify-content: space-between; background: #FFFFFF; border-right: 1px solid #ECE9E2;">
+    <div style="display: flex; flex-direction: column; gap: 22px;">
+      <a href="dashboard.html" style="display: flex; align-items: center; gap: 10px; padding: 4px 10px; color: #1E1C19;">
+        <span style="width: 34px; height: 34px; border-radius: 10px; background: #2A6B6E; display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><path d="M5 12l4.5 4.5L19 7"/></svg></span>
+        <span style="font-size: 21px; font-weight: 700; letter-spacing: -0.02em;">EZCanvas</span>
+      </a>
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <a class="nav" href="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Dashboard</a>
+        <a class="nav" href="calendar.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</a>
+        <a class="nav active" href="course.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></svg>Courses</a>
+        <a class="nav" href="group.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20a7 7 0 0 1 14 0M15 15a5 5 0 0 1 7 5"/></svg>Group projects</a>
+        <a class="nav" href="homework.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>Homework helper</a>
+        <a class="nav" href="assistant.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.4A8 8 0 1 1 21 12z"/></svg>Study assistant</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 6px; border-top: 1px solid #ECE9E2;">
+        <span style="font-size: 12.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6B665E; padding: 12px 14px 6px;">Fall 2026</span>
+        <a class="nav active" href="course.html" style="height: 42px; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #2A6B6E; flex-shrink: 0;"></span>SYSEN 5100</a>
+        <a class="nav" href="course.html" style="height: 42px; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #6A4C8F; flex-shrink: 0;"></span>SYSEN 5200</a>
+        <a class="nav" href="course.html" style="height: 42px; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #A3611F; flex-shrink: 0;"></span>SYSEN 5930</a>
+        <a class="nav" href="course.html" style="height: 42px; font-size: 15px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #3B5F8C; flex-shrink: 0;"></span>CS 5780</a>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+        <a class="nav" href="settings.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M18 7h2M4 12h3M11 12h9M4 17h11M20 17h0"/><circle cx="15.5" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/></svg>Settings</a>
+      <button type="button" class="nav" style="border: 0; background: transparent; font: inherit; cursor: pointer; width: 100%; text-align: left;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span style="flex-grow: 1;">Language</span><span style="font-size: 14px; font-weight: 600; color: #2A6B6E;" lang="zh-Hans">中文</span></button>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 14px 14px 0; margin-top: 8px; border-top: 1px solid #ECE9E2;">
+        <span style="width: 36px; height: 36px; border-radius: 999px; background: #3B5F8C; color: #FFFFFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;">TW</span>
+        <span style="display: flex; flex-direction: column; line-height: 1.25;"><span style="font-size: 15px; font-weight: 600;">Ted Wang</span><span style="font-size: 13px; color: #6B665E;">Cornell · M.Eng.</span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 24px 32px 24px; display: flex; flex-direction: column; gap: 18px;">
+
+    <!-- Course header -->
+    <header style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <span style="width: 6px; height: 52px; border-radius: 4px; background: #2A6B6E;"></span>
+          <div style="display: flex; flex-direction: column; gap: 3px;">
+            <span style="font-size: 14px; font-weight: 600; color: #2A6B6E; letter-spacing: 0.04em;">SYSEN 5100 · FALL 2026</span>
+            <h1 class="serif" style="margin: 0; font-size: 30px; font-weight: 400; letter-spacing: -0.01em;">Model-Based Systems Engineering</h1>
+            <span style="font-size: 14.5px; color: #6B665E;">[Instructor name] · Mon Wed Fri 10:10 – 11:25 · 3 of 8 assignments done</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <span class="chip" style="background: #E3F1E5; color: #2F7A3E; height: 26px;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width: 14px; height: 14px;"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>Canvas synced 4 min ago</span>
+          <span class="chip" style="background: #E3F1E5; color: #2F7A3E; height: 26px;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width: 14px; height: 14px;"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>Ed synced 1 min ago</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 22px; border-bottom: 1px solid #E6E2DA;">
+        <button type="button" class="tab">Overview</button>
+        <a class="tab" href="course.html">Materials &amp; notes</a>
+        <button type="button" class="tab">Assignments</button>
+        <a class="tab on" href="discussions.html">Discussions<span class="chip" style="background: #2A6B6E; color: #FFFFFF; height: 20px; padding: 0 7px; margin-left: 8px; font-size: 12px;">Ed · 6 new</span></a>
+        <button type="button" class="tab">Announcements</button>
+        <button type="button" class="tab">Grades</button>
+      </div>
+    </header>
+
+    <!-- Panes -->
+    <div style="flex-grow: 1; min-height: 0; display: flex; gap: 20px;">
+
+      <!-- Thread list -->
+      <section class="card" style="width: 420px; flex-shrink: 0; display: flex; flex-direction: column; overflow: hidden;">
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 14px 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Ed Discussion · this week</h2>
+            <span style="font-size: 13.5px; color: #6B665E;">42 threads · 6 new</span>
+          </div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button type="button" class="filter on">All</button>
+            <button type="button" class="filter">Professor &amp; staff</button>
+            <button type="button" class="filter">HW 2</button>
+            <button type="button" class="filter">Unanswered</button>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 0 8px 8px;">
+          <a class="thread" href="#pinned">
+            <span class="t">Pinned · HW 2: use template v2, not v1</span>
+            <span class="m"><span class="who" style="color: #2A6B6E;">Professor</span>· 2 h ago · 14 following<span class="chip" style="background: #F9ECE3; color: #9A4A1A;">Changed HW 2</span></span>
+          </a>
+          <a class="thread on" href="#thread142">
+            <span class="t">Q3: do non-functional requirements need a stakeholder too?</span>
+            <span class="m"><span class="who" style="color: #4A4640;">Student</span>· yesterday · 9 replies<span class="chip" style="background: #E3F1E5; color: #2F7A3E;">Answered by professor</span></span>
+          </a>
+          <a class="thread" href="#thread139">
+            <span class="t">Is the parking garage in HW 2 the same one from Lecture 7?</span>
+            <span class="m"><span class="who" style="color: #4A4640;">Student</span>· yesterday · 3 replies<span class="chip" style="background: #E3F1E5; color: #2F7A3E;">Answered by TA</span></span>
+          </a>
+          <a class="thread" href="#thread137">
+            <span class="t">Office hours moved to Thursday 2 to 3 PM this week</span>
+            <span class="m"><span class="who" style="color: #2A6B6E;">Professor</span>· Tue · announcement<span class="chip" style="background: #EEF5F4; color: #2A6B6E;">Calendar updated</span></span>
+          </a>
+          <a class="thread" href="#thread135">
+            <span class="t">SysML tool for Q4: Cameo or draw.io?</span>
+            <span class="m"><span class="who" style="color: #4A4640;">Student</span>· Tue · 11 replies<span class="chip" style="background: #F1EFE9; color: #4A4640;">Students only</span></span>
+          </a>
+          <a class="thread" href="#thread131">
+            <span class="t">Late policy for HW 2 if I am sick?</span>
+            <span class="m"><span class="who" style="color: #4A4640;">Student</span>· Mon · 2 replies<span class="chip" style="background: #E3F1E5; color: #2F7A3E;">Answered by TA</span></span>
+          </a>
+          <a class="thread" href="#thread128">
+            <span class="t">Slide 24 checklist: is "unambiguous" graded separately from "clear"?</span>
+            <span class="m"><span class="who" style="color: #4A4640;">Student</span>· Mon · 0 replies<span class="chip" style="background: #F1EFE9; color: #4A4640;">Unanswered</span></span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Thread detail -->
+      <section class="card" id="thread142" style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden;">
+        <div style="display: flex; align-items: center; gap: 14px; padding: 16px 22px 14px; border-bottom: 1px solid #EEEBE4;">
+          <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+            <h2 style="margin: 0; font-size: 19px; font-weight: 600;">Q3: do non-functional requirements need a stakeholder too?</h2>
+            <span style="font-size: 14px; color: #6B665E;">Ed thread #142 · HW 2 · asked yesterday · professor answered 4 h ago · 9 replies</span>
+          </div>
+          <div style="display: flex; gap: 2px; padding: 3px; border-radius: 9px; background: #F1F0EC;">
+            <button type="button" class="seg on">English</button>
+            <button type="button" class="seg" lang="zh-Hans">中文</button>
+          </div>
+          <button type="button" class="btn btn-secondary"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;"><path d="M14 4h6v6M20 4l-9 9M18 13v7H4V6h7"/></svg>Open on Ed</button>
+        </div>
+
+        <div style="flex-grow: 1; min-height: 0; padding: 18px 22px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px;">
+          <!-- Posts -->
+          <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+            <div class="post" style="display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 12px; background: #F8F7F3; border: 1px solid #EEEBE4;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="width: 26px; height: 26px; border-radius: 999px; background: #D9D4CA; color: #4A4640; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">S</span>
+                <span style="font-size: 14px; font-weight: 600;">Student (anonymous)</span>
+                <span style="font-size: 13px; color: #6B665E;">· yesterday 9:14 PM</span>
+              </div>
+              <p>For Q3 the prompt says to "state the stakeholder need it traces to" for each requirement. Does that apply to non-functional requirements as well, or only to the functional ones? Non-functional ones like "update within 2 seconds" do not seem to belong to any one stakeholder.</p>
+            </div>
+
+            <div class="post" style="display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 12px; background: #FFFFFF; border: 1.5px solid #2A6B6E;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="width: 26px; height: 26px; border-radius: 999px; background: #2A6B6E; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">P</span>
+                <span style="font-size: 14px; font-weight: 600;">[Instructor name]</span>
+                <span class="chip" style="background: #EEF5F4; color: #2A6B6E;">Endorsed answer</span>
+                <span style="font-size: 13px; color: #6B665E;">· 4 h ago</span>
+              </div>
+              <p>Yes, both. Every requirement, functional or not, must trace to a stakeholder need. For non-functional requirements the stakeholder is usually the operator or the owner: "update within 2 seconds" traces to the garage operator's need for accurate occupancy at the gates. If you cannot name the stakeholder, the requirement is probably gold plating. See slide 24.</p>
+            </div>
+
+            <div class="post" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; border-radius: 12px; background: #FFFFFF; border: 1px solid #EEEBE4;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="width: 26px; height: 26px; border-radius: 999px; background: #D9D4CA; color: #4A4640; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">S</span>
+                <span style="font-size: 14px; font-weight: 600;">Student</span>
+                <span style="font-size: 13px; color: #6B665E;">· 3 h ago</span>
+              </div>
+              <p>Follow-up: does the verification method also need to be different for non-functional ones? I used "test" for everything.</p>
+            </div>
+            <span style="font-size: 13.5px; color: #6B665E; padding-left: 4px;">6 more replies on Ed</span>
+          </div>
+
+          <!-- AI panel -->
+          <aside style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+            <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-radius: 12px; background: #F2F8F7; border: 1px solid #C9DCDB;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#2A6B6E" stroke-width="1.75" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>
+                <span style="font-size: 14px; font-weight: 600;">What this means for your HW 2</span>
+              </div>
+              <p style="margin: 0; font-size: 14.5px; line-height: 1.55;">All six of your Q3 requirements need a traceability line, and your Q2 draft has five functional requirements with no stakeholder named yet. Naming the operator or owner for the non-functional ones is enough.</p>
+              <a href="homework.html" style="font-size: 14px; font-weight: 600;">Fix this in the homework helper</a>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E6E2DA;">
+              <span style="font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #6B665E;">Thread summary</span>
+              <p style="margin: 0; font-size: 14.5px; line-height: 1.55;">Professor confirmed that non-functional requirements also need a stakeholder and a verification method. Two students asked whether "test" works for every requirement; the TA has not replied yet.</p>
+              <p lang="zh-Hans" style="margin: 0; font-size: 14px; line-height: 1.55; color: #4A4640; padding-top: 6px; border-top: 1px solid #EEEBE4;">教授确认：非功能性需求 (non-functional) 同样需要写明利益相关者 (stakeholder) 和验证方法 (verification)。两位同学询问所有需求是否都能用"测试"来验证，助教尚未回复。</p>
+            </div>
+
+            <div style="flex-grow: 1;"></div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 12px; border: 1px solid #D9D4CA; background: #FFFFFF;">
+              <input type="text" placeholder="Ask a follow-up on Ed. Write in any language; it posts in English." aria-label="Draft a question for Ed" style="border: 0; outline: 0; background: transparent; font-size: 14.5px; color: #1E1C19; height: 28px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="chip" style="background: #F1EFE9; color: #4A4640;">Posts as you</span>
+                <span class="chip" style="background: #EEF5F4; color: #2A6B6E;">Natural writing</span>
+                <div style="flex-grow: 1;"></div>
+                <button type="button" class="btn btn-primary" style="height: 32px; padding: 0 12px;">Draft</button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>
