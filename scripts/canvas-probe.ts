@@ -1,6 +1,7 @@
 // Prints what Canvas returns for a token, or for the fixtures with CANVAS_MOCK=1.
 // Usage: CANVAS_TOKEN=... npm run canvas:probe   or   CANVAS_MOCK=1 npm run canvas:probe
 import { canvas } from "../lib/canvas";
+import { parseSyllabus } from "../lib/canvas/syllabus";
 
 const baseUrl = process.env.CANVAS_BASE_URL ?? process.env.CANVAS_DEFAULT_BASE_URL ?? "https://canvas.cornell.edu";
 const token = process.env.CANVAS_TOKEN ?? "";
@@ -23,6 +24,9 @@ async function main() {
       `${course.course_code} · ${course.name} · ${course.term?.name ?? "no term"} · ${teacher}\n` +
         `  ${assignments.length} assignments · ${modules.length} modules · syllabus ${course.syllabus_body ? "yes" : "no"}`,
     );
+    for (const [field, value] of Object.entries(parseSyllabus(course.syllabus_body))) {
+      console.log(`  ${field}: ${value ?? "not found"}`);
+    }
   }
 
   const groups = await api.groups();

@@ -65,6 +65,10 @@ model Course {
   instructor    String?
   color         Int
   syllabus      String?
+  latePolicy    String?
+  aiPolicy      String?
+  officeHours   String?
+  meetingTimes  String?
   hidden        Boolean        @default(false)
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   assignments   Assignment[]

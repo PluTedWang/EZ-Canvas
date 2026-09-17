@@ -1,4 +1,5 @@
 // Maps raw Canvas shapes to the app's models. This is the only place the two meet.
+import { parseSyllabus } from "./syllabus";
 import type {
   CanvasAnnouncement,
   CanvasAssignment,
@@ -18,6 +19,7 @@ export function mapCourse(raw: CanvasCourse) {
     term: raw.term?.name ?? null,
     instructor: raw.teachers?.map((t) => t.display_name).join(", ") || null,
     syllabus: raw.syllabus_body ?? null,
+    ...parseSyllabus(raw.syllabus_body),
   };
 }
 
