@@ -1,0 +1,20 @@
+[
+  {
+    "id": 8001,
+    "title": "HW 2 deadline clarified",
+    "message": "<p>Use the v2 template posted in Module 4. The due date stays Friday 11:59 PM.</p>",
+    "posted_at": "2026-09-17T12:00:00Z",
+    "context_code": "course_101",
+    "html_url": "https://canvas.example.edu/courses/101/discussion_topics/8001",
+    "author": { "display_name": "Ana Rivera" }
+  },
+  {
+    "id": 8002,
+    "title": "Quiz 2 covers chapters 4 and 5",
+    "message": "<p>Quiz 2 is in class on Friday September 25. Bring a calculator.</p>",
+    "posted_at": "2026-09-15T18:00:00Z",
+    "context_code": "course_102",
+    "html_url": "https://canvas.example.edu/courses/102/discussion_topics/8002",
+    "author": { "display_name": "Wei Zhang" }
+  }
+]

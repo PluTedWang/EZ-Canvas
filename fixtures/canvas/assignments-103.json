@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1031,
+    "course_id": 103,
+    "name": "Project charter draft",
+    "description": "<p>One submission per team. The charter follows the six rubric sections: purpose and objectives, scope statement and deliverables, stakeholder register, milestones and high level schedule, risks and assumptions, integration and final edit.</p>",
+    "due_at": "2026-09-22T03:59:00Z",
+    "points_possible": 100,
+    "submission_types": ["online_upload"],
+    "html_url": "https://canvas.example.edu/courses/103/assignments/1031",
+    "published": true,
+    "updated_at": "2026-09-08T16:30:00Z",
+    "group_category_id": 7,
+    "rubric": [
+      { "id": "c1", "description": "Purpose and objectives", "long_description": "Why the project exists, 3 measurable objectives", "points": 15 },
+      { "id": "c2", "description": "Scope statement and deliverables", "long_description": "In scope, out of scope, deliverable list", "points": 20 },
+      { "id": "c3", "description": "Stakeholder register", "long_description": "Reuses the SYSEN 5100 stakeholder method", "points": 15 },
+      { "id": "c4", "description": "Milestones and high level schedule", "long_description": "Gantt style table, 5 milestones", "points": 20 },
+      { "id": "c5", "description": "Risks and assumptions", "long_description": "Top 5 risks with likelihood and response", "points": 15 },
+      { "id": "c6", "description": "Integration and final edit", "long_description": "Merge parts, one voice, format check, submit", "points": 15 }
+    ],
+    "submission": { "submitted_at": null, "workflow_state": "unsubmitted", "score": null, "late": false }
+  }
+]

@@ -1,0 +1,40 @@
+[
+  {
+    "id": 401,
+    "name": "Week 1 · Course introduction",
+    "position": 1,
+    "items": [
+      { "id": 4101, "title": "Lecture 1 · What is MBSE.pdf", "type": "File", "content_id": 5001, "html_url": "https://canvas.example.edu/courses/101/modules/items/4101", "published": true },
+      { "id": 4102, "title": "Course policies", "type": "Page", "page_url": "course-policies", "html_url": "https://canvas.example.edu/courses/101/pages/course-policies", "published": true }
+    ]
+  },
+  {
+    "id": 402,
+    "name": "Week 2 · SysML structure diagrams",
+    "position": 2,
+    "items": [
+      { "id": 4201, "title": "Lecture 3 · Block definition diagrams.pdf", "type": "File", "content_id": 5003, "html_url": "https://canvas.example.edu/courses/101/modules/items/4201", "published": true },
+      { "id": 4202, "title": "HW 1: System Context Diagram", "type": "Assignment", "content_id": 1001, "html_url": "https://canvas.example.edu/courses/101/assignments/1001", "published": true }
+    ]
+  },
+  {
+    "id": 403,
+    "name": "Week 3 · System context and ConOps",
+    "position": 3,
+    "items": [
+      { "id": 4301, "title": "Lecture 5 · ConOps.pdf", "type": "File", "content_id": 5005, "html_url": "https://canvas.example.edu/courses/101/modules/items/4301", "published": true }
+    ]
+  },
+  {
+    "id": 404,
+    "name": "Week 4 · Stakeholders and requirements",
+    "position": 4,
+    "items": [
+      { "id": 4401, "title": "Lecture 7 · Requirements elicitation.pdf", "type": "File", "content_id": 5007, "html_url": "https://canvas.example.edu/courses/101/modules/items/4401", "published": true },
+      { "id": 4402, "title": "Lecture 6 · Stakeholder analysis.pdf", "type": "File", "content_id": 5006, "html_url": "https://canvas.example.edu/courses/101/modules/items/4402", "published": true },
+      { "id": 4403, "title": "Reading · INCOSE Handbook §4.2", "type": "ExternalUrl", "external_url": "https://example.org/incose/4-2", "html_url": "https://canvas.example.edu/courses/101/modules/items/4403", "published": true },
+      { "id": 4404, "title": "Recording · Sep 15 lecture", "type": "ExternalTool", "html_url": "https://canvas.example.edu/courses/101/modules/items/4404", "published": true },
+      { "id": 4405, "title": "HW 2: Requirements & Use Cases", "type": "Assignment", "content_id": 1002, "html_url": "https://canvas.example.edu/courses/101/assignments/1002", "published": true }
+    ]
+  }
+]

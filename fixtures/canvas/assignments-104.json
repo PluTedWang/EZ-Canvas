@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1041,
+    "course_id": 104,
+    "name": "Problem Set 2",
+    "description": "<p>Linear regression and gradient descent. Submit on Gradescope.</p>",
+    "due_at": "2026-09-16T03:59:00Z",
+    "points_possible": 50,
+    "submission_types": ["external_tool"],
+    "html_url": "https://canvas.example.edu/courses/104/assignments/1041",
+    "published": true,
+    "updated_at": "2026-09-02T10:00:00Z",
+    "group_category_id": null,
+    "submission": { "submitted_at": "2026-09-17T02:30:00Z", "workflow_state": "submitted", "score": null, "late": true }
+  },
+  {
+    "id": 1042,
+    "course_id": 104,
+    "name": "Problem Set 3",
+    "description": "<p>Logistic regression, regularization and cross validation. Five questions. Submit on Gradescope.</p>",
+    "due_at": "2026-09-24T03:59:00Z",
+    "points_possible": 50,
+    "submission_types": ["external_tool"],
+    "html_url": "https://canvas.example.edu/courses/104/assignments/1042",
+    "published": true,
+    "updated_at": "2026-09-14T10:00:00Z",
+    "group_category_id": null,
+    "submission": { "submitted_at": null, "workflow_state": "unsubmitted", "score": null, "late": false }
+  }
+]

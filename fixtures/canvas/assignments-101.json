@@ -1,0 +1,40 @@
+[
+  {
+    "id": 1001,
+    "course_id": 101,
+    "name": "HW 1: System Context Diagram",
+    "description": "<p>Draw the system context for the parking garage and list external actors.</p>",
+    "due_at": "2026-09-05T03:59:00Z",
+    "points_possible": 100,
+    "submission_types": ["online_upload"],
+    "html_url": "https://canvas.example.edu/courses/101/assignments/1001",
+    "published": true,
+    "updated_at": "2026-08-28T14:00:00Z",
+    "group_category_id": null,
+    "rubric": [
+      { "id": "r1", "description": "Correctness", "points": 60 },
+      { "id": "r2", "description": "Clarity", "points": 40 }
+    ],
+    "submission": { "submitted_at": "2026-09-04T22:10:00Z", "workflow_state": "graded", "score": 92, "late": false }
+  },
+  {
+    "id": 1002,
+    "course_id": 101,
+    "name": "HW 2: Requirements & Use Cases",
+    "description": "<p>Use the parking garage system from Lecture 7. Submit one PDF using the v2 template.</p><ol><li><strong>Q1 (20 pts)</strong> Stakeholder list for the parking garage.</li><li><strong>Q2 (25 pts)</strong> Five functional requirements.</li><li><strong>Q3 (25 pts)</strong> Using the parking garage system introduced in Lecture 7, write three functional and three non-functional requirements. For each requirement, state the stakeholder need it traces to and describe how it would be verified. Use the v2 template.</li><li><strong>Q4 (30 pts)</strong> Use case diagram (SysML).</li></ol><p>Late: 10% per day, max 3 days.</p><p><a href=\"https://canvas.example.edu/files/5010\">HW2_instructions.pdf</a> · <a href=\"https://canvas.example.edu/files/5011\">Use_case_template_v2.docx</a></p>",
+    "due_at": "2026-09-19T03:59:00Z",
+    "points_possible": 100,
+    "submission_types": ["online_upload"],
+    "html_url": "https://canvas.example.edu/courses/101/assignments/1002",
+    "published": true,
+    "updated_at": "2026-09-17T12:05:00Z",
+    "group_category_id": null,
+    "rubric": [
+      { "id": "r1", "description": "Correctness", "points": 40 },
+      { "id": "r2", "description": "Clarity", "points": 30 },
+      { "id": "r3", "description": "Traceability", "points": 20 },
+      { "id": "r4", "description": "Format", "points": 10 }
+    ],
+    "submission": { "submitted_at": null, "workflow_state": "unsubmitted", "score": null, "late": false }
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "id": 101,
+    "name": "Model-Based Systems Engineering",
+    "course_code": "SYSEN 5100",
+    "workflow_state": "available",
+    "term": { "id": 31, "name": "Fall 2026" },
+    "teachers": [{ "id": 501, "display_name": "Ana Rivera" }],
+    "syllabus_body": "<h2>SYSEN 5100: Model-Based Systems Engineering</h2><p>Lectures meet Mon Wed Fri 10:10 – 11:25 AM in Hollister 110.</p><p><strong>Office hours:</strong> Tuesdays 2:00 to 3:00 PM in Rhodes 240, or by appointment.</p><h3>Late work</h3><p>Late work is accepted up to 3 days late with a 10% penalty per day. Illness extensions are considered if you email the instructor within 48 hours of the deadline.</p><h3>Use of AI</h3><p>Generative AI tools may be used to understand course material and to check your own work, but not to write submitted answers. Cite any AI use in your submission.</p>"
+  },
+  {
+    "id": 102,
+    "name": "Systems Analysis & Optimization",
+    "course_code": "SYSEN 5200",
+    "workflow_state": "available",
+    "term": { "id": 31, "name": "Fall 2026" },
+    "teachers": [{ "id": 502, "display_name": "Wei Zhang" }],
+    "syllabus_body": "<p>Class meets Tuesday and Thursday 11:40 AM – 12:55 PM in Upson 222.</p><p>Quizzes are given in class and cannot be made up. No late homework is accepted.</p><p>Office hours: Wednesday 4:00–5:00 PM, Upson 340.</p>"
+  },
+  {
+    "id": 103,
+    "name": "Project Management",
+    "course_code": "SYSEN 5930",
+    "workflow_state": "available",
+    "term": { "id": 31, "name": "Fall 2026" },
+    "teachers": [{ "id": 503, "display_name": "Priya Nair" }],
+    "syllabus_body": "<p>Studio sessions Tuesdays 2:55 – 4:10 PM, Hollister 206.</p><p>Team deliverables are submitted once per team. Late deliverables lose 5% per day.</p><p>Office hours by appointment; email to arrange.</p><p>AI tools are welcome for drafting and planning; your team is responsible for the content.</p>"
+  },
+  {
+    "id": 104,
+    "name": "Machine Learning",
+    "course_code": "CS 5780",
+    "workflow_state": "available",
+    "term": { "id": 31, "name": "Fall 2026" },
+    "teachers": [{ "id": 504, "display_name": "Samuel Okafor" }],
+    "syllabus_body": "<h2>CS 5780 Machine Learning</h2><p>Lectures Mon Wed 1:25 – 2:40 PM, Bailey Hall.</p><p>Office hours Thursday 3 to 4 PM, Gates 310.</p><h3>Problem sets</h3><p>Problem sets are submitted on Gradescope. Late submissions lose 10% per day for up to 3 days. Illness extensions are considered if you email within 48 hours.</p><h3>Academic integrity</h3><p>You may not use AI assistants to produce problem set solutions. Discussing concepts with classmates is fine; write up your own work.</p>"
+  }
+]
