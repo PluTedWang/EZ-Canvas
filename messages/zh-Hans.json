@@ -16,5 +16,13 @@
     "search": "搜索",
     "searchPlaceholder": "搜索课程、文件和截止日期",
     "notifications": "通知"
+  },
+  "signIn": {
+    "title": "登录 EZCanvas",
+    "intro": "输入你的邮箱，我们会发送一个登录链接。无需密码。",
+    "email": "邮箱",
+    "send": "发送登录链接",
+    "sent": "请查收邮件中的登录链接。",
+    "error": "链接发送失败。请检查邮箱地址后重试。"
   }
 }

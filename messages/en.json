@@ -16,5 +16,13 @@
     "search": "Search",
     "searchPlaceholder": "Search courses, files, deadlines",
     "notifications": "Notifications"
+  },
+  "signIn": {
+    "title": "Sign in to EZCanvas",
+    "intro": "Enter your email and we will send you a link. No password needed.",
+    "email": "Email",
+    "send": "Send sign in link",
+    "sent": "Check your email for the sign in link.",
+    "error": "The link could not be sent. Check the address and try again."
   }
 }

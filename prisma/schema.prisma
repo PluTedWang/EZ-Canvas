@@ -8,12 +8,31 @@ datasource db {
 }
 
 model User {
-  id                  String  @id @default(cuid())
-  email               String  @unique
-  name                String
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  emailVerified       DateTime?
+  name                String?
+  image               String?
   institution         String?
   program             String?
-  interfaceLanguage   String  @default("en")
-  explanationLanguage String  @default("en")
-  writingLanguage     String  @default("en")
+  interfaceLanguage   String    @default("en")
+  explanationLanguage String    @default("en")
+  writingLanguage     String    @default("en")
+  sessions            Session[]
+}
+
+// Auth.js session and magic link tables, shapes from @auth/prisma-adapter.
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
 }
