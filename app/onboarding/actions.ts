@@ -1,9 +1,11 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import { auth } from "@/lib/auth";
 import { canvas } from "@/lib/canvas";
 import { institutionFromHost, normalizeBaseUrl } from "@/lib/canvas/host";
+import { syncCanvas } from "@/lib/canvas/sync";
 import { encrypt } from "@/lib/crypto";
 import { db } from "@/lib/db";
 
@@ -21,7 +23,7 @@ export async function connectCanvas(formData: FormData) {
   if (!profile) redirect("/onboarding?error=token");
 
   const userId = session.user.id;
-  await db.$transaction([
+  const [connection] = await db.$transaction([
     db.connection.upsert({
       where: { userId_type: { userId, type: "canvas" } },
       update: { baseUrl, token: encrypt(token), status: "connected" },
@@ -32,5 +34,6 @@ export async function connectCanvas(formData: FormData) {
       data: { name: profile.name, institution: institutionFromHost(baseUrl) },
     }),
   ]);
+  after(() => syncCanvas(connection.id).catch((error) => console.error("First Canvas sync failed", error)));
   redirect("/onboarding");
 }
