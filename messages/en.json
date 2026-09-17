@@ -24,5 +24,33 @@
     "send": "Send sign in link",
     "sent": "Check your email for the sign in link.",
     "error": "The link could not be sent. Check the address and try again."
+  },
+  "onboarding": {
+    "headline": "Your Canvas, in your language.",
+    "intro": "EZCanvas reads your courses from Canvas, keeps every deadline in one calendar, and explains materials, homework and emails in the language you think in.",
+    "privacy": "Your Canvas data is read with your own access token and is never used to train models.",
+    "step": "Step {n} of {total}",
+    "steps": {
+      "connect": "Connect Canvas and Ed",
+      "connectSub": "Your school's Canvas and an access token",
+      "language": "Choose your language",
+      "languageSub": "Interface, explanations and drafts",
+      "ai": "Set up your AI helper",
+      "aiSub": "Pick a provider or bring your own key"
+    },
+    "connect": {
+      "title": "Connect your Canvas account",
+      "intro": "EZCanvas reads your courses with a personal access token. It is stored encrypted and only ever reads; nothing is changed in Canvas.",
+      "url": "Canvas URL",
+      "token": "Access token",
+      "tokenHelp": "In Canvas open Account, then Settings, then New Access Token. Copy the token here.",
+      "submit": "Connect Canvas",
+      "connectedAs": "Connected as {name} on {host}",
+      "continue": "Continue",
+      "errors": {
+        "missing": "Enter your Canvas URL and the access token.",
+        "token": "Canvas did not accept that token. Check the URL and the token and try again."
+      }
+    }
   }
 }

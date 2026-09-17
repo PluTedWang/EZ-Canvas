@@ -1,0 +1,36 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { canvas } from "@/lib/canvas";
+import { institutionFromHost, normalizeBaseUrl } from "@/lib/canvas/host";
+import { encrypt } from "@/lib/crypto";
+import { db } from "@/lib/db";
+
+export async function connectCanvas(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) redirect("/signin");
+
+  const baseUrl = normalizeBaseUrl(String(formData.get("baseUrl") ?? ""));
+  const token = String(formData.get("token") ?? "").trim();
+  if (!baseUrl || !token) redirect("/onboarding?error=missing");
+
+  const profile = await canvas(baseUrl, token)
+    .profile()
+    .catch(() => null);
+  if (!profile) redirect("/onboarding?error=token");
+
+  const userId = session.user.id;
+  await db.$transaction([
+    db.connection.upsert({
+      where: { userId_type: { userId, type: "canvas" } },
+      update: { baseUrl, token: encrypt(token), status: "connected" },
+      create: { userId, type: "canvas", baseUrl, token: encrypt(token) },
+    }),
+    db.user.update({
+      where: { id: userId },
+      data: { name: profile.name, institution: institutionFromHost(baseUrl) },
+    }),
+  ]);
+  redirect("/onboarding");
+}

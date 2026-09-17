@@ -7,7 +7,11 @@ import { db } from "@/lib/db";
 export default async function ShellLayout({ children }: { children: ReactNode }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/signin");
-  const user = await db.user.findUniqueOrThrow({ where: { id: session.user.id } });
+  const user = await db.user.findUniqueOrThrow({
+    where: { id: session.user.id },
+    include: { connections: { where: { type: "canvas" } } },
+  });
+  if (user.connections.length === 0) redirect("/onboarding");
   const subtitle = [user.institution, user.program].filter(Boolean).join(" · ");
   return (
     <div className="flex min-h-full grow">

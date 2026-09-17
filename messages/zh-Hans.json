@@ -24,5 +24,33 @@
     "send": "发送登录链接",
     "sent": "请查收邮件中的登录链接。",
     "error": "链接发送失败。请检查邮箱地址后重试。"
+  },
+  "onboarding": {
+    "headline": "你的 Canvas，用你的语言。",
+    "intro": "EZCanvas 从 Canvas 读取你的课程，把所有截止日期放进一个日历，并用你习惯的语言解释课件、作业和邮件。",
+    "privacy": "EZCanvas 使用你自己的访问令牌读取 Canvas 数据，绝不会用于训练模型。",
+    "step": "第 {n} 步，共 {total} 步",
+    "steps": {
+      "connect": "连接 Canvas 和 Ed",
+      "connectSub": "你学校的 Canvas 和一个访问令牌",
+      "language": "选择语言",
+      "languageSub": "界面、讲解和草稿",
+      "ai": "设置 AI 助手",
+      "aiSub": "选择服务商或使用自己的密钥"
+    },
+    "connect": {
+      "title": "连接你的 Canvas 账号",
+      "intro": "EZCanvas 通过个人访问令牌 (access token) 读取你的课程。令牌加密保存，只用于读取，不会改动 Canvas 中的任何内容。",
+      "url": "Canvas 网址",
+      "token": "访问令牌",
+      "tokenHelp": "在 Canvas 中打开 Account，再点 Settings，然后点 New Access Token，把生成的令牌复制到这里。",
+      "submit": "连接 Canvas",
+      "connectedAs": "已以 {name} 的身份连接到 {host}",
+      "continue": "继续",
+      "errors": {
+        "missing": "请填写 Canvas 网址和访问令牌。",
+        "token": "Canvas 不接受这个令牌。请检查网址和令牌后重试。"
+      }
+    }
   }
 }
