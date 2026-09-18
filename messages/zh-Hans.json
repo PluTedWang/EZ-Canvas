@@ -52,5 +52,25 @@
         "token": "Canvas 不接受这个令牌。请检查网址和令牌后重试。"
       }
     }
+  },
+  "settings": {
+    "title": "设置",
+    "connections": {
+      "title": "连接",
+      "syncNow": "立即同步",
+      "canvas": {
+        "signedInAs": "已登录为 {name}",
+        "tokenAdded": "令牌添加于 {date}",
+        "syncsEvery": "每 {minutes} 分钟同步",
+        "courses": "已同步 {count} 门课程，{hidden} 门已隐藏",
+        "syncFailed": "上次同步失败，请检查令牌",
+        "manageCourses": "管理课程"
+      },
+      "manage": {
+        "intro": "勾选的课程会显示在 EZCanvas 中。未勾选的课程仍在 Canvas 里，只是在这里隐藏。",
+        "save": "保存",
+        "cancel": "取消"
+      }
+    }
   }
 }

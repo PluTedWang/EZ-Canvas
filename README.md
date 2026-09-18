@@ -51,6 +51,15 @@ Rules for the whole project: only build what the current milestone asks for; one
 4. Work milestone by milestone. At the end of each milestone ask: "Compare each finished screen with its mockup in design/ and list every difference. Then list any code that is not used by a shipped screen and propose deleting it."
 5. Useful prompts during the build: "Before adding that package, tell me what it replaces and why we need it." "This file is over 300 lines; split it by responsibility." "Show me the diff summary before you commit."
 
+## Run it locally
+
+1. Copy `.env.example` to `.env` and fill in `AUTH_SECRET` and `APP_SECRET` (`openssl rand -base64 32`). Set `CANVAS_MOCK=1` to use the fixtures instead of a real Canvas account.
+2. `npm install`, then `npm run db:migrate` and `npm run db:seed`.
+3. `npm run dev` and open http://localhost:3000.
+4. Sign in with any email. Without a Resend key the sign in link is printed in the terminal; open it in the browser.
+5. On onboarding step 1 paste a Canvas access token (any text in mock mode). The first sync runs in the background; Settings > Connections shows the result, Manage courses and Sync now.
+6. `npm test` runs the logic tests. `npm run sync` syncs every connection from the terminal. `npm run canvas:probe` prints what a token can see without writing anything. `npx prisma studio` browses the database.
+
 ## Decisions already made
 
 Desktop web first. Calm, modern, simple look with larger type. Three language settings (interface, explanations, outgoing writing) with a translation preview on emails. Canvas and Ed are read only. Homework helper defaults to Guide mode and follows each course's AI policy. Predicted hours always show their basis. Group work is claimed, not assigned; reminders come from EZCanvas, not from a teammate. Writing the AI produces for the student is natural and non-defensive.

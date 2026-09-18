@@ -52,5 +52,25 @@
         "token": "Canvas did not accept that token. Check the URL and the token and try again."
       }
     }
+  },
+  "settings": {
+    "title": "Settings",
+    "connections": {
+      "title": "Connections",
+      "syncNow": "Sync now",
+      "canvas": {
+        "signedInAs": "Signed in as {name}",
+        "tokenAdded": "token added {date}",
+        "syncsEvery": "syncs every {minutes} min",
+        "courses": "{count, plural, one {# course} other {# courses}} synced, {hidden} hidden",
+        "syncFailed": "last sync failed, check your token",
+        "manageCourses": "Manage courses"
+      },
+      "manage": {
+        "intro": "Checked courses show in EZCanvas. Unchecked courses stay in Canvas but are hidden here.",
+        "save": "Save",
+        "cancel": "Cancel"
+      }
+    }
   }
 }
