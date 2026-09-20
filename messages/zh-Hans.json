@@ -1,7 +1,9 @@
 {
   "locale": {
     "name": "中文",
-    "language": "语言"
+    "language": "语言",
+    "english": "English",
+    "chinese": "中文"
   },
   "nav": {
     "dashboard": "首页",
@@ -206,5 +208,36 @@
       "download": "下载 .ics 文件",
       "localhostNote": "Google 和 Apple 只能订阅可公开访问的地址。在 localhost 上请改为下载文件。"
     }
+  },
+  "course": {
+    "modules": "来自 Canvas 的模块",
+    "fileCount": "{files} 个文件 · 已总结 {summarized} 个",
+    "groupCount": "· {count} 个文件",
+    "otherFiles": "其他文件",
+    "noMaterials": "这门课还没有同步到课件。",
+    "status": {
+      "summarized": "已总结",
+      "notYet": "尚未总结",
+      "unsupported": "暂时无法读取"
+    },
+    "openOriginal": "打开原文件",
+    "notesFrom": "根据该文件生成的笔记 · {count} 条要点",
+    "notYetSummarized": "该文件还没有笔记。",
+    "generateIntro": "总结会把该文件发送给你的 AI 服务商一次，并保存笔记。",
+    "generate": "总结这个文件",
+    "needKey": "请先添加 AI 服务商密钥，才能总结课件。",
+    "openSettings": "打开 AI 助手设置",
+    "covers": "这个文件讲了什么",
+    "quiz": "考点",
+    "quizFlagged": "{count} 条要点被标记为考点",
+    "keyTerms": "关键术语 · 保留英文，附一次翻译",
+    "unsupported": "EZCanvas 暂时无法读取这种文件（{kind}）。请在 Canvas 中打开原文件。",
+    "errors": {
+      "auth": "AI 服务商不接受该密钥。请在设置中检查。",
+      "rate-limit": "该密钥已被限流，请稍后再试。",
+      "request": "服务商拒绝了该请求，请重试。",
+      "network": "无法连接 AI 服务商。"
+    },
+    "progress": "已完成 {done}/{total} 项作业"
   }
 }

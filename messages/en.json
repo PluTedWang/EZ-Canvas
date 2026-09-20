@@ -1,7 +1,9 @@
 {
   "locale": {
     "name": "English",
-    "language": "Language"
+    "language": "Language",
+    "english": "English",
+    "chinese": "中文"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -206,5 +208,36 @@
       "download": "Download .ics file",
       "localhostNote": "Google and Apple can only subscribe to an address they can reach. On localhost, download the file instead."
     }
+  },
+  "course": {
+    "modules": "Modules from Canvas",
+    "fileCount": "{files} files · {summarized} summarized",
+    "groupCount": "· {count, plural, one {# file} other {# files}}",
+    "otherFiles": "Other files",
+    "noMaterials": "No materials synced for this course yet.",
+    "status": {
+      "summarized": "Summarized",
+      "notYet": "Not summarized yet",
+      "unsupported": "Cannot be read yet"
+    },
+    "openOriginal": "Open original",
+    "notesFrom": "Notes written from this file · {count} points",
+    "notYetSummarized": "No notes for this file yet.",
+    "generateIntro": "Summarizing sends this file to your AI provider once and stores the notes.",
+    "generate": "Summarize this file",
+    "needKey": "Add your AI provider key to summarize course files.",
+    "openSettings": "Open AI helper settings",
+    "covers": "What this file covers",
+    "quiz": "Quiz",
+    "quizFlagged": "{count} points flagged for the quiz",
+    "keyTerms": "Key terms · kept in English, translated once",
+    "unsupported": "EZCanvas cannot read this file type yet ({kind}). Open the original in Canvas.",
+    "errors": {
+      "auth": "Your AI provider did not accept the key. Check it in Settings.",
+      "rate-limit": "Your AI provider is rate limiting this key. Try again in a moment.",
+      "request": "The provider rejected the request. Try again.",
+      "network": "Could not reach your AI provider."
+    },
+    "progress": "{done} of {total} assignments done"
   }
 }

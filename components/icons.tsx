@@ -156,3 +156,15 @@ export const ChevronRightIcon = (p: Props) => (
     <path d="M9 6l6 6-6 6" />
   </Icon>
 );
+
+export const ChevronDownIcon = (p: Props) => (
+  <Icon strokeWidth="2" {...p}>
+    <path d="M6 9l6 6 6-6" />
+  </Icon>
+);
+
+export const ExternalLinkIcon = (p: Props) => (
+  <Icon {...p}>
+    <path d="M14 4h6v6M20 4l-9 9M18 13v7H4V6h7" />
+  </Icon>
+);

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { Card, cardRowClass, EmptyRow } from "@/components/Card";
 import { courseSolid } from "@/components/course-color";
@@ -21,7 +22,7 @@ export async function CourseList({ courses, term }: { courses: Dashboard["course
             })
           : t("courses.progress", { code: course.code, done: course.done, total: course.total });
         return (
-          <div key={course.id} className={cardRowClass}>
+          <Link key={course.id} href={`/courses/${course.id}`} className={`${cardRowClass} text-text hover:bg-row-hover`}>
             <span
               className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-control text-[12px] font-bold text-white ${courseSolid(course.color)}`}
             >
@@ -38,7 +39,7 @@ export async function CourseList({ courses, term }: { courses: Dashboard["course
             >
               <span className={`block h-full ${courseSolid(course.color)}`} style={{ width: `${percent}%` }} />
             </span>
-          </div>
+          </Link>
         );
       })}
     </Card>
