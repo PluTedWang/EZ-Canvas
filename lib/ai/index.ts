@@ -1,5 +1,5 @@
-import { decrypt } from "@/lib/crypto";
-import { db } from "@/lib/db";
+import { decrypt } from "../crypto";
+import { db } from "../db";
 import { anthropicProvider } from "./anthropic";
 import { AiError, isProvider, type AiProvider } from "./types";
 

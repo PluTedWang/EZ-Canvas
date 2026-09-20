@@ -120,6 +120,12 @@ model Material {
   contentType    String?
   size           Int?
   body           String?
+  // AI notes, cached per file version: notesHash is a digest of the extracted text.
+  notes          Json?
+  notesLanguage  String?
+  notesHash      String?
+  notesAt        DateTime?
+  unsupported    String?
   postedAt       DateTime?
   firstSeenAt    DateTime  @default(now())
   course         Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)

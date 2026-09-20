@@ -42,6 +42,14 @@ function filterByContext(items: unknown, params: URLSearchParams) {
 
 export const mockFetch: typeof fetch = async (input) => {
   const url = new URL(typeof input === "string" ? input : input instanceof URL ? input.href : input.url);
+  // Every fixture file download serves the same small sample PDF.
+  if (/^\/files\/\d+\/download$/.test(url.pathname)) {
+    const bytes = await readFile(path.join(process.cwd(), "fixtures", "materials", "lecture.pdf"));
+    return new Response(new Uint8Array(bytes), {
+      status: 200,
+      headers: { "content-type": "application/pdf", "x-rate-limit-remaining": "700" },
+    });
+  }
   const apiPath = url.pathname.replace(/^.*\/api\/v1/, "");
   const file = fixtureFile(apiPath);
   const body = file ? filterByContext(await loadFixture(file), url.searchParams) : null;

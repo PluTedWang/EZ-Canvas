@@ -59,6 +59,11 @@ export function createCanvasClient({
       const res = await request(buildUrl(root, path, params), path);
       return res.json();
     },
+    // File downloads are absolute Canvas URLs, not API paths, but still need the bearer token.
+    async getBytes(url: string): Promise<Uint8Array> {
+      const res = await request(url, new URL(url).pathname);
+      return new Uint8Array(await res.arrayBuffer());
+    },
     async getAll<T>(path: string, params: CanvasParams = {}): Promise<T[]> {
       const items: T[] = [];
       let url: string | null = buildUrl(root, path, { per_page: 100, ...params });

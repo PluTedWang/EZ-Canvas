@@ -45,6 +45,7 @@ export function canvasApi(client: CanvasClient) {
         start_date: startDate,
         end_date: endDate,
       }),
+    download: (url: string) => client.getBytes(url),
     groups: () => client.getAll<CanvasGroup>("/users/self/groups"),
     groupUsers: (groupId: number) => client.getAll<CanvasGroupUser>(`/groups/${groupId}/users`),
   };
