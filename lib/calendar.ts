@@ -83,3 +83,44 @@ export function proposeBlocks(week: Loaded, now: Date) {
     .map((a) => ({ id: a.id, title: a.title, courseId: a.courseId, dueAt: a.dueAt, hoursLeft: a.left }));
   return planStudyBlocks({ assignments, busy, from: week.weekStart, to: week.weekEnd, now });
 }
+
+const feedPastDays = 28;
+const feedFutureDays = 120;
+
+// Everything the .ics feed carries: lectures, accepted study blocks and assignment deadlines.
+export async function feedEvents(userId: string, now = new Date()) {
+  const from = addDays(now, -feedPastDays);
+  const to = addDays(now, feedFutureDays);
+  const [items, assignments] = await Promise.all([
+    db.calendarItem.findMany({
+      where: { userId, startAt: { gte: from, lte: to } },
+      orderBy: { startAt: "asc" },
+      select: { id: true, title: true, startAt: true, endAt: true, location: true, source: true },
+    }),
+    db.assignment.findMany({
+      where: { course: { userId, hidden: false }, dueAt: { gte: from, lte: to } },
+      orderBy: { dueAt: "asc" },
+      select: { id: true, title: true, dueAt: true, htmlUrl: true, course: { select: { code: true } } },
+    }),
+  ]);
+  return [
+    ...items.map((item) => ({
+      uid: item.id,
+      title: item.title,
+      start: item.startAt,
+      end: item.endAt,
+      allDay: false,
+      location: item.location,
+      description: null,
+    })),
+    ...assignments.map((a) => ({
+      uid: `due-${a.id}`,
+      title: `${a.course.code} · ${a.title}`,
+      start: a.dueAt as Date,
+      end: a.dueAt as Date,
+      allDay: false,
+      location: null,
+      description: a.htmlUrl,
+    })),
+  ];
+}

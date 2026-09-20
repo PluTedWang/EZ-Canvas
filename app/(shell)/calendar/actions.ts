@@ -1,5 +1,6 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
@@ -29,4 +30,16 @@ export async function acceptBlocks(formData: FormData) {
     })),
   });
   revalidatePath("/calendar");
+}
+
+// The feed token is created the first time the student opens Export, never during a page render.
+export async function openExport() {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) redirect("/signin");
+  const user = await db.user.findUniqueOrThrow({ where: { id: userId }, select: { calendarToken: true } });
+  if (!user.calendarToken) {
+    await db.user.update({ where: { id: userId }, data: { calendarToken: randomUUID() } });
+  }
+  redirect("/calendar?export=1");
 }

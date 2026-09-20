@@ -1,13 +1,18 @@
+import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
+import { Button } from "@/components/Button";
 import { CalendarFilters, type CalendarFilter } from "@/components/CalendarFilters";
+import { ExportPanel } from "@/components/ExportPanel";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/components/icons";
 import { TimeNeededCard, type TimeNeededRow } from "@/components/TimeNeededCard";
 import { TodayPanel, type TodayEntry } from "@/components/TodayPanel";
 import { WeekGrid, type GridDue, type GridEvent } from "@/components/WeekGrid";
 import { WeekPlanCard } from "@/components/WeekPlanCard";
+import { openExport } from "./actions";
 import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
 import { loadWeek, openWork, proposeBlocks } from "@/lib/calendar";
 import { addDays, daysPerWeek, parseWeekParam, startOfWeek } from "@/lib/week";
 import { daysBetween } from "@/lib/due";
@@ -33,11 +38,14 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
   if (!filter.lectures) params.set("lectures", "0");
   if (!filter.blocks) params.set("blocks", "0");
 
-  const [t, format, week] = await Promise.all([
+  const [t, format, week, user] = await Promise.all([
     getTranslations("calendar"),
     getFormatter(),
     loadWeek(session.user.id, weekStart),
+    db.user.findUniqueOrThrow({ where: { id: session.user.id }, select: { calendarToken: true } }),
   ]);
+  const showExport = query.export === "1" && user.calendarToken !== null;
+  const feedUrl = showExport ? `${new URL((await headers()).get("referer") ?? "http://localhost:3000").origin}/api/calendar/${user.calendarToken}` : "";
   const colorOf = new Map(week.courses.map((c) => [c.id, c.color]));
   const visible = (courseId: string | null) => filter.courses.length === 0 || (courseId !== null && filter.courses.includes(courseId));
 
@@ -159,6 +167,12 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
         <Link href={weekHref(startOfWeek(now))} className="inline-flex h-9 items-center rounded-[9px] border border-control-border bg-surface px-4 text-[14.5px] font-semibold hover:border-teal">
           {t("today.label")}
         </Link>
+        <div className="grow" />
+        <form action={openExport}>
+          <Button type="submit" variant="secondary" size="small">
+            {t("export.button")}
+          </Button>
+        </form>
       </div>
 
       <CalendarFilters courses={week.courses} filter={filter} params={params} />
@@ -169,6 +183,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
           <TodayPanel now={now} entries={entries} />
           <TimeNeededCard rows={rows} />
           <WeekPlanCard blocks={proposals} weekStart={weekStart} openHours={work.reduce((total, item) => total + item.left, 0)} />
+          {showExport && <ExportPanel feedUrl={feedUrl} />}
         </aside>
       </div>
     </>

@@ -58,7 +58,9 @@ Rules for the whole project: only build what the current milestone asks for; one
 3. `npm run dev` and open http://localhost:3000.
 4. Sign in with any email. Without a Resend key the sign in link is printed in the terminal; open it in the browser.
 5. On onboarding step 1 paste a Canvas access token (any text in mock mode). The first sync runs in the background; Settings > Connections shows the result, Manage courses and Sync now.
-6. `npm test` runs the logic tests. `npm run sync` syncs every connection from the terminal. `npm run canvas:probe` prints what a token can see without writing anything. `npx prisma studio` browses the database.
+6. The dashboard and calendar read from the synced data. On the calendar, Add blocks to calendar writes study blocks to EZCanvas only, never to Canvas, and Export gives you an .ics feed address.
+7. `npm test` runs the logic tests. `npm run sync` syncs every connection from the terminal. `npm run canvas:probe` prints what a token can see without writing anything. `npx prisma studio` browses the database.
+8. After a schema change, restart `npm run dev`. The dev server keeps one Prisma client in memory and will not see new columns until it restarts.
 
 ## Decisions already made
 
