@@ -63,6 +63,7 @@ Done when: `design/group.html` matches and a full reminder cycle runs against a 
 ## M7. Polish and launch prep
 
 - Settings: Notifications and Privacy sections; language settings end to end; RTL decision.
+- Production sign in email: verify a sending domain with Resend, set `RESEND_API_KEY` and `EMAIL_FROM`, and confirm the magic link arrives in a real inbox. Until then the link only prints to the server terminal, which works in development but not for real users. Also add a resend cooldown and an expired link message.
 - Canvas OAuth developer key flow.
 - Accessibility pass (focus rings, keyboard paths, contrast check), performance pass on sync, error states for lost connections.
 - Analytics events for activation: connected Canvas, first summary read, first study block accepted, first draft opened.
