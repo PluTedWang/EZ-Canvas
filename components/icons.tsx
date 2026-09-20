@@ -144,3 +144,15 @@ export const ArrowRightIcon = (p: Props) => (
     <path d="M5 12h14M13 6l6 6-6 6" />
   </Icon>
 );
+
+export const ChevronLeftIcon = (p: Props) => (
+  <Icon strokeWidth="2" {...p}>
+    <path d="M15 6l-6 6 6 6" />
+  </Icon>
+);
+
+export const ChevronRightIcon = (p: Props) => (
+  <Icon strokeWidth="2" {...p}>
+    <path d="M9 6l6 6-6 6" />
+  </Icon>
+);

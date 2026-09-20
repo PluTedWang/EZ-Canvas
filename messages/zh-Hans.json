@@ -136,5 +136,46 @@
       "next": "{code} · {title} 于 {date} 截止",
       "progress": "{code} · 已完成 {done}/{total} 项作业"
     }
+  },
+  "calendar": {
+    "previousWeek": "上一周",
+    "nextWeek": "下一周",
+    "dueRow": "截止",
+    "dueAt": "{title} 截止 · {time}",
+    "submitted": "{title} 已提交",
+    "aboutLeft": "约剩 {hours} 小时",
+    "suggested": "建议",
+    "filters": {
+      "lectures": "课程安排",
+      "blocks": "建议的学习时段"
+    },
+    "today": {
+      "label": "今天",
+      "tomorrow": "明天",
+      "empty": "今天没有安排。",
+      "studyBlock": "{hours} 小时学习时段",
+      "dueTomorrow": "{title} 于 {time} 截止"
+    },
+    "timeNeeded": {
+      "title": "预计所需时间",
+      "left": "本周还需 {hours} 小时",
+      "about": "约 {hours} 小时",
+      "leftOf": "已完成，还剩 {left}/{predicted} 小时",
+      "empty": "本周没有待完成的作业。",
+      "basis": "根据{drivers}预测。",
+      "driver": {
+        "type": "提交方式",
+        "points": "分值",
+        "rubric": "评分标准",
+        "length": "作业篇幅"
+      }
+    },
+    "plan": {
+      "title": "本周计划",
+      "nothing": "无需安排。每项待完成的作业都已有足够的时间。",
+      "rationale": "我在你的课程之间安排了 {blocks} 个学习时段，共 {hours} 小时，保留了周六晚上，并把最早截止的 {first} 放在最前面。第一个时段在{day}。",
+      "add": "把时段加入日历",
+      "noRoom": "本周已没有空闲时间安排剩余的 {hours} 小时。请查看下一周。"
+    }
   }
 }

@@ -136,5 +136,46 @@
       "next": "{code} · {title} due {date}",
       "progress": "{code} · {done} of {total} assignments done"
     }
+  },
+  "calendar": {
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
+    "dueRow": "DUE",
+    "dueAt": "{title} due · {time}",
+    "submitted": "{title} submitted",
+    "aboutLeft": "about {hours} h left",
+    "suggested": "suggested",
+    "filters": {
+      "lectures": "Lectures",
+      "blocks": "Suggested study blocks"
+    },
+    "today": {
+      "label": "Today",
+      "tomorrow": "Tmrw",
+      "empty": "Nothing scheduled today.",
+      "studyBlock": "{hours} h study block",
+      "dueTomorrow": "{title} due {time}"
+    },
+    "timeNeeded": {
+      "title": "Time needed · predicted",
+      "left": "{hours} h left this week",
+      "about": "about {hours} h",
+      "leftOf": "{left} h left of {predicted}",
+      "empty": "No open work this week.",
+      "basis": "Predicted from {drivers}.",
+      "driver": {
+        "type": "how the work is submitted",
+        "points": "the points",
+        "rubric": "the rubric",
+        "length": "the assignment length"
+      }
+    },
+    "plan": {
+      "title": "This week's plan",
+      "nothing": "Nothing to schedule. Every open assignment already has enough time booked.",
+      "rationale": "I placed {blocks, plural, one {# study block} other {# study blocks}} around your lectures to cover {hours} hours, kept Saturday evening free, and put {first} first because it is due soonest. The first block is on {day}.",
+      "add": "Add blocks to calendar",
+      "noRoom": "No free time left in this week for the {hours} hours still open. Try next week."
+    }
   }
 }

@@ -97,7 +97,8 @@ model Assignment {
   late            Boolean   @default(false)
   canvasUpdatedAt DateTime
   firstSeenAt     DateTime  @default(now())
-  course          Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course          Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  calendarItems   CalendarItem[]
 
   @@unique([courseId, canvasId])
 }
@@ -123,18 +124,22 @@ model Material {
 }
 
 model CalendarItem {
-  id       String    @id @default(cuid())
-  userId   String
-  courseId String?
-  source   String
-  canvasId Int?
-  title    String
-  startAt  DateTime
-  endAt    DateTime?
-  allDay   Boolean   @default(false)
-  location String?
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course   Course?   @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  id           String      @id @default(cuid())
+  userId       String
+  courseId     String?
+  assignmentId String?
+  source       String
+  canvasId     Int?
+  title        String
+  startAt      DateTime
+  endAt        DateTime?
+  allDay       Boolean     @default(false)
+  location     String?
+  // Canvas items are accepted on arrival; study blocks stay false until the student adds them.
+  accepted     Boolean     @default(true)
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course       Course?     @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
 
   @@unique([userId, source, canvasId])
 }
