@@ -103,3 +103,44 @@ export const RefreshIcon = (p: Props) => (
     <path d="M20 4v5h-5" />
   </Icon>
 );
+
+export const ClockIcon = (p: Props) => (
+  <Icon strokeWidth="2" {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7v5l3 2" />
+  </Icon>
+);
+
+export const FileIcon = (p: Props) => (
+  <Icon {...p}>
+    <path d="M6 3h8l5 5v13H6z" />
+    <path d="M14 3v5h5" />
+  </Icon>
+);
+
+export const BookOpenIcon = (p: Props) => (
+  <Icon {...p}>
+    <path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z" />
+    <path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z" />
+  </Icon>
+);
+
+export const AlertIcon = (p: Props) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 8v5M12 16h.01" />
+  </Icon>
+);
+
+export const LinkIcon = (p: Props) => (
+  <Icon {...p}>
+    <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7L11.5 6.8" />
+    <path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.5-1.5" />
+  </Icon>
+);
+
+export const ArrowRightIcon = (p: Props) => (
+  <Icon strokeWidth="2" {...p}>
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </Icon>
+);

@@ -22,7 +22,7 @@ export default async function SettingsPage({ searchParams }: PageProps<"/setting
     }),
     db.course.findMany({
       where: { userId: session.user.id },
-      orderBy: { code: "asc" },
+      orderBy: { canvasId: "asc" },
       select: { id: true, code: true, name: true, hidden: true },
     }),
   ]);

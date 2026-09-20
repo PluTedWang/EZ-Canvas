@@ -15,7 +15,10 @@
   "topBar": {
     "search": "Search",
     "searchPlaceholder": "Search courses, files, deadlines",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "syncedAgo": "Canvas synced {ago}",
+    "syncPending": "Canvas sync pending",
+    "syncFailed": "Canvas sync failed"
   },
   "signIn": {
     "title": "Sign in to EZCanvas",
@@ -71,6 +74,67 @@
         "save": "Save",
         "cancel": "Cancel"
       }
+    }
+  },
+  "dashboard": {
+    "openCalendar": "Open calendar",
+    "points": "{points} pts",
+    "basis": "Predicted from {drivers}.",
+    "driver": {
+      "type": "{value}",
+      "points": "{value} points",
+      "rubric": "{value, plural, one {# rubric section} other {# rubric sections}}",
+      "length": "a long assignment description"
+    },
+    "submissionType": {
+      "online_upload": "file upload",
+      "external_tool": "external tool",
+      "on_paper": "in class",
+      "online_quiz": "quiz",
+      "online_text_entry": "text entry",
+      "discussion_topic": "discussion"
+    },
+    "greeting": {
+      "morning": "Good morning, {name}",
+      "afternoon": "Good afternoon, {name}",
+      "evening": "Good evening, {name}",
+      "counts": "<strong>{deadlines, plural, one {# deadline} other {# deadlines}}</strong> in the next {days} days, about <strong>{hours} hours</strong> of work · <strong>{materials, plural, one {# new material} other {# new materials}}</strong>"
+    },
+    "dueSoon": {
+      "title": "Due soon",
+      "total": "Predicted time left: <strong>{hours} h</strong>",
+      "about": "about {hours} h",
+      "today": "Today {time}",
+      "tomorrow": "Tomorrow {time}",
+      "overdue": "Overdue {ago}",
+      "empty": "Nothing due in the next {days} days."
+    },
+    "materials": {
+      "title": "New from your professors",
+      "empty": "No new materials this week.",
+      "type": {
+        "file": "New file",
+        "page": "New reading",
+        "announcement": "Announcement",
+        "link": "New link"
+      }
+    },
+    "assistant": {
+      "title": "Ask your study assistant",
+      "label": "Ask the study assistant",
+      "placeholder": "What should I focus on tonight?",
+      "send": "Send",
+      "planTwo": "Plan my week around {first} and {second}",
+      "planWeek": "Plan my week",
+      "explain": "Explain {title}",
+      "whatToStudy": "What should I study this week?",
+      "extension": "Draft an extension request"
+    },
+    "courses": {
+      "title": "Your courses",
+      "empty": "No courses yet. Sync Canvas from Settings.",
+      "next": "{code} · {title} due {date}",
+      "progress": "{code} · {done} of {total} assignments done"
     }
   }
 }

@@ -15,7 +15,10 @@
   "topBar": {
     "search": "搜索",
     "searchPlaceholder": "搜索课程、文件和截止日期",
-    "notifications": "通知"
+    "notifications": "通知",
+    "syncedAgo": "Canvas 同步于{ago}",
+    "syncPending": "Canvas 等待同步",
+    "syncFailed": "Canvas 同步失败"
   },
   "signIn": {
     "title": "登录 EZCanvas",
@@ -71,6 +74,67 @@
         "save": "保存",
         "cancel": "取消"
       }
+    }
+  },
+  "dashboard": {
+    "openCalendar": "打开日历",
+    "points": "{points} 分",
+    "basis": "根据{drivers}预测。",
+    "driver": {
+      "type": "{value}",
+      "points": "{value} 分",
+      "rubric": "{value} 个评分项",
+      "length": "较长的作业说明"
+    },
+    "submissionType": {
+      "online_upload": "上传文件",
+      "external_tool": "外部工具",
+      "on_paper": "课堂完成",
+      "online_quiz": "在线测验",
+      "online_text_entry": "在线作答",
+      "discussion_topic": "讨论"
+    },
+    "greeting": {
+      "morning": "早上好，{name}",
+      "afternoon": "下午好，{name}",
+      "evening": "晚上好，{name}",
+      "counts": "未来 {days} 天有 <strong>{deadlines} 个截止日期</strong>，约 <strong>{hours} 小时</strong>的工作 · <strong>{materials} 份新课件</strong>"
+    },
+    "dueSoon": {
+      "title": "即将截止",
+      "total": "预计剩余时间：<strong>{hours} 小时</strong>",
+      "about": "约 {hours} 小时",
+      "today": "今天 {time}",
+      "tomorrow": "明天 {time}",
+      "overdue": "已逾期{ago}",
+      "empty": "未来 {days} 天没有截止的作业。"
+    },
+    "materials": {
+      "title": "教授发布的新内容",
+      "empty": "本周没有新课件。",
+      "type": {
+        "file": "新文件",
+        "page": "新阅读",
+        "announcement": "公告",
+        "link": "新链接"
+      }
+    },
+    "assistant": {
+      "title": "向学习助手提问",
+      "label": "向学习助手提问",
+      "placeholder": "今晚我该专注做什么？",
+      "send": "发送",
+      "planTwo": "帮我安排这周的 {first} 和 {second}",
+      "planWeek": "帮我安排这周",
+      "explain": "讲解 {title}",
+      "whatToStudy": "这周我该学什么？",
+      "extension": "起草一封延期申请"
+    },
+    "courses": {
+      "title": "我的课程",
+      "empty": "还没有课程。请在设置中同步 Canvas。",
+      "next": "{code} · {title} 于 {date} 截止",
+      "progress": "{code} · 已完成 {done}/{total} 项作业"
     }
   }
 }
