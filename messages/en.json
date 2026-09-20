@@ -239,5 +239,67 @@
       "network": "Could not reach your AI provider."
     },
     "progress": "{done} of {total} assignments done"
+  },
+  "assistant": {
+    "title": "Study assistant",
+    "situations": "Situations",
+    "recent": "Recent",
+    "intro": "Pick the course and assignment this is about. The assistant only uses what Canvas already knows.",
+    "course": "Course",
+    "noCourse": "No particular course",
+    "assignment": "Assignment",
+    "noAssignment": "No particular assignment",
+    "what": "What happened",
+    "whatPlaceholder": "I missed the Problem Set 2 deadline. I was ill for two days and did not submit.",
+    "write": "Write the email",
+    "needKey": "Add your AI provider key to use the assistant",
+    "situation": {
+      "missedDeadline": "Missed a deadline",
+      "extension": "Ask for an extension",
+      "grade": "Question about a grade",
+      "absence": "Absence from class",
+      "officeHours": "Book office hours",
+      "groupMember": "Group member not contributing",
+      "other": "Something else"
+    },
+    "status": {
+      "draft": "draft",
+      "opened": "opened in your mail client"
+    },
+    "errors": {
+      "missing": "Write a sentence about what happened.",
+      "noEmail": "Enter the professor's email address first.",
+      "auth": "Your AI provider did not accept the key. Check it in Settings.",
+      "rate-limit": "Your AI provider is rate limiting this key. Try again in a moment.",
+      "request": "The provider rejected the request. Try again.",
+      "network": "Could not reach your AI provider."
+    },
+    "draft": {
+      "title": "Email draft",
+      "style": "Natural, non-defensive",
+      "subject": "Subject: {subject}",
+      "preview": "Translation preview, not sent",
+      "to": "To",
+      "toPlaceholder": "professor@university.edu",
+      "gmail": "Open in Gmail",
+      "mailApp": "Open in mail app",
+      "opened": "Opened in your mail client. EZCanvas did not send it.",
+      "neverSent": "EZCanvas never sends this for you.",
+      "tone": {
+        "formal": "Formal",
+        "warm": "Warm",
+        "brief": "Brief"
+      },
+      "check": {
+        "title": "Style check",
+        "statedOnce": "States what happened once",
+        "statedOnceFailed": "Says it more than once",
+        "oneAsk": "One clear ask",
+        "oneAskFailed": "Not exactly one ask",
+        "noFiller": "No filler or hedging",
+        "noFillerFailed": "Contains filler phrases",
+        "words": "{words} words"
+      }
+    }
   }
 }

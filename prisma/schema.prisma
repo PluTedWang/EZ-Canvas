@@ -27,6 +27,7 @@ model User {
   courses             Course[]
   calendarItems       CalendarItem[]
   groups              Group[]
+  conversations       Conversation[]
 }
 
 // Auth.js session and magic link tables, shapes from @auth/prisma-adapter.
@@ -79,6 +80,7 @@ model Course {
   materials     Material[]
   calendarItems CalendarItem[]
   groups        Group[]
+  conversations Conversation[]
 
   @@unique([userId, canvasId])
 }
@@ -103,6 +105,7 @@ model Assignment {
   firstSeenAt     DateTime  @default(now())
   course          Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
   calendarItems   CalendarItem[]
+  conversations   Conversation[]
 
   @@unique([courseId, canvasId])
 }
@@ -175,4 +178,47 @@ model GroupMember {
   group        Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@unique([groupId, canvasUserId])
+}
+
+// One run of the study assistant or the homework helper.
+model Conversation {
+  id           String      @id @default(cuid())
+  userId       String
+  kind         String
+  situation    String?
+  courseId     String?
+  assignmentId String?
+  title        String
+  outcome      String?
+  createdAt    DateTime    @default(now())
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course       Course?     @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+  messages     Message[]
+  draft        EmailDraft?
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  role           String
+  body           String
+  language       String
+  // The Canvas facts this reply was grounded in, shown as source chips.
+  sources        Json?
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+// Never sent by EZCanvas. The student opens it in their own mail client.
+model EmailDraft {
+  id             String       @id @default(cuid())
+  conversationId String       @unique
+  tone           String
+  to             String
+  subject        String
+  body           String
+  translation    String?
+  openedAt       DateTime?
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 }

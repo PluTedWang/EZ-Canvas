@@ -239,5 +239,67 @@
       "network": "无法连接 AI 服务商。"
     },
     "progress": "已完成 {done}/{total} 项作业"
+  },
+  "assistant": {
+    "title": "学习助手",
+    "situations": "常见情况",
+    "recent": "最近",
+    "intro": "选择相关的课程和作业。助手只会使用 Canvas 中已有的信息。",
+    "course": "课程",
+    "noCourse": "不指定课程",
+    "assignment": "作业",
+    "noAssignment": "不指定作业",
+    "what": "发生了什么",
+    "whatPlaceholder": "我错过了第二次作业的截止时间。我病了两天，没能提交。",
+    "write": "写这封邮件",
+    "needKey": "请先添加 AI 服务商密钥",
+    "situation": {
+      "missedDeadline": "错过截止时间",
+      "extension": "申请延期",
+      "grade": "关于成绩的疑问",
+      "absence": "缺课",
+      "officeHours": "预约答疑时间",
+      "groupMember": "组员没有参与",
+      "other": "其他情况"
+    },
+    "status": {
+      "draft": "草稿",
+      "opened": "已在邮件客户端打开"
+    },
+    "errors": {
+      "missing": "请写一句说明发生了什么。",
+      "noEmail": "请先填写教授的邮箱地址。",
+      "auth": "AI 服务商不接受该密钥。请在设置中检查。",
+      "rate-limit": "该密钥已被限流，请稍后再试。",
+      "request": "服务商拒绝了该请求，请重试。",
+      "network": "无法连接 AI 服务商。"
+    },
+    "draft": {
+      "title": "邮件草稿",
+      "style": "自然、不卑不亢",
+      "subject": "主题：{subject}",
+      "preview": "翻译预览，不会发送",
+      "to": "收件人",
+      "toPlaceholder": "professor@university.edu",
+      "gmail": "在 Gmail 中打开",
+      "mailApp": "在邮件应用中打开",
+      "opened": "已在你的邮件客户端打开。EZCanvas 没有发送。",
+      "neverSent": "EZCanvas 不会替你发送。",
+      "tone": {
+        "formal": "正式",
+        "warm": "亲切",
+        "brief": "简短"
+      },
+      "check": {
+        "title": "风格检查",
+        "statedOnce": "只说明一次经过",
+        "statedOnceFailed": "重复说明了经过",
+        "oneAsk": "只有一个明确请求",
+        "oneAskFailed": "请求不止一个",
+        "noFiller": "没有客套或含糊措辞",
+        "noFillerFailed": "含有客套措辞",
+        "words": "{words} 字"
+      }
+    }
   }
 }

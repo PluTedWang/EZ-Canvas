@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 import en from "../messages/en.json";
 import zhHans from "../messages/zh-Hans.json";
+import { languageName } from "../lib/locales";
 
 function keys(messages: object, prefix = ""): string[] {
   return Object.entries(messages).flatMap(([key, value]) =>
@@ -19,4 +20,10 @@ test("no message is empty", () => {
     );
     expect(leaves.every((value) => typeof value === "string" && value.trim() !== "")).toBe(true);
   }
+});
+
+test("every locale has a name the prompts can use", () => {
+  expect(languageName("en")).toBe("English");
+  expect(languageName("zh-Hans")).toBe("Simplified Chinese");
+  expect(languageName("klingon")).toBe("English");
 });

@@ -168,3 +168,10 @@ export const ExternalLinkIcon = (p: Props) => (
     <path d="M14 4h6v6M20 4l-9 9M18 13v7H4V6h7" />
   </Icon>
 );
+
+export const MailIcon = (p: Props) => (
+  <Icon {...p}>
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path d="M3 7l9 6 9-6" />
+  </Icon>
+);
