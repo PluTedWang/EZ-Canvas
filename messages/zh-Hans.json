@@ -74,6 +74,25 @@
         "save": "保存",
         "cancel": "取消"
       }
+    },
+    "ai": {
+      "title": "AI 助手",
+      "intro": "使用你自己的 API 密钥。只有在你就课件提问时才会发送文件，密钥不会进入浏览器。",
+      "anthropic": "Anthropic Claude",
+      "addKey": "添加 API 密钥",
+      "keyAdded": "已添加密钥 · ••••{hint}",
+      "keyLabel": "Anthropic API 密钥",
+      "keyHelp": "在 console.anthropic.com 创建。密钥会加密保存在服务器上，仅用于你自己的请求。",
+      "model": "请求使用 {model}。",
+      "save": "保存密钥",
+      "remove": "删除密钥",
+      "errors": {
+        "missing": "请输入 API 密钥。",
+        "auth": "Anthropic 不接受该密钥。",
+        "rate-limit": "该密钥已被限流，请稍后再试。",
+        "request": "Anthropic 拒绝了该请求。请检查密钥后重试。",
+        "network": "无法连接 Anthropic。请检查网络。"
+      }
     }
   },
   "dashboard": {

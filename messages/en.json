@@ -74,6 +74,25 @@
         "save": "Save",
         "cancel": "Cancel"
       }
+    },
+    "ai": {
+      "title": "AI helper",
+      "intro": "Bring your own API key. Course files are sent only when you ask a question about them, and the key never reaches your browser.",
+      "anthropic": "Anthropic Claude",
+      "addKey": "Add API key",
+      "keyAdded": "Key added · ••••{hint}",
+      "keyLabel": "Anthropic API key",
+      "keyHelp": "Create one at console.anthropic.com. It is stored encrypted on this server and used only for your own requests.",
+      "model": "Requests use {model}.",
+      "save": "Save key",
+      "remove": "Remove key",
+      "errors": {
+        "missing": "Enter your API key.",
+        "auth": "Anthropic did not accept that key.",
+        "rate-limit": "That key is being rate limited. Try again in a moment.",
+        "request": "Anthropic rejected the request. Check the key and try again.",
+        "network": "Could not reach Anthropic. Check your connection."
+      }
     }
   },
   "dashboard": {

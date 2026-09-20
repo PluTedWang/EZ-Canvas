@@ -2,9 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { anthropicProvider } from "@/lib/ai/anthropic";
+import { AiError } from "@/lib/ai/types";
 import { auth } from "@/lib/auth";
 import { syncCanvas } from "@/lib/canvas/sync";
 import { visibilityUpdates } from "@/lib/course-visibility";
+import { encrypt } from "@/lib/crypto";
 import { db } from "@/lib/db";
 
 async function userId() {
@@ -27,5 +30,25 @@ export async function saveCourseVisibility(formData: FormData) {
   await db.$transaction(
     visibilityUpdates(courses, shownIds).map(({ id, hidden }) => db.course.update({ where: { id }, data: { hidden } })),
   );
+  redirect("/settings");
+}
+
+// The key is checked with one very small completion, the same way the Canvas token is checked.
+export async function saveAiKey(formData: FormData) {
+  const id = await userId();
+  const key = String(formData.get("key") ?? "").trim();
+  if (!key) redirect("/settings?error=missing");
+
+  try {
+    await anthropicProvider(key).complete({ system: "Reply with the word OK.", messages: [{ role: "user", content: "OK?" }], maxTokens: 16 });
+  } catch (error) {
+    redirect(`/settings?error=${error instanceof AiError ? error.kind : "request"}`);
+  }
+  await db.user.update({ where: { id }, data: { aiProvider: "anthropic", aiKey: encrypt(key) } });
+  redirect("/settings");
+}
+
+export async function removeAiKey() {
+  await db.user.update({ where: { id: await userId() }, data: { aiProvider: null, aiKey: null } });
   redirect("/settings");
 }
