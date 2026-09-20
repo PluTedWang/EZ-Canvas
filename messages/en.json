@@ -175,7 +175,7 @@
       "nothing": "Nothing to schedule. Every open assignment already has enough time booked.",
       "rationale": "I placed {blocks, plural, one {# study block} other {# study blocks}} around your lectures to cover {hours} hours, kept Saturday evening free, and put {first} first because it is due soonest. The first block is on {day}.",
       "add": "Add blocks to calendar",
-      "noRoom": "No free time left in this week for the {hours} hours still open. Try next week."
+      "noRoom": "No study time fits in this week for the {hours} hours still open. Open the week the work is due in."
     },
     "export": {
       "button": "Export",
