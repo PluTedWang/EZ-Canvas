@@ -4,8 +4,10 @@ import courses from "../fixtures/canvas/courses.json";
 import events from "../fixtures/canvas/calendar_events.json";
 import files from "../fixtures/canvas/files-101.json";
 import modules from "../fixtures/canvas/modules-101.json";
-import { attachmentsFrom, mapAssignment, mapCourse, mapEvent, mapFile, mapLinks, moduleContext } from "../lib/canvas/map";
-import type { CanvasAssignment, CanvasCalendarEvent, CanvasCourse, CanvasFile, CanvasModule } from "../lib/canvas/types";
+import pages from "../fixtures/canvas/pages-101.json";
+import { attachmentsFrom, mapAssignment, mapCourse, mapEvent, mapFile, mapLinks, mapPage, moduleContext } from "../lib/canvas/map";
+import type { CanvasAssignment, CanvasCalendarEvent, CanvasCourse, CanvasFile, CanvasModule, CanvasPage } from "../lib/canvas/types";
+import { extractMaterial } from "../lib/materials/extract";
 
 const hw2 = assignments[1] as CanvasAssignment;
 
@@ -72,4 +74,13 @@ test("mapEvent turns a Canvas event into a lecture", () => {
     allDay: false,
     location: "Hollister 110",
   });
+});
+
+// Canvas only sends a page body when asked with include[]=body; without it every page read as empty.
+test("mapPage keeps the page body so notes can be written from it", async () => {
+  const mapped = mapPage(pages[0] as CanvasPage, moduleContext(modules as CanvasModule[]));
+  expect(mapped.body).toContain("Late work loses 10 percent per day");
+  const extracted = await extractMaterial({ type: "page", contentType: null, body: mapped.body }, async () => new Uint8Array());
+  expect("text" in extracted ? extracted.text : "").toContain("Late work loses 10 percent per day, up to three days.");
+  expect(mapPage({ ...(pages[1] as CanvasPage), body: undefined }, new Map()).body).toBeNull();
 });

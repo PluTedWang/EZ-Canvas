@@ -82,6 +82,7 @@ export function mapPage(raw: CanvasPage, context: ModuleContext) {
     type: "page",
     title: raw.title,
     url: raw.html_url,
+    body: raw.body ?? null,
     postedAt: new Date(raw.updated_at),
     ...(context.get(`Page:${raw.url}`) ?? {}),
   };

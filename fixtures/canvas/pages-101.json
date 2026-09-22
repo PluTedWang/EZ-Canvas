@@ -1,4 +1,4 @@
 [
-  { "url": "course-policies", "title": "Course policies", "html_url": "https://canvas.example.edu/courses/101/pages/course-policies", "updated_at": "2026-08-25T09:00:00Z", "published": true },
-  { "url": "instructor", "title": "Instructor and office hours", "html_url": "https://canvas.example.edu/courses/101/pages/instructor", "updated_at": "2026-08-25T09:05:00Z", "published": true }
+  { "url": "course-policies", "title": "Course policies", "html_url": "https://canvas.example.edu/courses/101/pages/course-policies", "updated_at": "2026-08-25T09:00:00Z", "published": true, "body": "<h2>Course policies</h2><p>Late work loses 10 percent per day, up to three days. After that it is not accepted.</p><p>You may use AI tools to check grammar. Say which tool you used at the end of each submission.</p>" },
+  { "url": "instructor", "title": "Instructor and office hours", "html_url": "https://canvas.example.edu/courses/101/pages/instructor", "updated_at": "2026-08-25T09:05:00Z", "published": true, "body": "<p>Office hours are Tuesdays 2 to 4 PM in Rhodes 250, or by appointment.</p>" }
 ]
