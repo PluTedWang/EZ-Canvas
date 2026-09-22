@@ -24,6 +24,8 @@ const day = 24 * 60 * 60 * 1000;
 const announcementDays = 30;
 const lecturePastDays = 28;
 const lectureFutureDays = 84;
+// Courses fetched from Canvas at once. Each runs four list requests, and Canvas throttles bursts.
+const courseConcurrency = 2;
 const isoDaysFromNow = (days: number) => new Date(Date.now() + days * day).toISOString();
 
 // Canvas answers 401 or 403 for course tabs the instructor hid; treat those as empty.
@@ -39,17 +41,32 @@ const clearedNotes = { notes: Prisma.DbNull, notesAt: null, unsupported: null };
 
 type MaterialData = { type: string; canvasId: string; title: string; url: string; postedAt?: Date | null; body?: string | null };
 
-async function upsertMaterials<T extends MaterialData>(courseId: string, materials: T[]) {
+// Returns the writes instead of running them, so a whole course lands in one transaction.
+async function materialWrites<T extends MaterialData>(courseId: string, materials: T[]) {
   const stored = await db.material.findMany({ where: { courseId }, select: { type: true, canvasId: true, postedAt: true, body: true } });
   const byKey = new Map<string, { postedAt: Date | null; body: string | null }>(stored.map((m) => [`${m.type}:${m.canvasId}`, m]));
-  for (const data of materials) {
+  return materials.map((data) => {
     const before = byKey.get(`${data.type}:${data.canvasId}`);
-    await db.material.upsert({
+    return db.material.upsert({
       where: { courseId_type_canvasId: { courseId, type: data.type, canvasId: data.canvasId } },
       update: before && materialChanged(before, data) ? { ...data, ...clearedNotes } : data,
       create: { ...data, courseId },
     });
-  }
+  });
+}
+
+// Runs work over items with at most `limit` in flight, keeping the results in order.
+export async function eachLimited<T, R>(items: T[], limit: number, work: (item: T) => Promise<R>) {
+  const results: R[] = [];
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const index = next++;
+      results[index] = await work(items[index]);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
 }
 
 async function upsertCourse(userId: string, raw: CanvasCourse) {
@@ -61,32 +78,39 @@ async function upsertCourse(userId: string, raw: CanvasCourse) {
   return db.course.create({ data: { ...data, userId, canvasId: raw.id, color } });
 }
 
-async function syncCourseContent(api: Api, courseId: string, canvasCourseId: number) {
+async function fetchCourseContent(api: Api, canvasCourseId: number) {
   const [assignments, modules, files, pages] = await Promise.all([
     api.assignments(canvasCourseId),
     orEmpty(api.modules(canvasCourseId)),
     orEmpty(api.files(canvasCourseId)),
     orEmpty(api.pages(canvasCourseId)),
   ]);
-  for (const raw of assignments) {
-    const data = mapAssignment(raw);
-    await db.assignment.upsert({
-      where: { courseId_canvasId: { courseId, canvasId: raw.id } },
-      update: data,
-      create: { ...data, courseId, canvasId: raw.id },
-    });
-  }
   const context = moduleContext(modules);
   const materials = [...files.map((f) => mapFile(f, context)), ...pages.map((p) => mapPage(p, context)), ...mapLinks(modules)];
-  await upsertMaterials(courseId, materials);
+  return { assignments, materials };
+}
 
-  // Whatever Canvas no longer lists was deleted or unpublished there; drop it here too.
-  await db.assignment.deleteMany({ where: { courseId, canvasId: { notIn: assignments.map((a) => a.id) } } });
-  for (const type of ["file", "page", "link"]) {
-    const kept = materials.filter((m) => m.type === type).map((m) => m.canvasId);
-    await db.material.deleteMany({ where: { courseId, type, canvasId: { notIn: kept } } });
-  }
-  return { assignments: assignments.length, materials: materials.length };
+type CourseContent = Awaited<ReturnType<typeof fetchCourseContent>>;
+
+async function writeCourseContent(courseId: string, { assignments, materials }: CourseContent) {
+  await db.$transaction([
+    ...assignments.map((raw) => {
+      const data = mapAssignment(raw);
+      return db.assignment.upsert({
+        where: { courseId_canvasId: { courseId, canvasId: raw.id } },
+        update: data,
+        create: { ...data, courseId, canvasId: raw.id },
+      });
+    }),
+    ...(await materialWrites(courseId, materials)),
+    // Whatever Canvas no longer lists was deleted or unpublished there; drop it here too.
+    db.assignment.deleteMany({ where: { courseId, canvasId: { notIn: assignments.map((a) => a.id) } } }),
+    ...["file", "page", "link"].map((type) =>
+      db.material.deleteMany({
+        where: { courseId, type, canvasId: { notIn: materials.filter((m) => m.type === type).map((m) => m.canvasId) } },
+      }),
+    ),
+  ]);
 }
 
 // Announcements are fetched for a window only, so only the window is pruned.
@@ -97,10 +121,12 @@ async function syncAnnouncements(api: Api, courseIds: Map<number, string>) {
   const announcements = await api.announcements([...courseIds.keys()], since);
   for (const [canvasCourseId, courseId] of courseIds) {
     const mine = announcements.filter((raw) => courseIdFromContext(raw.context_code) === canvasCourseId).map(mapAnnouncement);
-    await upsertMaterials(courseId, mine);
-    await db.material.deleteMany({
-      where: { courseId, type: "announcement", postedAt: { gte: new Date(since) }, canvasId: { notIn: mine.map((m) => m.canvasId) } },
-    });
+    await db.$transaction([
+      ...(await materialWrites(courseId, mine)),
+      db.material.deleteMany({
+        where: { courseId, type: "announcement", postedAt: { gte: new Date(since) }, canvasId: { notIn: mine.map((m) => m.canvasId) } },
+      }),
+    ]);
   }
   return announcements.length;
 }
@@ -110,17 +136,19 @@ async function syncLectures(api: Api, userId: string, courseIds: Map<number, str
   const to = isoDaysFromNow(lectureFutureDays);
   const fetched = courseIds.size > 0 ? await api.calendarEvents([...courseIds.keys()], "event", from, to) : [];
   const events = fetched.filter((raw) => raw.start_at);
-  for (const raw of events) {
-    const data = { ...mapEvent(raw), courseId: courseIds.get(courseIdFromContext(raw.context_code)) ?? null };
-    await db.calendarItem.upsert({
-      where: { userId_source_canvasId: { userId, source: "lecture", canvasId: raw.id } },
-      update: data,
-      create: { ...data, userId, canvasId: raw.id },
-    });
-  }
-  await db.calendarItem.deleteMany({
-    where: { userId, source: "lecture", startAt: { gte: new Date(from), lte: new Date(to) }, canvasId: { notIn: events.map((e) => e.id) } },
-  });
+  await db.$transaction([
+    ...events.map((raw) => {
+      const data = { ...mapEvent(raw), courseId: courseIds.get(courseIdFromContext(raw.context_code)) ?? null };
+      return db.calendarItem.upsert({
+        where: { userId_source_canvasId: { userId, source: "lecture", canvasId: raw.id } },
+        update: data,
+        create: { ...data, userId, canvasId: raw.id },
+      });
+    }),
+    db.calendarItem.deleteMany({
+      where: { userId, source: "lecture", startAt: { gte: new Date(from), lte: new Date(to) }, canvasId: { notIn: events.map((e) => e.id) } },
+    }),
+  ]);
   return events.length;
 }
 
@@ -134,14 +162,16 @@ async function syncGroups(api: Api, userId: string, courseIds: Map<number, strin
       create: { ...data, userId, canvasId: raw.id },
     });
     const members = await orEmpty(api.groupUsers(raw.id));
-    for (const member of members) {
-      await db.groupMember.upsert({
-        where: { groupId_canvasUserId: { groupId: group.id, canvasUserId: member.id } },
-        update: { name: member.name },
-        create: { groupId: group.id, canvasUserId: member.id, name: member.name },
-      });
-    }
-    await db.groupMember.deleteMany({ where: { groupId: group.id, canvasUserId: { notIn: members.map((m) => m.id) } } });
+    await db.$transaction([
+      ...members.map((member) =>
+        db.groupMember.upsert({
+          where: { groupId_canvasUserId: { groupId: group.id, canvasUserId: member.id } },
+          update: { name: member.name },
+          create: { groupId: group.id, canvasUserId: member.id, name: member.name },
+        }),
+      ),
+      db.groupMember.deleteMany({ where: { groupId: group.id, canvasUserId: { notIn: members.map((m) => m.id) } } }),
+    ]);
   }
   await db.group.deleteMany({ where: { userId, canvasId: { notIn: groups.map((g) => g.id) } } });
   return groups.length;
@@ -154,13 +184,15 @@ export async function syncCanvas(connectionId: string) {
   try {
     const rawCourses = await api.courses();
     const courseIds = new Map<number, string>();
-    for (const raw of rawCourses) {
-      const course = await upsertCourse(connection.userId, raw);
-      courseIds.set(raw.id, course.id);
-      const content = await syncCourseContent(api, course.id, raw.id);
+    // Courses are created one at a time so each gets the next color.
+    for (const raw of rawCourses) courseIds.set(raw.id, (await upsertCourse(connection.userId, raw)).id);
+    // Fetching is the slow part and runs a few courses at once; SQLite then writes one course per transaction.
+    const contents = await eachLimited(rawCourses, courseConcurrency, (raw) => fetchCourseContent(api, raw.id));
+    for (const [index, raw] of rawCourses.entries()) {
+      await writeCourseContent(courseIds.get(raw.id) as string, contents[index]);
       counts.courses += 1;
-      counts.assignments += content.assignments;
-      counts.materials += content.materials;
+      counts.assignments += contents[index].assignments.length;
+      counts.materials += contents[index].materials.length;
     }
     counts.materials += await syncAnnouncements(api, courseIds);
     counts.lectures = await syncLectures(api, connection.userId, courseIds);
