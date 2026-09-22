@@ -57,8 +57,8 @@ test("facts are sent with their source labels and nothing else", async () => {
     situation: "Missed a deadline",
     question: "What should I do?",
     facts: [
-      { label: "Canvas · PS 2", text: "Due Tue Sep 15, 11:59 PM." },
-      { label: "Syllabus", text: "Late work accepted up to 3 days at 10% per day." },
+      { source: "assignment", name: "PS 2", label: "Canvas · PS 2", text: "Due Tue Sep 15, 11:59 PM." },
+      { source: "latePolicy", label: "Syllabus", text: "Late work accepted up to 3 days at 10% per day." },
     ],
     tone: "formal",
     writingLanguage: "English",

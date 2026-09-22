@@ -2,9 +2,10 @@ import { asString, parseJsonObject } from "../json";
 import type { AiProvider } from "../types";
 
 // The study assistant. Every fact comes from Canvas and is passed in here; the model is
-// told never to add its own. Each fact carries the label the screen shows as a source chip.
-
-export type Fact = { label: string; text: string };
+// told never to add its own. The model reads each fact's English label; the screen shows
+// the source as a translated chip.
+export type FactSource = "course" | "instructor" | "latePolicy" | "officeHours" | "meetingTimes" | "assignment";
+export type Fact = { source: FactSource; name?: string; label: string; text: string };
 export type Tone = "formal" | "warm" | "brief";
 export const tones: Tone[] = ["formal", "warm", "brief"];
 

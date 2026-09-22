@@ -35,7 +35,7 @@ test("every fact carries the source label the chip will show", () => {
 
 test("a missing syllabus policy produces no fact rather than an empty one", () => {
   const bare = { ...course, instructor: null, latePolicy: null, officeHours: null, meetingTimes: null };
-  expect(buildFacts(bare, null, date)).toEqual([{ label: "Canvas · course", text: "CS 5780 is Machine Learning." }]);
+  expect(buildFacts(bare, null, date)).toEqual([{ source: "course", label: "Canvas · course", text: "CS 5780 is Machine Learning." }]);
 });
 
 test("the assignment fact states the due date, points and submission state", () => {
@@ -60,4 +60,12 @@ test("an assignment with no due date says that plainly instead of omitting it", 
 
 test("with no course there are no facts at all", () => {
   expect(buildFacts(null, null, date)).toEqual([]);
+});
+
+// The chip text comes from the messages, so it follows the interface language.
+test("every fact names its source kind, and the assignment fact its title", () => {
+  const facts = buildFacts(course, assignment, date);
+  expect(facts.map((f) => f.source)).toEqual(["course", "instructor", "latePolicy", "officeHours", "meetingTimes", "assignment"]);
+  expect(facts.at(-1)?.name).toBe("Problem Set 2");
+  expect(facts[0].name).toBeUndefined();
 });

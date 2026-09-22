@@ -1,8 +1,8 @@
-import type { Fact } from "../ai/prompts/assistant";
+import type { Fact, FactSource } from "../ai/prompts/assistant";
 import { db } from "../db";
 
 // Every fact the assistant is allowed to state, gathered from synced Canvas data.
-// The label on each one becomes the source chip under the reply.
+// The source of each one becomes the translated chip under the reply.
 export function buildFacts(
   course: {
     code: string;
@@ -23,18 +23,19 @@ export function buildFacts(
   formatDate: (date: Date) => string,
 ): Fact[] {
   const facts: Fact[] = [];
-  const add = (label: string, text: string | null | undefined) => {
-    if (text) facts.push({ label, text });
+  const add = (source: FactSource, label: string, text: string | null | undefined, name?: string) => {
+    if (text) facts.push({ source, label, text, ...(name ? { name } : {}) });
   };
   if (course) {
-    add("Canvas · course", `${course.code} is ${course.name}.`);
-    add("Canvas · instructor", course.instructor ? `The instructor is ${course.instructor}.` : null);
-    add("Syllabus · late policy", course.latePolicy);
-    add("Syllabus · office hours", course.officeHours);
-    add("Syllabus · meeting times", course.meetingTimes);
+    add("course", "Canvas · course", `${course.code} is ${course.name}.`);
+    add("instructor", "Canvas · instructor", course.instructor ? `The instructor is ${course.instructor}.` : null);
+    add("latePolicy", "Syllabus · late policy", course.latePolicy);
+    add("officeHours", "Syllabus · office hours", course.officeHours);
+    add("meetingTimes", "Syllabus · meeting times", course.meetingTimes);
   }
   if (assignment) {
     add(
+      "assignment",
       `Canvas · ${assignment.title}`,
       [
         assignment.dueAt ? `Due ${formatDate(assignment.dueAt)}.` : "No due date is set in Canvas.",
@@ -45,6 +46,7 @@ export function buildFacts(
       ]
         .filter(Boolean)
         .join(" "),
+      assignment.title,
     );
   }
   return facts;

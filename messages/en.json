@@ -263,6 +263,14 @@
       "draft": "draft",
       "opened": "opened in your mail client"
     },
+    "sources": {
+      "course": "Canvas · course",
+      "instructor": "Canvas · instructor",
+      "latePolicy": "Syllabus · late policy",
+      "officeHours": "Syllabus · office hours",
+      "meetingTimes": "Syllabus · meeting times",
+      "assignment": "Canvas · {name}"
+    },
     "errors": {
       "missing": "Write a sentence about what happened.",
       "noEmail": "Enter the professor's email address first.",

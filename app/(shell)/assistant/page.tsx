@@ -108,7 +108,8 @@ export default async function AssistantPage({ searchParams }: PageProps<"/assist
                               title={source.text}
                               className="inline-flex h-6 items-center rounded-chip border border-border bg-surface px-[9px] text-[13px] font-semibold text-text-2"
                             >
-                              {source.label}
+                              {/* Replies saved before sources had a kind only carry the English label. */}
+                              {source.source ? t(`sources.${source.source}`, { name: source.name ?? "" }) : source.label}
                             </span>
                           ))}
                         </div>

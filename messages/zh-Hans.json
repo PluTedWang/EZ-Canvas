@@ -263,6 +263,14 @@
       "draft": "草稿",
       "opened": "已在邮件客户端打开"
     },
+    "sources": {
+      "course": "Canvas · 课程",
+      "instructor": "Canvas · 授课教师",
+      "latePolicy": "教学大纲 · 迟交规定",
+      "officeHours": "教学大纲 · 答疑时间",
+      "meetingTimes": "教学大纲 · 上课时间",
+      "assignment": "Canvas · {name}"
+    },
     "errors": {
       "missing": "请写一句说明发生了什么。",
       "noEmail": "请先填写教授的邮箱地址。",
