@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { openWork, visibleHours } from "../lib/calendar";
+import { allDayStart, openWork, visibleHours } from "../lib/calendar";
 
 const now = new Date("2026-09-16T12:00:00-04:00");
 const hours = (h: number) => h * 3600_000;
@@ -53,4 +53,10 @@ test("the week grid shows 9 to 7 and stretches for earlier or later lectures", (
   expect(visibleHours([event("2026-09-16T08:00:00", "2026-09-16T09:15:00")], ny)).toEqual({ first: 8, last: 19 });
   expect(visibleHours([event("2026-09-16T19:30:00", "2026-09-16T20:45:00")], ny)).toEqual({ first: 9, last: 21 });
   expect(visibleHours([event("2026-09-16T22:00:00", "2026-09-17T01:00:00")], ny)).toEqual({ first: 9, last: 24 });
+});
+// A London all-day event starts at 00:00 BST, which is 23:00 the day before in UTC.
+test("an all-day item keeps the student's local date in the feed", () => {
+  const start = new Date("2026-09-20T00:00:00+01:00");
+  expect(allDayStart(start, "Europe/London").toISOString()).toBe("2026-09-20T00:00:00.000Z");
+  expect(allDayStart(new Date("2026-09-20T00:00:00-04:00"), "America/New_York").toISOString()).toBe("2026-09-20T00:00:00.000Z");
 });

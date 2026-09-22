@@ -51,7 +51,8 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
 
   const events: GridEvent[] = [
     ...week.items
-      .filter((item) => item.source === "lecture" && filter.lectures && visible(item.courseId) && item.endAt)
+      // All-day items have no hours to draw; they stay out of the timed grid.
+      .filter((item) => item.source === "lecture" && filter.lectures && visible(item.courseId) && item.endAt && !item.allDay)
       .map((item) => ({
         id: item.id,
         title: item.title,

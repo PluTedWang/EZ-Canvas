@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { addDays, daysPerWeek, hourOfDay, sameDay } from "./week";
+import { addDays, daysPerWeek, hourOfDay, sameDay, zonedParts } from "./week";
 import { hoursLeft, predictHours } from "./predict";
 import { dayEndHour, dayStartHour, planStudyBlocks, type PlannedAssignment } from "./study-blocks";
 
@@ -23,7 +23,17 @@ export async function loadWeek(userId: string, weekStart: Date, timeZone: string
     db.calendarItem.findMany({
       where: { ...visibleItems(userId), startAt: { gte: weekStart, lte: weekEnd } },
       orderBy: { startAt: "asc" },
-      select: { id: true, courseId: true, assignmentId: true, source: true, title: true, startAt: true, endAt: true, location: true },
+      select: {
+        id: true,
+        courseId: true,
+        assignmentId: true,
+        source: true,
+        title: true,
+        startAt: true,
+        endAt: true,
+        allDay: true,
+        location: true,
+      },
     }),
     db.assignment.findMany({
       where: {
@@ -98,7 +108,7 @@ export function openWork({ assignments }: { assignments: WorkAssignment[] }, now
 // Proposals for the week, computed fresh each time; nothing is stored until the student accepts.
 export function proposeBlocks(week: Loaded, now: Date) {
   const busy = week.items
-    .filter((item) => item.endAt)
+    .filter((item) => item.endAt && !item.allDay)
     .map((item) => ({ start: item.startAt, end: item.endAt as Date }));
   const assignments: PlannedAssignment[] = openWork(week, now)
     .filter((a) => a.unplanned > 0)
@@ -120,15 +130,22 @@ export function visibleHours(events: { start: Date; end: Date }[], timeZone: str
 const feedPastDays = 28;
 const feedFutureDays = 120;
 
+// An all-day item is a calendar date, not an instant. iCalendar writes the date in UTC, so the
+// student's local date is moved to UTC midnight first.
+export function allDayStart(start: Date, timeZone: string) {
+  const p = zonedParts(start, timeZone);
+  return new Date(Date.UTC(p.year, p.month - 1, p.day));
+}
+
 // Everything the .ics feed carries: lectures, accepted study blocks and assignment deadlines.
-export async function feedEvents(userId: string, now = new Date()) {
+export async function feedEvents(userId: string, timeZone: string, now = new Date()) {
   const from = new Date(now.getTime() - feedPastDays * dayMs);
   const to = new Date(now.getTime() + feedFutureDays * dayMs);
   const [items, assignments] = await Promise.all([
     db.calendarItem.findMany({
       where: { ...visibleItems(userId), startAt: { gte: from, lte: to } },
       orderBy: { startAt: "asc" },
-      select: { id: true, title: true, startAt: true, endAt: true, location: true, source: true },
+      select: { id: true, title: true, startAt: true, endAt: true, allDay: true, location: true, source: true },
     }),
     db.assignment.findMany({
       where: { course: { userId, hidden: false }, dueAt: { gte: from, lte: to } },
@@ -140,9 +157,9 @@ export async function feedEvents(userId: string, now = new Date()) {
     ...items.map((item) => ({
       uid: item.id,
       title: item.title,
-      start: item.startAt,
+      start: item.allDay ? allDayStart(item.startAt, timeZone) : item.startAt,
       end: item.endAt,
-      allDay: false,
+      allDay: item.allDay,
       location: item.location,
       description: null,
     })),
