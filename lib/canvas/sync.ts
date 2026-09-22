@@ -28,10 +28,11 @@ const lectureFutureDays = 84;
 const courseConcurrency = 2;
 const isoDaysFromNow = (days: number) => new Date(Date.now() + days * day).toISOString();
 
-// Canvas answers 401 or 403 for course tabs the instructor hid; treat those as empty.
+// Canvas answers 401 or 403 for course tabs the instructor hid; treat those as empty. A rate
+// limited 403 fails the sync instead, or pruning would delete everything the tab lists.
 async function orEmpty<T>(request: Promise<T[]>) {
   return request.catch((error) => {
-    if (error instanceof CanvasError && (error.status === 401 || error.status === 403)) return [];
+    if (error instanceof CanvasError && !error.rateLimited && (error.status === 401 || error.status === 403)) return [];
     throw error;
   });
 }

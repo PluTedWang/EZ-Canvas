@@ -4,8 +4,10 @@ export class CanvasError extends Error {
   constructor(
     public status: number,
     public path: string,
+    // Canvas answers a spent rate limit with 403 too; it must not read as "tab hidden".
+    public rateLimited = false,
   ) {
-    super(`Canvas responded ${status} for ${path}`);
+    super(`Canvas responded ${status} for ${path}${rateLimited ? " (rate limited)" : ""}`);
   }
 }
 
@@ -52,7 +54,7 @@ export function createCanvasClient({
       await sleep(retryMs);
       return request(url, path, redirect, attempt + 1);
     }
-    if (!res.ok) throw new CanvasError(res.status, path);
+    if (!res.ok) throw new CanvasError(res.status, path, res.status === 403 && remaining <= 0);
     if (remaining < lowWater) await sleep(throttleMs);
     return res;
   }

@@ -75,3 +75,20 @@ test("other errors throw a CanvasError with the status and path", async () => {
     new CanvasError(401, "/users/self/profile"),
   );
 });
+
+// A hidden course tab and a spent rate limit both answer 403; only the second is marked.
+test("a 403 that is still rate limited after the retries is marked as such", async () => {
+  vi.useFakeTimers();
+  const limited = { status: 403, body: "Rate Limit Exceeded", headers: { "x-rate-limit-remaining": "0" } };
+  const { fetchImpl } = fakeFetch([limited, limited, limited, limited]);
+  const client = createCanvasClient({ baseUrl: "https://x.edu", token: "tok", fetchImpl });
+  const pending = client.getAll("/courses/1/files").catch((error) => error);
+  await vi.runAllTimersAsync();
+  expect(await pending).toMatchObject({ status: 403, rateLimited: true });
+
+  const { fetchImpl: hidden } = fakeFetch([{ status: 403, body: "unauthorized" }]);
+  const error = await createCanvasClient({ baseUrl: "https://x.edu", token: "tok", fetchImpl: hidden })
+    .getAll("/courses/1/files")
+    .catch((e) => e);
+  expect(error).toMatchObject({ status: 403, rateLimited: false });
+});
