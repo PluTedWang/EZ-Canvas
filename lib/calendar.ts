@@ -6,6 +6,9 @@ import { planStudyBlocks, type PlannedAssignment } from "./study-blocks";
 const hourMs = 60 * 60 * 1000;
 const dayMs = 24 * hourMs;
 
+// Calendar items of hidden courses stay out, like their assignments. Study blocks without a course stay in.
+const visibleItems = (userId: string) => ({ userId, OR: [{ courseId: null }, { course: { hidden: false } }] });
+
 const endOfWeek = (weekStart: Date, timeZone: string) => new Date(addDays(weekStart, daysPerWeek, timeZone).getTime() - 1);
 
 export async function loadWeek(userId: string, weekStart: Date, timeZone: string) {
@@ -17,7 +20,7 @@ export async function loadWeek(userId: string, weekStart: Date, timeZone: string
       select: { id: true, code: true, color: true, latePolicy: true },
     }),
     db.calendarItem.findMany({
-      where: { userId, startAt: { gte: weekStart, lte: weekEnd } },
+      where: { ...visibleItems(userId), startAt: { gte: weekStart, lte: weekEnd } },
       orderBy: { startAt: "asc" },
       select: { id: true, courseId: true, assignmentId: true, source: true, title: true, startAt: true, endAt: true, location: true },
     }),
@@ -108,7 +111,7 @@ export async function feedEvents(userId: string, now = new Date()) {
   const to = new Date(now.getTime() + feedFutureDays * dayMs);
   const [items, assignments] = await Promise.all([
     db.calendarItem.findMany({
-      where: { userId, startAt: { gte: from, lte: to } },
+      where: { ...visibleItems(userId), startAt: { gte: from, lte: to } },
       orderBy: { startAt: "asc" },
       select: { id: true, title: true, startAt: true, endAt: true, location: true, source: true },
     }),
