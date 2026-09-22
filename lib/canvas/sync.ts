@@ -177,11 +177,25 @@ async function syncGroups(api: Api, userId: string, courseIds: Map<number, strin
   return groups.length;
 }
 
+// A claim older than this belongs to a run that crashed, and may be taken over.
+const staleSyncMs = 30 * 60 * 1000;
+
+// Claims the connection in one conditional update, so two servers or two triggers cannot both win.
+async function claimSync(connectionId: string) {
+  const claimed = await db.connection.updateMany({
+    where: { id: connectionId, OR: [{ syncStartedAt: null }, { syncStartedAt: { lt: new Date(Date.now() - staleSyncMs) } }] },
+    data: { syncStartedAt: new Date() },
+  });
+  return claimed.count > 0;
+}
+
+// Returns null when another sync of this connection is already running.
 export async function syncCanvas(connectionId: string) {
-  const connection = await db.connection.findUniqueOrThrow({ where: { id: connectionId } });
-  const api = canvas(connection.baseUrl, decrypt(connection.token));
+  if (!(await claimSync(connectionId))) return null;
   const counts = { courses: 0, assignments: 0, materials: 0, lectures: 0, groups: 0 };
   try {
+    const connection = await db.connection.findUniqueOrThrow({ where: { id: connectionId } });
+    const api = canvas(connection.baseUrl, decrypt(connection.token));
     const rawCourses = await api.courses();
     const courseIds = new Map<number, string>();
     // Courses are created one at a time so each gets the next color.
@@ -198,10 +212,13 @@ export async function syncCanvas(connectionId: string) {
     counts.lectures = await syncLectures(api, connection.userId, courseIds);
     counts.groups = await syncGroups(api, connection.userId, courseIds);
 
-    await db.connection.update({ where: { id: connectionId }, data: { lastSyncAt: new Date(), status: "connected" } });
+    await db.connection.update({
+      where: { id: connectionId },
+      data: { lastSyncAt: new Date(), status: "connected", syncStartedAt: null },
+    });
     return counts;
   } catch (error) {
-    await db.connection.update({ where: { id: connectionId }, data: { status: "error" } });
+    await db.connection.update({ where: { id: connectionId }, data: { status: "error", syncStartedAt: null } });
     throw error;
   }
 }

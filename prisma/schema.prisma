@@ -49,15 +49,17 @@ model VerificationToken {
 }
 
 model Connection {
-  id         String    @id @default(cuid())
-  userId     String
-  type       String
-  baseUrl    String
-  token      String    // encrypted with lib/crypto.ts
-  status     String    @default("connected")
-  lastSyncAt DateTime?
-  createdAt  DateTime  @default(now())
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String    @id @default(cuid())
+  userId        String
+  type          String
+  baseUrl       String
+  token         String    // encrypted with lib/crypto.ts
+  status        String    @default("connected")
+  lastSyncAt    DateTime?
+  // Set while a sync runs, so the timer, onboarding and Sync now never run two at once.
+  syncStartedAt DateTime?
+  createdAt     DateTime  @default(now())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, type])
 }
