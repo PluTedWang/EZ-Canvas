@@ -20,7 +20,14 @@ test("a reverse proxy's forwarded host and protocol are respected", () => {
   );
 });
 
+test("forwarded headers holding a list use the first entry", () => {
+  expect(originFrom(undefined, headers({ "x-forwarded-host": "ezcanvas.app, proxy.internal", "x-forwarded-proto": "https,http" }))).toBe(
+    "https://ezcanvas.app",
+  );
+});
+
 test("only a local feed address gets the download hint", () => {
+  expect(isLocalOrigin("http://localhost/api/calendar/x")).toBe(true);
   expect(isLocalOrigin("http://localhost:3000/api/calendar/x")).toBe(true);
   expect(isLocalOrigin("http://127.0.0.1:3000")).toBe(true);
   expect(isLocalOrigin("https://ezcanvas.app/api/calendar/x")).toBe(false);
