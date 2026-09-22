@@ -40,15 +40,20 @@ export async function saveAiKey(formData: FormData) {
   if (!key) redirect("/settings?error=missing");
 
   try {
-    await anthropicProvider(key).complete({ system: "Reply with the word OK.", messages: [{ role: "user", content: "OK?" }], maxTokens: 16 });
+    await anthropicProvider(key).complete({
+      system: "Reply with the word OK.",
+      messages: [{ role: "user", content: "OK?" }],
+      maxTokens: 16,
+      tier: "fast",
+    });
   } catch (error) {
     redirect(`/settings?error=${error instanceof AiError ? error.kind : "request"}`);
   }
-  await db.user.update({ where: { id }, data: { aiProvider: "anthropic", aiKey: encrypt(key) } });
+  await db.user.update({ where: { id }, data: { aiProvider: "anthropic", aiKey: encrypt(key), aiKeyHint: key.slice(-4) } });
   redirect("/settings");
 }
 
 export async function removeAiKey() {
-  await db.user.update({ where: { id: await userId() }, data: { aiProvider: null, aiKey: null } });
+  await db.user.update({ where: { id: await userId() }, data: { aiProvider: null, aiKey: null, aiKeyHint: null } });
   redirect("/settings");
 }

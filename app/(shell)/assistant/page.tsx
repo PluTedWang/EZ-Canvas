@@ -1,11 +1,10 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { Button } from "@/components/Button";
 import { EmailDraftCard } from "@/components/EmailDraftCard";
 import { SparklesIcon } from "@/components/icons";
 import type { Fact } from "@/lib/ai/prompts/assistant";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/session";
 import { db } from "@/lib/db";
 import { startConversation } from "./actions";
 
@@ -13,26 +12,21 @@ const situations = ["missedDeadline", "extension", "grade", "absence", "officeHo
 const field = "h-10 rounded-control border border-control-border bg-surface px-3 text-[15px] text-text";
 
 export default async function AssistantPage({ searchParams }: PageProps<"/assistant">) {
-  const session = await auth();
-  if (!session?.user?.id) redirect("/signin");
+  const user = await requireUser();
   const query = await searchParams;
   const situation = situations.find((s) => s === query.situation) ?? "missedDeadline";
   const error = typeof query.error === "string" ? query.error : undefined;
 
-  const [t, format, user, courses, recent] = await Promise.all([
+  const [t, format, courses, recent] = await Promise.all([
     getTranslations("assistant"),
     getFormatter(),
-    db.user.findUniqueOrThrow({
-      where: { id: session.user.id },
-      select: { aiKey: true, writingLanguage: true, explanationLanguage: true },
-    }),
     db.course.findMany({
-      where: { userId: session.user.id, hidden: false },
+      where: { userId: user.id, hidden: false },
       orderBy: { canvasId: "asc" },
       select: { id: true, code: true, assignments: { orderBy: { dueAt: "desc" }, select: { id: true, title: true } } },
     }),
     db.conversation.findMany({
-      where: { userId: session.user.id, kind: "assistant" },
+      where: { userId: user.id, kind: "assistant" },
       orderBy: { createdAt: "desc" },
       take: 8,
       select: { id: true, title: true, createdAt: true, draft: { select: { openedAt: true } } },
@@ -42,7 +36,7 @@ export default async function AssistantPage({ searchParams }: PageProps<"/assist
   const open =
     typeof query.c === "string"
       ? await db.conversation.findFirst({
-          where: { id: query.c, userId: session.user.id },
+          where: { id: query.c, userId: user.id },
           include: { messages: { orderBy: { createdAt: "asc" } }, draft: true, course: { select: { code: true } } },
         })
       : null;
@@ -114,7 +108,8 @@ export default async function AssistantPage({ searchParams }: PageProps<"/assist
                               title={source.text}
                               className="inline-flex h-6 items-center rounded-chip border border-border bg-surface px-[9px] text-[13px] font-semibold text-text-2"
                             >
-                              {source.label}
+                              {/* Replies saved before sources had a kind only carry the English label. */}
+                              {source.source ? t(`sources.${source.source}`, { name: source.name ?? "" }) : source.label}
                             </span>
                           ))}
                         </div>
@@ -155,13 +150,15 @@ export default async function AssistantPage({ searchParams }: PageProps<"/assist
                 <span className="text-[14px] font-semibold">{t("assignment")}</span>
                 <select name="assignmentId" className={field} defaultValue="">
                   <option value="">{t("noAssignment")}</option>
-                  {courses.flatMap((course) =>
-                    course.assignments.map((assignment) => (
-                      <option key={assignment.id} value={assignment.id}>
-                        {course.code} · {assignment.title}
-                      </option>
-                    )),
-                  )}
+                  {courses.map((course) => (
+                    <optgroup key={course.id} label={course.code}>
+                      {course.assignments.map((assignment) => (
+                        <option key={assignment.id} value={assignment.id}>
+                          {assignment.title}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
                 </select>
               </label>
               <label className="flex flex-col gap-[6px]">

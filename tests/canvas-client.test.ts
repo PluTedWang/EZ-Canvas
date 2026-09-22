@@ -40,7 +40,18 @@ test("getAll follows pagination and sends the token, per_page and array params",
   expect(calls[1]).toBe("https://x.edu/api/v1/courses?page=2");
   expect((fetchImpl as ReturnType<typeof vi.fn>).mock.calls[0][1]).toEqual({
     headers: { Authorization: "Bearer tok" },
+    redirect: "error",
   });
+});
+
+test("downloads follow redirects but only start on the Canvas host", async () => {
+  const { fetchImpl, calls } = fakeFetch([{ body: "pdf" }]);
+  const client = createCanvasClient({ baseUrl: "https://x.edu", token: "tok", fetchImpl });
+  await client.getBytes("https://x.edu/files/5/download?verifier=abc");
+  expect(calls).toEqual(["https://x.edu/files/5/download?verifier=abc"]);
+  expect((fetchImpl as ReturnType<typeof vi.fn>).mock.calls[0][1]).toMatchObject({ redirect: "follow" });
+  await expect(client.getBytes("http://169.254.169.254/latest/meta-data")).rejects.toMatchObject({ status: 0 });
+  expect(calls).toHaveLength(1);
 });
 
 test("a rate limited 403 is retried after a pause", async () => {
@@ -63,4 +74,21 @@ test("other errors throw a CanvasError with the status and path", async () => {
   await expect(client.get("/users/self/profile")).rejects.toMatchObject(
     new CanvasError(401, "/users/self/profile"),
   );
+});
+
+// A hidden course tab and a spent rate limit both answer 403; only the second is marked.
+test("a 403 that is still rate limited after the retries is marked as such", async () => {
+  vi.useFakeTimers();
+  const limited = { status: 403, body: "Rate Limit Exceeded", headers: { "x-rate-limit-remaining": "0" } };
+  const { fetchImpl } = fakeFetch([limited, limited, limited, limited]);
+  const client = createCanvasClient({ baseUrl: "https://x.edu", token: "tok", fetchImpl });
+  const pending = client.getAll("/courses/1/files").catch((error) => error);
+  await vi.runAllTimersAsync();
+  expect(await pending).toMatchObject({ status: 403, rateLimited: true });
+
+  const { fetchImpl: hidden } = fakeFetch([{ status: 403, body: "unauthorized" }]);
+  const error = await createCanvasClient({ baseUrl: "https://x.edu", token: "tok", fetchImpl: hidden })
+    .getAll("/courses/1/files")
+    .catch((e) => e);
+  expect(error).toMatchObject({ status: 403, rateLimited: false });
 });

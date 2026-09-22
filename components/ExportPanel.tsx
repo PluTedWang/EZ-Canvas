@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { isLocalOrigin } from "@/lib/app-url";
 
 // Google and Apple both subscribe to the same feed URL, so one link each is enough.
 export async function ExportPanel({ feedUrl }: { feedUrl: string }) {
@@ -33,7 +34,7 @@ export async function ExportPanel({ feedUrl }: { feedUrl: string }) {
           {t("download")}
         </a>
       </div>
-      <p className="text-[13px] leading-[1.45] text-text-3">{t("localhostNote")}</p>
+      {isLocalOrigin(feedUrl) && <p className="text-[13px] leading-[1.45] text-text-3">{t("localhostNote")}</p>}
     </section>
   );
 }

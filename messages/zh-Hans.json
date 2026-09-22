@@ -9,15 +9,10 @@
     "dashboard": "首页",
     "calendar": "日历",
     "courses": "课程",
-    "groups": "小组项目",
-    "homework": "作业助手",
     "assistant": "学习助手",
     "settings": "设置"
   },
   "topBar": {
-    "search": "搜索",
-    "searchPlaceholder": "搜索课程、文件和截止日期",
-    "notifications": "通知",
     "syncedAgo": "Canvas 同步于{ago}",
     "syncPending": "Canvas 等待同步",
     "syncFailed": "Canvas 同步失败"
@@ -54,7 +49,8 @@
       "continue": "继续",
       "errors": {
         "missing": "请填写 Canvas 网址和访问令牌。",
-        "token": "Canvas 不接受这个令牌。请检查网址和令牌后重试。"
+        "token": "Canvas 不接受这个令牌。请检查网址和令牌后重试。",
+        "host": "请填写学校的 Canvas 网址，以 https:// 开头。"
       }
     }
   },
@@ -166,6 +162,7 @@
     "submitted": "{title} 已提交",
     "aboutLeft": "约剩 {hours} 小时",
     "suggested": "建议",
+    "timeRange": "{start}至{end}",
     "filters": {
       "lectures": "课程安排",
       "blocks": "建议的学习时段"
@@ -265,6 +262,14 @@
     "status": {
       "draft": "草稿",
       "opened": "已在邮件客户端打开"
+    },
+    "sources": {
+      "course": "Canvas · 课程",
+      "instructor": "Canvas · 授课教师",
+      "latePolicy": "教学大纲 · 迟交规定",
+      "officeHours": "教学大纲 · 答疑时间",
+      "meetingTimes": "教学大纲 · 上课时间",
+      "assignment": "Canvas · {name}"
     },
     "errors": {
       "missing": "请写一句说明发生了什么。",

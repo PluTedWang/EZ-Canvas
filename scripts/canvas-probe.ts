@@ -1,14 +1,17 @@
 // Prints what Canvas returns for a token, or for the fixtures with CANVAS_MOCK=1.
-// Usage: CANVAS_TOKEN=... npm run canvas:probe   or   CANVAS_MOCK=1 npm run canvas:probe
+// Usage: CANVAS_BASE_URL=https://canvas.school.edu CANVAS_TOKEN=... npm run canvas:probe
+//        CANVAS_MOCK=1 npm run canvas:probe
 import { canvas } from "../lib/canvas";
+import { mockBaseUrl } from "../lib/canvas/mock";
 import { parseSyllabus } from "../lib/canvas/syllabus";
 
-const baseUrl = process.env.CANVAS_BASE_URL ?? process.env.CANVAS_DEFAULT_BASE_URL ?? "https://canvas.cornell.edu";
+const mock = process.env.CANVAS_MOCK === "1";
+const baseUrl = process.env.CANVAS_BASE_URL || process.env.CANVAS_DEFAULT_BASE_URL || (mock ? mockBaseUrl : "");
 const token = process.env.CANVAS_TOKEN ?? "";
 
 async function main() {
-  if (!token && process.env.CANVAS_MOCK !== "1") {
-    console.error("Set CANVAS_TOKEN, or CANVAS_MOCK=1 to use the fixtures.");
+  if (!mock && (!token || !baseUrl)) {
+    console.error("Set CANVAS_TOKEN and CANVAS_BASE_URL (your school's Canvas address), or CANVAS_MOCK=1 to use the fixtures.");
     process.exit(1);
   }
 

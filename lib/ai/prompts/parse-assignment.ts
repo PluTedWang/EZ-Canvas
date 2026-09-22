@@ -55,6 +55,7 @@ export async function parseAssignment(
     messages: [{ role: "user", content: source }],
     maxTokens,
     json: true,
+    tier: "fast",
   });
   return parseQuestions(reply);
 }

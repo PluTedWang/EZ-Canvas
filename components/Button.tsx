@@ -8,10 +8,14 @@ const base = "inline-flex shrink-0 items-center justify-center gap-2 whitespace-
 const sizes = {
   regular: "h-11 rounded-control px-5 text-[16px]",
   small: "h-9 rounded-[9px] px-[14px] text-[14.5px] [&>svg]:h-[15px] [&>svg]:w-[15px]",
+  chip: "h-7 rounded-chip px-3 text-[13.5px]",
 };
 const variants = {
   primary: "bg-teal text-white",
   secondary: "border border-control-border bg-surface text-text hover:border-teal",
+  // A segment in a row of choices, like the tone switch; "selected" is the one in use.
+  choice: "border border-control-border bg-surface text-text-2",
+  selected: "border border-teal bg-teal text-white",
 };
 
 type Variant = keyof typeof variants;

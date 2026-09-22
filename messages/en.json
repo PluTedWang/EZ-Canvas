@@ -9,15 +9,10 @@
     "dashboard": "Dashboard",
     "calendar": "Calendar",
     "courses": "Courses",
-    "groups": "Group projects",
-    "homework": "Homework helper",
     "assistant": "Study assistant",
     "settings": "Settings"
   },
   "topBar": {
-    "search": "Search",
-    "searchPlaceholder": "Search courses, files, deadlines",
-    "notifications": "Notifications",
     "syncedAgo": "Canvas synced {ago}",
     "syncPending": "Canvas sync pending",
     "syncFailed": "Canvas sync failed"
@@ -54,7 +49,8 @@
       "continue": "Continue",
       "errors": {
         "missing": "Enter your Canvas URL and the access token.",
-        "token": "Canvas did not accept that token. Check the URL and the token and try again."
+        "token": "Canvas did not accept that token. Check the URL and the token and try again.",
+        "host": "Use your school's Canvas address, starting with https://."
       }
     }
   },
@@ -166,6 +162,7 @@
     "submitted": "{title} submitted",
     "aboutLeft": "about {hours} h left",
     "suggested": "suggested",
+    "timeRange": "{start} to {end}",
     "filters": {
       "lectures": "Lectures",
       "blocks": "Suggested study blocks"
@@ -265,6 +262,14 @@
     "status": {
       "draft": "draft",
       "opened": "opened in your mail client"
+    },
+    "sources": {
+      "course": "Canvas · course",
+      "instructor": "Canvas · instructor",
+      "latePolicy": "Syllabus · late policy",
+      "officeHours": "Syllabus · office hours",
+      "meetingTimes": "Syllabus · meeting times",
+      "assignment": "Canvas · {name}"
     },
     "errors": {
       "missing": "Write a sentence about what happened.",

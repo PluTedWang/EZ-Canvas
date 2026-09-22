@@ -3,10 +3,14 @@
 
 export type Message = { role: "user" | "assistant"; content: string };
 
+// Writing the student reads or sends uses the stronger model; extraction and checks use the fast one.
+export type ModelTier = "writing" | "fast";
+
 export type CompleteInput = {
   system: string;
   messages: Message[];
-  maxTokens?: number;
+  maxTokens: number;
+  tier?: ModelTier;
   // Ask the provider for JSON only. The caller still validates the shape.
   json?: boolean;
 };

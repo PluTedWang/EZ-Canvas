@@ -80,3 +80,21 @@ test("a Chinese draft is checked the same way as an English one", () => {
   expect(result.passed.noFiller).toBe(true);
   expect(result.words).toBeGreaterThan(20);
 });
+
+// Students writing to a professor in Chinese get the same three checks.
+test("a natural Chinese draft passes and a padded one fails", () => {
+  const natural = ["陈教授您好：", "我错过了周二的作业二截止时间。我14号和15号生病了。", "作业已经完成，今天可以提交。请问能否按照教学大纲的病假规定处理迟交扣分？", "谢谢！", "王同学"].join("\n");
+  const paddedZh = [
+    "陈教授您好：",
+    "希望您一切安好。非常抱歉打扰您了。",
+    "我因为生病错过了截止时间，由于身体原因没能完成。",
+    "对不起，是我的错。",
+    "请问能否免除扣分？可以回复我吗？",
+  ].join("\n");
+  expect(styleCheck(natural, "zh-Hans").passed).toEqual({ statedOnce: true, oneAsk: true, noFiller: true });
+  expect(styleCheck(paddedZh, "zh-Hans").passed).toEqual({ statedOnce: false, oneAsk: false, noFiller: false });
+});
+
+test("an unknown language falls back to the English lists", () => {
+  expect(styleCheck("I hope this email finds you well.", "klingon").passed.noFiller).toBe(false);
+});

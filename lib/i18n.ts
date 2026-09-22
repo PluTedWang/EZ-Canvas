@@ -1,27 +1,22 @@
 import { cookies } from "next/headers";
 import { getRequestConfig } from "next-intl/server";
-import { auth } from "./auth";
-import { db } from "./db";
 import { defaultLocale, isLocale, localeCookie } from "./locales";
+import { currentUser } from "./session";
+import { defaultTimeZone } from "./week";
 
-// The signed in user's interface language wins; the cookie covers signed out pages.
-async function currentLocale() {
-  const session = await auth();
-  if (session?.user?.id) {
-    const user = await db.user.findUnique({
-      where: { id: session.user.id },
-      select: { interfaceLanguage: true },
-    });
-    if (isLocale(user?.interfaceLanguage)) return user.interfaceLanguage;
-  }
+// The signed in user's interface language and time zone win; the cookie covers signed out pages.
+async function currentSettings() {
+  const user = await currentUser();
+  if (user && isLocale(user.interfaceLanguage)) return { locale: user.interfaceLanguage, timeZone: user.timeZone };
   const stored = (await cookies()).get(localeCookie)?.value;
-  return isLocale(stored) ? stored : defaultLocale;
+  return { locale: isLocale(stored) ? stored : defaultLocale, timeZone: user?.timeZone ?? defaultTimeZone };
 }
 
 export default getRequestConfig(async () => {
-  const locale = await currentLocale();
+  const { locale, timeZone } = await currentSettings();
   return {
     locale,
+    timeZone,
     messages: (await import(`../messages/${locale}.json`)).default,
   };
 });

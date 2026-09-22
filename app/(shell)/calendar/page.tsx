@@ -1,7 +1,5 @@
-import { headers } from "next/headers";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getFormatter, getTimeZone, getTranslations } from "next-intl/server";
 import { Button } from "@/components/Button";
 import { CalendarFilters, type CalendarFilter } from "@/components/CalendarFilters";
 import { ExportPanel } from "@/components/ExportPanel";
@@ -11,42 +9,40 @@ import { TodayPanel, type TodayEntry } from "@/components/TodayPanel";
 import { WeekGrid, type GridDue, type GridEvent } from "@/components/WeekGrid";
 import { WeekPlanCard } from "@/components/WeekPlanCard";
 import { openExport } from "./actions";
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { appOrigin } from "@/lib/app-url";
 import { loadWeek, openWork, proposeBlocks } from "@/lib/calendar";
-import { addDays, daysPerWeek, parseWeekParam, startOfWeek } from "@/lib/week";
-import { daysBetween } from "@/lib/due";
+import { requireUser } from "@/lib/session";
+import { addDays, dayKey, daysBetween, daysPerWeek, parseWeekParam, sameDay, startOfWeek } from "@/lib/week";
 
 const navButton = "flex h-9 w-9 items-center justify-center rounded-[9px] border border-border bg-surface text-text-2 hover:border-teal";
-const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
 
 export default async function CalendarPage({ searchParams }: PageProps<"/calendar">) {
-  const session = await auth();
-  if (!session?.user?.id) redirect("/signin");
+  const user = await requireUser();
   const query = await searchParams;
   const now = new Date();
+  const timeZone = await getTimeZone();
+  const isThisWeek = (start: Date) => sameDay(start, startOfWeek(now, timeZone), timeZone);
 
-  const weekStart = startOfWeek(parseWeekParam(query.week, now));
+  const weekStart = startOfWeek(parseWeekParam(query.week, timeZone, now), timeZone);
   const filter: CalendarFilter = {
     courses: typeof query.course === "string" && query.course ? query.course.split(",") : [],
     lectures: query.lectures !== "0",
     blocks: query.blocks !== "0",
   };
   const params = new URLSearchParams();
-  if (!sameDay(weekStart, startOfWeek(now))) params.set("week", weekStart.toISOString().slice(0, 10));
+  if (!isThisWeek(weekStart)) params.set("week", dayKey(weekStart, timeZone));
   if (filter.courses.length > 0) params.set("course", filter.courses.join(","));
   if (!filter.lectures) params.set("lectures", "0");
   if (!filter.blocks) params.set("blocks", "0");
 
-  const [t, format, week, user] = await Promise.all([
+  const [t, format, week] = await Promise.all([
     getTranslations("calendar"),
     getFormatter(),
-    loadWeek(session.user.id, weekStart),
-    db.user.findUniqueOrThrow({ where: { id: session.user.id }, select: { calendarToken: true } }),
+    loadWeek(user.id, weekStart, timeZone, now),
   ]);
   const showExport = query.export === "1" && user.calendarToken !== null;
-  const feedUrl = showExport ? `${new URL((await headers()).get("referer") ?? "http://localhost:3000").origin}/api/calendar/${user.calendarToken}` : "";
-  const colorOf = new Map(week.courses.map((c) => [c.id, c.color]));
+  const feedUrl = showExport ? `${await appOrigin()}/api/calendar/${user.calendarToken}` : "";
+  const colorOf = new Map<string, number>(week.courses.map((c) => [c.id, c.color]));
   const visible = (courseId: string | null) => filter.courses.length === 0 || (courseId !== null && filter.courses.includes(courseId));
 
   const accepted = week.items.filter((item) => item.source === "study" && visible(item.courseId) && filter.blocks);
@@ -55,7 +51,8 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
 
   const events: GridEvent[] = [
     ...week.items
-      .filter((item) => item.source === "lecture" && filter.lectures && visible(item.courseId) && item.endAt)
+      // All-day items have no hours to draw; they stay out of the timed grid.
+      .filter((item) => item.source === "lecture" && filter.lectures && visible(item.courseId) && item.endAt && !item.allDay)
       .map((item) => ({
         id: item.id,
         title: item.title,
@@ -87,7 +84,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
       })),
   ];
 
-  const weekEnd = addDays(weekStart, daysPerWeek);
+  const weekEnd = addDays(weekStart, daysPerWeek, timeZone);
   const due: GridDue[] = week.assignments
     .filter((a) => a.dueAt && a.dueAt >= weekStart && a.dueAt < weekEnd && visible(a.courseId))
     .map((a) => ({
@@ -111,7 +108,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
 
   const entries: TodayEntry[] = [
     ...week.items
-      .filter((item) => sameDay(item.startAt, now) && visible(item.courseId))
+      .filter((item) => sameDay(item.startAt, now, timeZone) && visible(item.courseId))
       .map((item) => ({
         id: item.id,
         when: item.startAt,
@@ -121,7 +118,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
         past: item.endAt ? item.endAt < now : false,
       })),
     ...proposals
-      .filter((block) => sameDay(block.start, now))
+      .filter((block) => sameDay(block.start, now, timeZone))
       .map((block, index) => ({
         id: `today-proposal-${index}`,
         when: block.start,
@@ -131,7 +128,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
         past: false,
       })),
     ...week.assignments
-      .filter((a) => a.dueAt && !a.submittedAt && daysBetween(now, a.dueAt) === 1 && visible(a.courseId))
+      .filter((a) => a.dueAt && !a.submittedAt && daysBetween(now, a.dueAt, timeZone) === 1 && visible(a.courseId))
       .map((a) => {
         const course = week.courses.find((c) => c.id === a.courseId);
         return {
@@ -147,8 +144,8 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
 
   const weekHref = (start: Date) => {
     const next = new URLSearchParams(params);
-    if (sameDay(start, startOfWeek(now))) next.delete("week");
-    else next.set("week", start.toISOString().slice(0, 10));
+    if (isThisWeek(start)) next.delete("week");
+    else next.set("week", dayKey(start, timeZone));
     return `/calendar${next.size > 0 ? `?${next}` : ""}`;
   };
 
@@ -157,14 +154,14 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
       <div className="flex items-center gap-[14px]">
         <h1 className="font-title text-[32px] tracking-[-0.01em]">{format.dateTime(weekStart, { month: "long", year: "numeric" })}</h1>
         <div className="flex gap-1">
-          <Link href={weekHref(addDays(weekStart, -daysPerWeek))} aria-label={t("previousWeek")} className={navButton}>
+          <Link href={weekHref(addDays(weekStart, -daysPerWeek, timeZone))} aria-label={t("previousWeek")} className={navButton}>
             <ChevronLeftIcon className="h-[18px] w-[18px]" />
           </Link>
-          <Link href={weekHref(addDays(weekStart, daysPerWeek))} aria-label={t("nextWeek")} className={navButton}>
+          <Link href={weekHref(addDays(weekStart, daysPerWeek, timeZone))} aria-label={t("nextWeek")} className={navButton}>
             <ChevronRightIcon className="h-[18px] w-[18px]" />
           </Link>
         </div>
-        <Link href={weekHref(startOfWeek(now))} className="inline-flex h-9 items-center rounded-[9px] border border-control-border bg-surface px-4 text-[14.5px] font-semibold hover:border-teal">
+        <Link href={weekHref(startOfWeek(now, timeZone))} className="inline-flex h-9 items-center rounded-[9px] border border-control-border bg-surface px-4 text-[14.5px] font-semibold hover:border-teal">
           {t("today.label")}
         </Link>
         <div className="grow" />
@@ -182,7 +179,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
         <aside className="flex w-80 shrink-0 flex-col gap-4">
           <TodayPanel now={now} entries={entries} />
           <TimeNeededCard rows={rows} />
-          <WeekPlanCard blocks={proposals} weekStart={weekStart} openHours={work.reduce((total, item) => total + item.left, 0)} />
+          <WeekPlanCard blocks={proposals} weekStart={weekStart} openHours={work.reduce((total, item) => total + item.unplanned, 0)} />
           {showExport && <ExportPanel feedUrl={feedUrl} />}
         </aside>
       </div>

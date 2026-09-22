@@ -24,7 +24,6 @@ export async function loadCourse(userId: string, courseId: string) {
           url: true,
           contentType: true,
           notes: true,
-          notesHash: true,
           notesAt: true,
           unsupported: true,
           firstSeenAt: true,

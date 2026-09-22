@@ -1,4 +1,4 @@
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getFormatter, getTimeZone, getTranslations } from "next-intl/server";
 import { Card, cardRowClass, EmptyRow } from "@/components/Card";
 import { courseSolid } from "@/components/course-color";
 import { ClockIcon } from "@/components/icons";
@@ -14,11 +14,11 @@ const toneClass: Record<DueTone, string> = {
 };
 
 export async function DueSoonList({ items, now }: { items: Dashboard["dueSoon"]; now: Date }) {
-  const [t, format] = await Promise.all([getTranslations("dashboard"), getFormatter()]);
+  const [t, format, timeZone] = await Promise.all([getTranslations("dashboard"), getFormatter(), getTimeZone()]);
 
   const hours = items.reduce((total, item) => total + item.prediction.hours, 0);
   const label = (item: Dashboard["dueSoon"][number]) => {
-    const { label: kind } = dueChip(item.dueAt, now);
+    const { label: kind } = dueChip(item.dueAt, now, timeZone);
     const time = format.dateTime(item.dueAt, { timeStyle: "short" });
     if (kind === "overdue") return t("dueSoon.overdue", { ago: format.relativeTime(item.dueAt, now) });
     if (kind === "today") return t("dueSoon.today", { time });
@@ -39,7 +39,7 @@ export async function DueSoonList({ items, now }: { items: Dashboard["dueSoon"];
     >
       {items.length === 0 && <EmptyRow>{t("dueSoon.empty", { days: dueSoonDays })}</EmptyRow>}
       {items.map((item) => {
-        const { tone } = dueChip(item.dueAt, now);
+        const { tone } = dueChip(item.dueAt, now, timeZone);
         const meta = [item.courseCode, item.points ? t("points", { points: item.points }) : null, submissionTypeLabel(t, item.submissionType)]
           .filter(Boolean)
           .join(" · ");

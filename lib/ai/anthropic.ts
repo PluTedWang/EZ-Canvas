@@ -1,19 +1,23 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { AiError, type AiProvider, type CompleteInput } from "./types";
+import { AiError, type AiProvider, type CompleteInput, type ModelTier } from "./types";
 
-export const anthropicModel = "claude-opus-5";
-const defaultMaxTokens = 16000;
+// The student's own key pays for every request, so each task uses the smallest model that does it
+// well. ANTHROPIC_MODEL and ANTHROPIC_FAST_MODEL override the defaults when models are renamed.
+export const anthropicModels: Record<ModelTier, string> = {
+  writing: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
+  fast: process.env.ANTHROPIC_FAST_MODEL || "claude-haiku-4-5-20251001",
+};
 const jsonInstruction = "Reply with one JSON object and nothing else. No prose, no code fence.";
 
 export function anthropicProvider(apiKey: string): AiProvider {
   const client = new Anthropic({ apiKey });
 
   return {
-    async complete({ system, messages, maxTokens, json }: CompleteInput) {
+    async complete({ system, messages, maxTokens, json, tier = "writing" }: CompleteInput) {
       try {
         const response = await client.messages.create({
-          model: anthropicModel,
-          max_tokens: maxTokens ?? defaultMaxTokens,
+          model: anthropicModels[tier],
+          max_tokens: maxTokens,
           system: json ? `${system}\n\n${jsonInstruction}` : system,
           messages: messages.map((m) => ({ role: m.role, content: m.content })),
         });

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { after } from "next/server";
 import { auth } from "@/lib/auth";
 import { canvas } from "@/lib/canvas";
-import { institutionFromHost, normalizeBaseUrl } from "@/lib/canvas/host";
+import { assertCanvasHost, institutionFromHost, normalizeBaseUrl } from "@/lib/canvas/host";
 import { syncCanvas } from "@/lib/canvas/sync";
 import { encrypt } from "@/lib/crypto";
 import { db } from "@/lib/db";
@@ -16,6 +16,8 @@ export async function connectCanvas(formData: FormData) {
   const baseUrl = normalizeBaseUrl(String(formData.get("baseUrl") ?? ""));
   const token = String(formData.get("token") ?? "").trim();
   if (!baseUrl || !token) redirect("/onboarding?error=missing");
+  const publicHost = await assertCanvasHost(baseUrl).then(() => true, () => false);
+  if (!publicHost) redirect("/onboarding?error=host");
 
   const profile = await canvas(baseUrl, token)
     .profile()

@@ -4,9 +4,7 @@ import {
   CalendarIcon,
   ChatIcon,
   DashboardIcon,
-  PeopleIcon,
   SlidersIcon,
-  SparklesIcon,
 } from "@/components/icons";
 import { LanguageButton } from "@/components/LanguageButton";
 import { NavItem } from "@/components/NavItem";
@@ -23,8 +21,6 @@ export async function Sidebar({ user }: { user: { name: string; subtitle: string
           <NavItem href="/" icon={<DashboardIcon />} label={t("dashboard")} />
           <NavItem href="/calendar" icon={<CalendarIcon />} label={t("calendar")} />
           <NavItem href="/courses" icon={<BookIcon />} label={t("courses")} />
-          <NavItem href="/groups" icon={<PeopleIcon />} label={t("groups")} />
-          <NavItem href="/homework" icon={<SparklesIcon />} label={t("homework")} />
           <NavItem href="/assistant" icon={<ChatIcon />} label={t("assistant")} />
         </div>
       </div>

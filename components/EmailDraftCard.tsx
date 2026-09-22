@@ -19,30 +19,31 @@ export async function EmailDraftCard({
   writingLanguage: string;
 }) {
   const t = await getTranslations("assistant.draft");
-  const result = styleCheck(draft.body);
+  const result = styleCheck(draft.body, writingLanguage);
 
   return (
     <section className="flex flex-col overflow-hidden rounded-card border border-border bg-surface">
       <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
         <MailIcon className="h-[18px] w-[18px] text-teal" />
         <span className="text-[15px] font-semibold">{t("title")}</span>
-        <div className="flex gap-2">
+        {/* One form for all tones: while a rewrite runs every tone button is disabled, so quick
+            clicks on two tones do not pay for two rewrites. The clicked button sends its tone. */}
+        <form action={changeTone} className="flex gap-2">
+          <input type="hidden" name="conversationId" value={conversationId} />
           {tones.map((tone) => (
-            <form action={changeTone} key={tone}>
-              <input type="hidden" name="conversationId" value={conversationId} />
-              <input type="hidden" name="tone" value={tone} />
-              <button
-                type="submit"
-                aria-pressed={draft.tone === tone}
-                className={`h-7 rounded-chip border px-3 text-[13.5px] font-semibold whitespace-nowrap ${
-                  draft.tone === tone ? "border-teal bg-teal text-white" : "border-control-border bg-surface text-text-2"
-                }`}
-              >
-                {t(`tone.${tone as Tone}`)}
-              </button>
-            </form>
+            <Button
+              key={tone}
+              type="submit"
+              name="tone"
+              value={tone}
+              size="chip"
+              variant={draft.tone === tone ? "selected" : "choice"}
+              aria-pressed={draft.tone === tone}
+            >
+              {t(`tone.${tone as Tone}`)}
+            </Button>
           ))}
-        </div>
+        </form>
         <span className="inline-flex h-6 items-center rounded-chip bg-teal-soft px-[9px] text-[13px] font-semibold text-teal">
           {t("style")}
         </span>

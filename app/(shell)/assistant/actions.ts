@@ -2,8 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { requireProvider } from "@/lib/ai";
-import { draftForSituation, tones, type Tone } from "@/lib/ai/prompts/assistant";
-import { translate } from "@/lib/ai/prompts/translate";
+import { draftForSituation, retoneDraft, tones, type Tone } from "@/lib/ai/prompts/assistant";
 import { AiError } from "@/lib/ai/types";
 import { buildFacts, loadContext } from "@/lib/assistant/facts";
 import { gmailUrl, mailtoUrl } from "@/lib/email/handoff";
@@ -18,30 +17,49 @@ async function userId() {
 }
 
 const isTone = (value: string): value is Tone => tones.includes(value as Tone);
-const shortDate = (date: Date) => date.toISOString().slice(0, 16).replace("T", " ") + " UTC";
+// Dates reach the email as the student reads them: their own zone, named, so the professor can check it.
+const factDate = (timeZone: string) => {
+  const format = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
+  return (date: Date) => format.format(date);
+};
 
-// Writes the advice and the email, grounded only in the Canvas facts gathered here.
-async function writeDraft(id: string, situation: string, question: string, tone: Tone, courseId: string | null, assignmentId: string | null) {
+const languageSettings = { writingLanguage: true, explanationLanguage: true } as const;
+
+// The preview translation only exists when the student reads in a different language from the one they write in.
+function languages(user: { writingLanguage: string; explanationLanguage: string }) {
+  return {
+    writingLanguage: languageName(user.writingLanguage),
+    translationLanguage: user.explanationLanguage !== user.writingLanguage ? languageName(user.explanationLanguage) : null,
+  };
+}
+
+// Writes the advice, the email and its preview translation in one request, grounded only in the
+// Canvas facts gathered here.
+async function writeDraft(id: string, situation: string, question: string, courseId: string | null, assignmentId: string | null) {
   const [user, provider, context] = await Promise.all([
-    db.user.findUniqueOrThrow({ where: { id }, select: { name: true, email: true, writingLanguage: true, explanationLanguage: true } }),
+    db.user.findUniqueOrThrow({ where: { id }, select: { name: true, email: true, timeZone: true, ...languageSettings } }),
     requireProvider(id),
     loadContext(id, courseId, assignmentId),
   ]);
-  const facts = buildFacts(context.course, context.assignment, shortDate);
+  const facts = buildFacts(context.course, context.assignment, factDate(user.timeZone));
   const draft = await draftForSituation(provider, {
     situation,
     question,
     facts,
-    tone,
-    writingLanguage: languageName(user.writingLanguage),
+    tone: "formal",
     studentName: user.name ?? user.email,
+    ...languages(user),
   });
-  // The preview only exists when the student reads in a different language from the one they write in.
-  const translation =
-    user.explanationLanguage !== user.writingLanguage && draft.body
-      ? await translate(provider, draft.body, languageName(user.explanationLanguage))
-      : null;
-  return { draft, facts, translation, user, context };
+  return { draft, facts, user, context };
 }
 
 export async function startConversation(formData: FormData) {
@@ -54,7 +72,7 @@ export async function startConversation(formData: FormData) {
 
   let result;
   try {
-    result = await writeDraft(id, situation, question, "formal", courseId, assignmentId);
+    result = await writeDraft(id, situation, question, courseId, assignmentId);
   } catch (error) {
     redirect(`/assistant?situation=${situation}&error=${error instanceof AiError ? error.kind : "request"}`);
   }
@@ -64,8 +82,8 @@ export async function startConversation(formData: FormData) {
       userId: id,
       kind: "assistant",
       situation,
-      courseId,
-      assignmentId,
+      courseId: result.context.course?.id ?? null,
+      assignmentId: result.context.assignment?.id ?? null,
       title: result.draft.subject || question.slice(0, 60),
       messages: {
         create: [
@@ -79,7 +97,7 @@ export async function startConversation(formData: FormData) {
           to: "",
           subject: result.draft.subject,
           body: result.draft.body,
-          translation: result.translation,
+          translation: result.draft.translation,
         },
       },
     },
@@ -95,20 +113,18 @@ export async function changeTone(formData: FormData) {
 
   const conversation = await db.conversation.findFirstOrThrow({
     where: { id: conversationId, userId: id },
-    include: { messages: { where: { role: "user" }, take: 1 }, draft: true },
+    include: { draft: true, user: { select: languageSettings } },
   });
   const back = `/assistant?c=${conversation.id}`;
+  if (!conversation.draft || conversation.draft.tone === tone) redirect(back);
 
-  let result;
+  let rewritten;
   try {
-    result = await writeDraft(id, conversation.situation ?? "other", conversation.messages[0]?.body ?? "", tone, conversation.courseId, conversation.assignmentId);
+    rewritten = await retoneDraft(await requireProvider(id), { tone, draft: conversation.draft, ...languages(conversation.user) });
   } catch (error) {
     redirect(`${back}&error=${error instanceof AiError ? error.kind : "request"}`);
   }
-  await db.emailDraft.update({
-    where: { conversationId: conversation.id },
-    data: { tone, subject: result.draft.subject, body: result.draft.body, translation: result.translation },
-  });
+  await db.emailDraft.update({ where: { conversationId: conversation.id }, data: { tone, ...rewritten } });
   redirect(back);
 }
 

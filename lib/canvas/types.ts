@@ -84,6 +84,7 @@ export type CanvasPage = {
   html_url: string;
   updated_at: string;
   published: boolean;
+  body?: string | null;
 };
 
 export type CanvasAnnouncement = {

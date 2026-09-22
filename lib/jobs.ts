@@ -10,10 +10,11 @@ export async function syncDueConnections(force = false) {
   const connections = await db.connection.findMany({
     where: { type: "canvas", ...(force ? {} : { OR: [{ lastSyncAt: null }, { lastSyncAt: { lt: cutoff } }] }) },
   });
-  const results = [];
+  const results: ({ connectionId: string } & NonNullable<Awaited<ReturnType<typeof syncCanvas>>>)[] = [];
   for (const connection of connections) {
     try {
-      results.push({ connectionId: connection.id, ...(await syncCanvas(connection.id)) });
+      const counts = await syncCanvas(connection.id);
+      if (counts) results.push({ connectionId: connection.id, ...counts });
     } catch (error) {
       console.error(`Canvas sync failed for connection ${connection.id}`, error);
     }

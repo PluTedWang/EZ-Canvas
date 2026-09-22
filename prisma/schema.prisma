@@ -17,11 +17,14 @@ model User {
   program             String?
   aiProvider          String?
   aiKey               String?   // encrypted with lib/crypto.ts
+  aiKeyHint           String?   // last four characters, shown in Settings without decrypting
   // Secret in the .ics feed URL, so a calendar app can subscribe without signing in.
   calendarToken       String?   @unique
   interfaceLanguage   String    @default("en")
   explanationLanguage String    @default("en")
   writingLanguage     String    @default("en")
+  // IANA zone reported by the student's browser; all day and hour maths use it.
+  timeZone            String    @default("UTC")
   sessions            Session[]
   connections         Connection[]
   courses             Course[]
@@ -47,15 +50,17 @@ model VerificationToken {
 }
 
 model Connection {
-  id         String    @id @default(cuid())
-  userId     String
-  type       String
-  baseUrl    String
-  token      String    // encrypted with lib/crypto.ts
-  status     String    @default("connected")
-  lastSyncAt DateTime?
-  createdAt  DateTime  @default(now())
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String    @id @default(cuid())
+  userId        String
+  type          String
+  baseUrl       String
+  token         String    // encrypted with lib/crypto.ts
+  status        String    @default("connected")
+  lastSyncAt    DateTime?
+  // Set while a sync runs, so the timer, onboarding and Sync now never run two at once.
+  syncStartedAt DateTime?
+  createdAt     DateTime  @default(now())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, type])
 }
@@ -123,10 +128,8 @@ model Material {
   contentType    String?
   size           Int?
   body           String?
-  // AI notes, cached per file version: notesHash is a digest of the extracted text.
+  // AI notes keyed by language. Sync clears them when Canvas reports a new version.
   notes          Json?
-  notesLanguage  String?
-  notesHash      String?
   notesAt        DateTime?
   unsupported    String?
   postedAt       DateTime?
