@@ -41,7 +41,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
   const [t, format, week, user] = await Promise.all([
     getTranslations("calendar"),
     getFormatter(),
-    loadWeek(session.user.id, weekStart, timeZone),
+    loadWeek(session.user.id, weekStart, timeZone, now),
     db.user.findUniqueOrThrow({ where: { id: session.user.id }, select: { calendarToken: true } }),
   ]);
   const showExport = query.export === "1" && user.calendarToken !== null;

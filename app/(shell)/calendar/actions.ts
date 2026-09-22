@@ -17,7 +17,7 @@ export async function acceptBlocks(formData: FormData) {
 
   const now = new Date();
   const { timeZone } = await db.user.findUniqueOrThrow({ where: { id: userId }, select: { timeZone: true } });
-  const blocks = proposeBlocks(await loadWeek(userId, weekStart, timeZone), now);
+  const blocks = proposeBlocks(await loadWeek(userId, weekStart, timeZone, now), now);
   await db.calendarItem.createMany({
     data: blocks.map((block) => ({
       userId,

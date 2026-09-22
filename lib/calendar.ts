@@ -11,7 +11,8 @@ const visibleItems = (userId: string) => ({ userId, OR: [{ courseId: null }, { c
 
 const endOfWeek = (weekStart: Date, timeZone: string) => new Date(addDays(weekStart, daysPerWeek, timeZone).getTime() - 1);
 
-export async function loadWeek(userId: string, weekStart: Date, timeZone: string) {
+// Assignments come back only when they are due this week or still open, not every term's history.
+export async function loadWeek(userId: string, weekStart: Date, timeZone: string, now = new Date()) {
   const weekEnd = endOfWeek(weekStart, timeZone);
   const [courses, items, assignments] = await Promise.all([
     db.course.findMany({
@@ -25,7 +26,10 @@ export async function loadWeek(userId: string, weekStart: Date, timeZone: string
       select: { id: true, courseId: true, assignmentId: true, source: true, title: true, startAt: true, endAt: true, location: true },
     }),
     db.assignment.findMany({
-      where: { course: { userId, hidden: false } },
+      where: {
+        course: { userId, hidden: false },
+        OR: [{ dueAt: { gte: weekStart, lte: weekEnd } }, { submittedAt: null, dueAt: { gt: now } }],
+      },
       orderBy: { dueAt: "asc" },
       select: {
         id: true,
