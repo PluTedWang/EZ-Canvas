@@ -46,7 +46,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
   ]);
   const showExport = query.export === "1" && user.calendarToken !== null;
   const feedUrl = showExport ? `${new URL((await headers()).get("referer") ?? "http://localhost:3000").origin}/api/calendar/${user.calendarToken}` : "";
-  const colorOf = new Map(week.courses.map((c) => [c.id, c.color]));
+  const colorOf = new Map<string, number>(week.courses.map((c) => [c.id, c.color]));
   const visible = (courseId: string | null) => filter.courses.length === 0 || (courseId !== null && filter.courses.includes(courseId));
 
   const accepted = week.items.filter((item) => item.source === "study" && visible(item.courseId) && filter.blocks);
@@ -182,7 +182,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
         <aside className="flex w-80 shrink-0 flex-col gap-4">
           <TodayPanel now={now} entries={entries} />
           <TimeNeededCard rows={rows} />
-          <WeekPlanCard blocks={proposals} weekStart={weekStart} openHours={work.reduce((total, item) => total + item.left, 0)} />
+          <WeekPlanCard blocks={proposals} weekStart={weekStart} openHours={work.reduce((total, item) => total + item.unplanned, 0)} />
           {showExport && <ExportPanel feedUrl={feedUrl} />}
         </aside>
       </div>

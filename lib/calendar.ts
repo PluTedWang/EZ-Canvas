@@ -44,14 +44,26 @@ export async function loadWeek(userId: string, weekStart: Date, timeZone: string
 
 type Loaded = Awaited<ReturnType<typeof loadWeek>>;
 
-// Hours done are the accepted study blocks that have already finished.
-function hoursDone(blocks: { startAt: Date; endAt: Date | null }[], now: Date) {
-  return blocks
-    .filter((b) => b.endAt && b.endAt <= now)
-    .reduce((total, b) => total + ((b.endAt as Date).getTime() - b.startAt.getTime()) / hourMs, 0);
-}
+type WorkAssignment = {
+  id: string;
+  courseId: string;
+  title: string;
+  dueAt: Date | null;
+  submittedAt: Date | null;
+  points: number | null;
+  submissionType: string;
+  description: string | null;
+  rubric: unknown;
+  // Accepted study blocks for this assignment.
+  calendarItems: { startAt: Date; endAt: Date | null }[];
+};
 
-export function openWork({ assignments }: Loaded, now: Date) {
+const blockHours = (blocks: { startAt: Date; endAt: Date | null }[]) =>
+  blocks.reduce((total, b) => total + (b.endAt ? (b.endAt.getTime() - b.startAt.getTime()) / hourMs : 0), 0);
+
+// Done is the accepted study time that has already happened; booked is accepted time still ahead.
+// Only the rest is unplanned, so accepting a plan never makes the planner propose the same hours again.
+export function openWork({ assignments }: { assignments: WorkAssignment[] }, now: Date) {
   return assignments
     .filter((a) => a.dueAt && !a.submittedAt && a.dueAt > now)
     .map((a) => {
@@ -61,7 +73,8 @@ export function openWork({ assignments }: Loaded, now: Date) {
         rubricSections: Array.isArray(a.rubric) ? a.rubric.length : 0,
         descriptionLength: a.description?.length ?? 0,
       });
-      const done = hoursDone(a.calendarItems, now);
+      const done = blockHours(a.calendarItems.filter((b) => b.endAt && b.endAt <= now));
+      const booked = blockHours(a.calendarItems.filter((b) => b.endAt && b.endAt > now));
       return {
         id: a.id,
         courseId: a.courseId,
@@ -70,6 +83,7 @@ export function openWork({ assignments }: Loaded, now: Date) {
         prediction,
         done: Math.round(done * 2) / 2,
         left: hoursLeft(prediction.hours, done),
+        unplanned: hoursLeft(prediction.hours, done + booked),
       };
     });
 }
@@ -80,8 +94,8 @@ export function proposeBlocks(week: Loaded, now: Date) {
     .filter((item) => item.endAt)
     .map((item) => ({ start: item.startAt, end: item.endAt as Date }));
   const assignments: PlannedAssignment[] = openWork(week, now)
-    .filter((a) => a.left > 0)
-    .map((a) => ({ id: a.id, title: a.title, courseId: a.courseId, dueAt: a.dueAt, hoursLeft: a.left }));
+    .filter((a) => a.unplanned > 0)
+    .map((a) => ({ id: a.id, title: a.title, courseId: a.courseId, dueAt: a.dueAt, hoursLeft: a.unplanned }));
   return planStudyBlocks({ assignments, busy, from: week.weekStart, to: week.weekEnd, now, timeZone: week.timeZone });
 }
 
