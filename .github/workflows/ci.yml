@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      # Throwaway values so the build and tests can run; nothing real is encrypted with them.
+      AUTH_SECRET: ci-auth-secret-not-used-anywhere-else
+      APP_SECRET: ci-app-secret-not-used-anywhere-else
+      DATABASE_URL: file:./ci.db
+      CANVAS_MOCK: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npx prisma migrate deploy
+      - run: npm run build
