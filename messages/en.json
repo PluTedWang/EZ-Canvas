@@ -9,15 +9,10 @@
     "dashboard": "Dashboard",
     "calendar": "Calendar",
     "courses": "Courses",
-    "groups": "Group projects",
-    "homework": "Homework helper",
     "assistant": "Study assistant",
     "settings": "Settings"
   },
   "topBar": {
-    "search": "Search",
-    "searchPlaceholder": "Search courses, files, deadlines",
-    "notifications": "Notifications",
     "syncedAgo": "Canvas synced {ago}",
     "syncPending": "Canvas sync pending",
     "syncFailed": "Canvas sync failed"

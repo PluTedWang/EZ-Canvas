@@ -46,14 +46,6 @@ export const BookIcon = (p: Props) => (
   </Icon>
 );
 
-export const PeopleIcon = (p: Props) => (
-  <Icon {...p}>
-    <circle cx="9" cy="8" r="3.5" />
-    <circle cx="17" cy="9" r="2.5" />
-    <path d="M2 20a7 7 0 0 1 14 0M15 15a5 5 0 0 1 7 5" />
-  </Icon>
-);
-
 export const SparklesIcon = (p: Props) => (
   <Icon {...p}>
     <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" />
@@ -80,20 +72,6 @@ export const GlobeIcon = (p: Props) => (
   <Icon {...p}>
     <circle cx="12" cy="12" r="9" />
     <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
-  </Icon>
-);
-
-export const SearchIcon = (p: Props) => (
-  <Icon {...p}>
-    <circle cx="11" cy="11" r="6.5" />
-    <path d="M20 20l-4.2-4.2" />
-  </Icon>
-);
-
-export const BellIcon = (p: Props) => (
-  <Icon {...p}>
-    <path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z" />
-    <path d="M10 20a2 2 0 0 0 4 0" />
   </Icon>
 );
 
