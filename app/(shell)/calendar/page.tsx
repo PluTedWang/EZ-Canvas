@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { getFormatter, getTimeZone, getTranslations } from "next-intl/server";
 import { Button } from "@/components/Button";
 import { CalendarFilters, type CalendarFilter } from "@/components/CalendarFilters";
@@ -11,16 +10,14 @@ import { WeekGrid, type GridDue, type GridEvent } from "@/components/WeekGrid";
 import { WeekPlanCard } from "@/components/WeekPlanCard";
 import { openExport } from "./actions";
 import { appOrigin } from "@/lib/app-url";
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
 import { loadWeek, openWork, proposeBlocks } from "@/lib/calendar";
+import { requireUser } from "@/lib/session";
 import { addDays, dayKey, daysBetween, daysPerWeek, parseWeekParam, sameDay, startOfWeek } from "@/lib/week";
 
 const navButton = "flex h-9 w-9 items-center justify-center rounded-[9px] border border-border bg-surface text-text-2 hover:border-teal";
 
 export default async function CalendarPage({ searchParams }: PageProps<"/calendar">) {
-  const session = await auth();
-  if (!session?.user?.id) redirect("/signin");
+  const user = await requireUser();
   const query = await searchParams;
   const now = new Date();
   const timeZone = await getTimeZone();
@@ -38,11 +35,10 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
   if (!filter.lectures) params.set("lectures", "0");
   if (!filter.blocks) params.set("blocks", "0");
 
-  const [t, format, week, user] = await Promise.all([
+  const [t, format, week] = await Promise.all([
     getTranslations("calendar"),
     getFormatter(),
-    loadWeek(session.user.id, weekStart, timeZone, now),
-    db.user.findUniqueOrThrow({ where: { id: session.user.id }, select: { calendarToken: true } }),
+    loadWeek(user.id, weekStart, timeZone, now),
   ]);
   const showExport = query.export === "1" && user.calendarToken !== null;
   const feedUrl = showExport ? `${await appOrigin()}/api/calendar/${user.calendarToken}` : "";

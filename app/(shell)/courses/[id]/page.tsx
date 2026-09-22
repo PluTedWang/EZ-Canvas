@@ -1,28 +1,18 @@
-import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { courseSolid } from "@/components/course-color";
 import { ModuleList } from "@/components/ModuleList";
 import { NotesPanel } from "@/components/NotesPanel";
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
 import { isLocale, type Locale } from "@/lib/locales";
 import { loadCourse } from "@/lib/materials/course-page";
+import { requireUser } from "@/lib/session";
 import { readNotes } from "@/lib/materials/notes";
 import type { MaterialNotes } from "@/lib/ai/prompts/summarize-material";
 
 export default async function CoursePage({ params, searchParams }: PageProps<"/courses/[id]">) {
-  const session = await auth();
-  if (!session?.user?.id) redirect("/signin");
+  const user = await requireUser();
   const [{ id }, query] = await Promise.all([params, searchParams]);
 
-  const [t, course, user] = await Promise.all([
-    getTranslations("course"),
-    loadCourse(session.user.id, id),
-    db.user.findUniqueOrThrow({
-      where: { id: session.user.id },
-      select: { explanationLanguage: true, aiKey: true },
-    }),
-  ]);
+  const [t, course] = await Promise.all([getTranslations("course"), loadCourse(user.id, id)]);
 
   const language: Locale = isLocale(query.lang)
     ? query.lang

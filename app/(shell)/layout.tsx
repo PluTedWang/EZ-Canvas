@@ -2,16 +2,10 @@ import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { TimeZoneSync } from "@/components/TimeZoneSync";
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { requireUser } from "@/lib/session";
 
 export default async function ShellLayout({ children }: { children: ReactNode }) {
-  const session = await auth();
-  if (!session?.user?.id) redirect("/signin");
-  const user = await db.user.findUniqueOrThrow({
-    where: { id: session.user.id },
-    include: { connections: { where: { type: "canvas" } } },
-  });
+  const user = await requireUser();
   if (user.connections.length === 0) redirect("/onboarding");
   const subtitle = [user.institution, user.program].filter(Boolean).join(" · ");
   return (

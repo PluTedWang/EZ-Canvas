@@ -1,22 +1,16 @@
-import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Button, LinkButton } from "@/components/Button";
 import { OnboardingSteps } from "@/components/OnboardingSteps";
 import { TextField } from "@/components/TextField";
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { requireUser } from "@/lib/session";
 import { connectCanvas } from "./actions";
 
 export default async function OnboardingPage({ searchParams }: PageProps<"/onboarding">) {
-  const session = await auth();
-  if (!session?.user?.id) redirect("/signin");
+  const user = await requireUser();
   const { error } = await searchParams;
   const t = await getTranslations("onboarding");
 
-  const [user, connection] = await Promise.all([
-    db.user.findUniqueOrThrow({ where: { id: session.user.id } }),
-    db.connection.findUnique({ where: { userId_type: { userId: session.user.id, type: "canvas" } } }),
-  ]);
+  const connection = user.connections[0];
   const host = connection ? new URL(connection.baseUrl).host : null;
   const connectedLine = host ? t("connect.connectedAs", { name: user.name ?? user.email, host }) : t("steps.connectSub");
 

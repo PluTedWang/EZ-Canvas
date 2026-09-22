@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { getFormatter, getTimeZone, getTranslations } from "next-intl/server";
 import { AssistantPromptBox } from "@/components/AssistantPromptBox";
 import { LinkButton } from "@/components/Button";
@@ -7,26 +6,20 @@ import { DueSoonList } from "@/components/DueSoonList";
 import { CalendarIcon } from "@/components/icons";
 import { MaterialList } from "@/components/MaterialList";
 import { TopBar } from "@/components/TopBar";
-import { auth } from "@/lib/auth";
 import { dueSoonDays, loadDashboard } from "@/lib/dashboard";
-import { db } from "@/lib/db";
+import { requireUser } from "@/lib/session";
 import { zonedParts } from "@/lib/week";
 
 const timeOfDay = (hour: number) => (hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening");
 
 export default async function DashboardPage() {
-  const session = await auth();
-  if (!session?.user?.id) redirect("/signin");
+  const user = await requireUser();
   const now = new Date();
-  const [t, format, timeZone, user, data] = await Promise.all([
+  const [t, format, timeZone, data] = await Promise.all([
     getTranslations("dashboard"),
     getFormatter(),
     getTimeZone(),
-    db.user.findUniqueOrThrow({
-      where: { id: session.user.id },
-      select: { name: true, email: true, connections: { where: { type: "canvas" }, select: { status: true, lastSyncAt: true } } },
-    }),
-    loadDashboard(session.user.id),
+    loadDashboard(user.id),
   ]);
   const connection = user.connections[0];
   const firstName = (user.name ?? user.email).split(" ")[0];
