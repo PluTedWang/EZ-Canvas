@@ -1,4 +1,5 @@
 import { Prisma } from "@/generated/prisma/client";
+import { nextCourseColor } from "../course-color";
 import { decrypt } from "../crypto";
 import { db } from "../db";
 import { materialChanged } from "../materials/notes";
@@ -18,7 +19,6 @@ import {
 import type { CanvasCourse } from "./types";
 
 type Api = ReturnType<typeof canvas>;
-const courseColors = 4;
 const day = 24 * 60 * 60 * 1000;
 // The windows Canvas is asked about. Older or later items are left alone.
 const announcementDays = 30;
@@ -74,7 +74,7 @@ async function upsertCourse(userId: string, raw: CanvasCourse) {
   const where = { userId_canvasId: { userId, canvasId: raw.id } };
   const existing = await db.course.findUnique({ where, select: { id: true } });
   if (existing) return db.course.update({ where, data });
-  const color = ((await db.course.count({ where: { userId } })) % courseColors) + 1;
+  const color = nextCourseColor(await db.course.count({ where: { userId } }));
   return db.course.create({ data: { ...data, userId, canvasId: raw.id, color } });
 }
 
