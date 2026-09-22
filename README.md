@@ -112,7 +112,7 @@ For production:
 
 ## Security
 
-Canvas tokens and AI keys are encrypted at rest and only used on the server. Onboarding only accepts a public `https` Canvas address, API requests never follow redirects, and file downloads must start on the connected Canvas host. The calendar feed is protected by a random token in its URL; treat that link like a password.
+Canvas tokens and AI keys are encrypted at rest and only used on the server. Only a public `https` Canvas address is accepted, checked at onboarding and again before every sync and file download; API requests never follow redirects, and file downloads must start on the connected Canvas host. The calendar feed is protected by a random token in its URL; treat that link like a password.
 
 Please report security problems privately through GitHub's "Report a vulnerability" on the repository's Security tab rather than in a public issue.
 
