@@ -41,10 +41,23 @@ async function orEmpty<T>(request: Promise<T[]>) {
 // A new version of a file, page or announcement drops its notes and lets it be read again.
 const clearedNotes = { notes: Prisma.DbNull, notesAt: null, unsupported: null };
 
-type MaterialData = { type: string; canvasId: string; title: string; url: string; postedAt?: Date | null; body?: string | null };
+// Every column the Canvas mappers write for a file, page, link or announcement. A concrete type
+// rather than a generic, because Prisma's upsert cannot check a spread of an open generic.
+type MaterialData = {
+  type: string;
+  canvasId: string;
+  title: string;
+  url: string;
+  postedAt?: Date | null;
+  body?: string | null;
+  contentType?: string | null;
+  size?: number | null;
+  moduleName?: string | null;
+  modulePosition?: number | null;
+};
 
 // Returns the writes instead of running them, so a whole course lands in one transaction.
-async function materialWrites<T extends MaterialData>(courseId: string, materials: T[]) {
+async function materialWrites(courseId: string, materials: MaterialData[]) {
   const stored = await db.material.findMany({ where: { courseId }, select: { type: true, canvasId: true, postedAt: true, body: true } });
   const byKey = new Map<string, { postedAt: Date | null; body: string | null }>(stored.map((m) => [`${m.type}:${m.canvasId}`, m]));
   return materials.map((data) => {
