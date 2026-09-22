@@ -31,10 +31,8 @@ export default async function CoursePage({ params, searchParams }: PageProps<"/c
       : "en";
   const selected = course.materials.find((m) => m.id === query.file) ?? course.materials[0] ?? null;
 
-  // Notes already stored for this language render straight away; the hash guard lives in readNotes.
-  const notes = selected
-    ? (readNotes(selected.notes, selected.notesHash, selected.notesHash ?? "", language) as MaterialNotes | null)
-    : null;
+  // Notes stored for this language render straight away; sync clears them when the file changes.
+  const notes = selected ? (readNotes(selected.notes, language) as MaterialNotes | null) : null;
 
   const link = (file: string | null, lang: Locale) => {
     const search = new URLSearchParams();

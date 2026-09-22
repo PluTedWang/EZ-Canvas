@@ -125,10 +125,8 @@ model Material {
   contentType    String?
   size           Int?
   body           String?
-  // AI notes, cached per file version: notesHash is a digest of the extracted text.
+  // AI notes keyed by language. Sync clears them when Canvas reports a new version.
   notes          Json?
-  notesLanguage  String?
-  notesHash      String?
   notesAt        DateTime?
   unsupported    String?
   postedAt       DateTime?

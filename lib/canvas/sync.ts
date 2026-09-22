@@ -1,5 +1,7 @@
+import { Prisma } from "@/generated/prisma/client";
 import { decrypt } from "../crypto";
 import { db } from "../db";
+import { materialChanged } from "../materials/notes";
 import { canvas } from "./index";
 import { CanvasError } from "./client";
 import {
@@ -28,6 +30,24 @@ async function orEmpty<T>(request: Promise<T[]>) {
   });
 }
 
+// A new version of a file, page or announcement drops its notes and lets it be read again.
+const clearedNotes = { notes: Prisma.DbNull, notesAt: null, unsupported: null };
+
+type MaterialData = { type: string; canvasId: string; title: string; url: string; postedAt?: Date | null; body?: string | null };
+
+async function upsertMaterials<T extends MaterialData>(courseId: string, materials: T[]) {
+  const stored = await db.material.findMany({ where: { courseId }, select: { type: true, canvasId: true, postedAt: true, body: true } });
+  const byKey = new Map<string, { postedAt: Date | null; body: string | null }>(stored.map((m) => [`${m.type}:${m.canvasId}`, m]));
+  for (const data of materials) {
+    const before = byKey.get(`${data.type}:${data.canvasId}`);
+    await db.material.upsert({
+      where: { courseId_type_canvasId: { courseId, type: data.type, canvasId: data.canvasId } },
+      update: before && materialChanged(before, data) ? { ...data, ...clearedNotes } : data,
+      create: { ...data, courseId },
+    });
+  }
+}
+
 async function upsertCourse(userId: string, raw: CanvasCourse) {
   const data = mapCourse(raw);
   const where = { userId_canvasId: { userId, canvasId: raw.id } };
@@ -54,13 +74,7 @@ async function syncCourseContent(api: Api, courseId: string, canvasCourseId: num
   }
   const context = moduleContext(modules);
   const materials = [...files.map((f) => mapFile(f, context)), ...pages.map((p) => mapPage(p, context)), ...mapLinks(modules)];
-  for (const data of materials) {
-    await db.material.upsert({
-      where: { courseId_type_canvasId: { courseId, type: data.type, canvasId: data.canvasId } },
-      update: data,
-      create: { ...data, courseId },
-    });
-  }
+  await upsertMaterials(courseId, materials);
   return { assignments: assignments.length, materials: materials.length };
 }
 
@@ -81,16 +95,11 @@ export async function syncCanvas(connectionId: string) {
     }
     const canvasCourseIds = [...courseIds.keys()];
 
-    for (const raw of await api.announcements(canvasCourseIds, isoDaysFromNow(-30))) {
-      const courseId = courseIds.get(courseIdFromContext(raw.context_code));
-      if (!courseId) continue;
-      const data = mapAnnouncement(raw);
-      await db.material.upsert({
-        where: { courseId_type_canvasId: { courseId, type: "announcement", canvasId: data.canvasId } },
-        update: data,
-        create: { ...data, courseId },
-      });
-      counts.materials += 1;
+    const announcements = await api.announcements(canvasCourseIds, isoDaysFromNow(-30));
+    for (const [canvasCourseId, courseId] of courseIds) {
+      const mine = announcements.filter((raw) => courseIdFromContext(raw.context_code) === canvasCourseId);
+      await upsertMaterials(courseId, mine.map(mapAnnouncement));
+      counts.materials += mine.length;
     }
 
     const events = await api.calendarEvents(canvasCourseIds, "event", isoDaysFromNow(-28), isoDaysFromNow(84));
