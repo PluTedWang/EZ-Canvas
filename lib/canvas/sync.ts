@@ -20,6 +20,10 @@ import type { CanvasCourse } from "./types";
 type Api = ReturnType<typeof canvas>;
 const courseColors = 4;
 const day = 24 * 60 * 60 * 1000;
+// The windows Canvas is asked about. Older or later items are left alone.
+const announcementDays = 30;
+const lecturePastDays = 28;
+const lectureFutureDays = 84;
 const isoDaysFromNow = (days: number) => new Date(Date.now() + days * day).toISOString();
 
 // Canvas answers 401 or 403 for course tabs the instructor hid; treat those as empty.
@@ -75,7 +79,72 @@ async function syncCourseContent(api: Api, courseId: string, canvasCourseId: num
   const context = moduleContext(modules);
   const materials = [...files.map((f) => mapFile(f, context)), ...pages.map((p) => mapPage(p, context)), ...mapLinks(modules)];
   await upsertMaterials(courseId, materials);
+
+  // Whatever Canvas no longer lists was deleted or unpublished there; drop it here too.
+  await db.assignment.deleteMany({ where: { courseId, canvasId: { notIn: assignments.map((a) => a.id) } } });
+  for (const type of ["file", "page", "link"]) {
+    const kept = materials.filter((m) => m.type === type).map((m) => m.canvasId);
+    await db.material.deleteMany({ where: { courseId, type, canvasId: { notIn: kept } } });
+  }
   return { assignments: assignments.length, materials: materials.length };
+}
+
+// Announcements are fetched for a window only, so only the window is pruned.
+async function syncAnnouncements(api: Api, courseIds: Map<number, string>) {
+  const since = isoDaysFromNow(-announcementDays);
+  // Canvas rejects these endpoints without a course to ask about.
+  if (courseIds.size === 0) return 0;
+  const announcements = await api.announcements([...courseIds.keys()], since);
+  for (const [canvasCourseId, courseId] of courseIds) {
+    const mine = announcements.filter((raw) => courseIdFromContext(raw.context_code) === canvasCourseId).map(mapAnnouncement);
+    await upsertMaterials(courseId, mine);
+    await db.material.deleteMany({
+      where: { courseId, type: "announcement", postedAt: { gte: new Date(since) }, canvasId: { notIn: mine.map((m) => m.canvasId) } },
+    });
+  }
+  return announcements.length;
+}
+
+async function syncLectures(api: Api, userId: string, courseIds: Map<number, string>) {
+  const from = isoDaysFromNow(-lecturePastDays);
+  const to = isoDaysFromNow(lectureFutureDays);
+  const fetched = courseIds.size > 0 ? await api.calendarEvents([...courseIds.keys()], "event", from, to) : [];
+  const events = fetched.filter((raw) => raw.start_at);
+  for (const raw of events) {
+    const data = { ...mapEvent(raw), courseId: courseIds.get(courseIdFromContext(raw.context_code)) ?? null };
+    await db.calendarItem.upsert({
+      where: { userId_source_canvasId: { userId, source: "lecture", canvasId: raw.id } },
+      update: data,
+      create: { ...data, userId, canvasId: raw.id },
+    });
+  }
+  await db.calendarItem.deleteMany({
+    where: { userId, source: "lecture", startAt: { gte: new Date(from), lte: new Date(to) }, canvasId: { notIn: events.map((e) => e.id) } },
+  });
+  return events.length;
+}
+
+async function syncGroups(api: Api, userId: string, courseIds: Map<number, string>) {
+  const groups = await api.groups();
+  for (const raw of groups) {
+    const data = { name: raw.name, courseId: raw.course_id ? (courseIds.get(raw.course_id) ?? null) : null };
+    const group = await db.group.upsert({
+      where: { userId_canvasId: { userId, canvasId: raw.id } },
+      update: data,
+      create: { ...data, userId, canvasId: raw.id },
+    });
+    const members = await orEmpty(api.groupUsers(raw.id));
+    for (const member of members) {
+      await db.groupMember.upsert({
+        where: { groupId_canvasUserId: { groupId: group.id, canvasUserId: member.id } },
+        update: { name: member.name },
+        create: { groupId: group.id, canvasUserId: member.id, name: member.name },
+      });
+    }
+    await db.groupMember.deleteMany({ where: { groupId: group.id, canvasUserId: { notIn: members.map((m) => m.id) } } });
+  }
+  await db.group.deleteMany({ where: { userId, canvasId: { notIn: groups.map((g) => g.id) } } });
+  return groups.length;
 }
 
 export async function syncCanvas(connectionId: string) {
@@ -93,43 +162,9 @@ export async function syncCanvas(connectionId: string) {
       counts.assignments += content.assignments;
       counts.materials += content.materials;
     }
-    const canvasCourseIds = [...courseIds.keys()];
-
-    const announcements = await api.announcements(canvasCourseIds, isoDaysFromNow(-30));
-    for (const [canvasCourseId, courseId] of courseIds) {
-      const mine = announcements.filter((raw) => courseIdFromContext(raw.context_code) === canvasCourseId);
-      await upsertMaterials(courseId, mine.map(mapAnnouncement));
-      counts.materials += mine.length;
-    }
-
-    const events = await api.calendarEvents(canvasCourseIds, "event", isoDaysFromNow(-28), isoDaysFromNow(84));
-    for (const raw of events) {
-      if (!raw.start_at) continue;
-      const data = { ...mapEvent(raw), courseId: courseIds.get(courseIdFromContext(raw.context_code)) ?? null };
-      await db.calendarItem.upsert({
-        where: { userId_source_canvasId: { userId: connection.userId, source: "lecture", canvasId: raw.id } },
-        update: data,
-        create: { ...data, userId: connection.userId, canvasId: raw.id },
-      });
-      counts.lectures += 1;
-    }
-
-    for (const raw of await api.groups()) {
-      const data = { name: raw.name, courseId: raw.course_id ? (courseIds.get(raw.course_id) ?? null) : null };
-      const group = await db.group.upsert({
-        where: { userId_canvasId: { userId: connection.userId, canvasId: raw.id } },
-        update: data,
-        create: { ...data, userId: connection.userId, canvasId: raw.id },
-      });
-      for (const member of await orEmpty(api.groupUsers(raw.id))) {
-        await db.groupMember.upsert({
-          where: { groupId_canvasUserId: { groupId: group.id, canvasUserId: member.id } },
-          update: { name: member.name },
-          create: { groupId: group.id, canvasUserId: member.id, name: member.name },
-        });
-      }
-      counts.groups += 1;
-    }
+    counts.materials += await syncAnnouncements(api, courseIds);
+    counts.lectures = await syncLectures(api, connection.userId, courseIds);
+    counts.groups = await syncGroups(api, connection.userId, courseIds);
 
     await db.connection.update({ where: { id: connectionId }, data: { lastSyncAt: new Date(), status: "connected" } });
     return counts;
