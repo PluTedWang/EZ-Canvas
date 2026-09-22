@@ -49,11 +49,11 @@ export async function saveAiKey(formData: FormData) {
   } catch (error) {
     redirect(`/settings?error=${error instanceof AiError ? error.kind : "request"}`);
   }
-  await db.user.update({ where: { id }, data: { aiProvider: "anthropic", aiKey: encrypt(key) } });
+  await db.user.update({ where: { id }, data: { aiProvider: "anthropic", aiKey: encrypt(key), aiKeyHint: key.slice(-4) } });
   redirect("/settings");
 }
 
 export async function removeAiKey() {
-  await db.user.update({ where: { id: await userId() }, data: { aiProvider: null, aiKey: null } });
+  await db.user.update({ where: { id: await userId() }, data: { aiProvider: null, aiKey: null, aiKeyHint: null } });
   redirect("/settings");
 }

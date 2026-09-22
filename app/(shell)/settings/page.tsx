@@ -5,7 +5,6 @@ import { Button, LinkButton } from "@/components/Button";
 import { ConnectionRow } from "@/components/ConnectionRow";
 import { RefreshIcon } from "@/components/icons";
 import { ManageCourses } from "@/components/ManageCourses";
-import { decrypt } from "@/lib/crypto";
 import { db } from "@/lib/db";
 import { syncIntervalMs } from "@/lib/jobs";
 import { requireUser } from "@/lib/session";
@@ -25,7 +24,8 @@ export default async function SettingsPage({
       select: { id: true, code: true, name: true, hidden: true },
     }),
   ]);
-  const keyHint = user.aiKey ? decrypt(user.aiKey).slice(-4) : null;
+  // Keys saved before the hint column existed show only the dots.
+  const keyHint = user.aiKey ? (user.aiKeyHint ?? "") : null;
   const connection = user.connections[0];
   if (!connection) redirect("/onboarding");
 

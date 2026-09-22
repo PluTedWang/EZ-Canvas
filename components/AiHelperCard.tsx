@@ -16,9 +16,9 @@ export async function AiHelperCard({ keyHint, error }: { keyHint: string | null;
       <div className="flex flex-col gap-4 border-t border-line px-5 py-4">
         <div className="flex max-w-[280px] flex-col gap-[3px] rounded-[11px] border-2 border-teal bg-teal-soft px-[13px] py-[11px]">
           <span className="text-[15px] font-semibold">{t("anthropic")}</span>
-          <span className="text-[13px] text-text-3">{keyHint ? t("keyAdded", { hint: keyHint }) : t("addKey")}</span>
+          <span className="text-[13px] text-text-3">{keyHint !== null ? t("keyAdded", { hint: keyHint }) : t("addKey")}</span>
         </div>
-        {keyHint ? (
+        {keyHint !== null ? (
           <div className="flex flex-col gap-3">
             <p className="text-[13.5px] text-text-3">{t("model", { model: anthropicModels.writing })}</p>
             <form action={removeAiKey}>

@@ -17,6 +17,7 @@ model User {
   program             String?
   aiProvider          String?
   aiKey               String?   // encrypted with lib/crypto.ts
+  aiKeyHint           String?   // last four characters, shown in Settings without decrypting
   // Secret in the .ics feed URL, so a calendar app can subscribe without signing in.
   calendarToken       String?   @unique
   interfaceLanguage   String    @default("en")
