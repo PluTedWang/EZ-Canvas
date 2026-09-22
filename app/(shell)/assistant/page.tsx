@@ -155,13 +155,15 @@ export default async function AssistantPage({ searchParams }: PageProps<"/assist
                 <span className="text-[14px] font-semibold">{t("assignment")}</span>
                 <select name="assignmentId" className={field} defaultValue="">
                   <option value="">{t("noAssignment")}</option>
-                  {courses.flatMap((course) =>
-                    course.assignments.map((assignment) => (
-                      <option key={assignment.id} value={assignment.id}>
-                        {course.code} · {assignment.title}
-                      </option>
-                    )),
-                  )}
+                  {courses.map((course) => (
+                    <optgroup key={course.id} label={course.code}>
+                      {course.assignments.map((assignment) => (
+                        <option key={assignment.id} value={assignment.id}>
+                          {assignment.title}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
                 </select>
               </label>
               <label className="flex flex-col gap-[6px]">

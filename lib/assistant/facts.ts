@@ -50,27 +50,40 @@ export function buildFacts(
   return facts;
 }
 
+const courseFields = {
+  id: true,
+  code: true,
+  name: true,
+  instructor: true,
+  latePolicy: true,
+  officeHours: true,
+  meetingTimes: true,
+} as const;
+
+// A chosen assignment decides the course, so picking an assignment alone, or one from another
+// course than the one selected, still grounds the reply in that assignment.
 export async function loadContext(userId: string, courseId: string | null, assignmentId: string | null) {
-  const course = courseId
-    ? await db.course.findFirst({
-        where: { id: courseId, userId, hidden: false },
+  const assignment = assignmentId
+    ? await db.assignment.findFirst({
+        where: { id: assignmentId, course: { userId, hidden: false } },
         select: {
           id: true,
-          code: true,
-          name: true,
-          instructor: true,
-          latePolicy: true,
-          officeHours: true,
-          meetingTimes: true,
+          title: true,
+          dueAt: true,
+          points: true,
+          submissionType: true,
+          submittedAt: true,
+          late: true,
+          course: { select: courseFields },
         },
       })
     : null;
-  const assignment =
-    course && assignmentId
-      ? await db.assignment.findFirst({
-          where: { id: assignmentId, courseId: course.id },
-          select: { id: true, title: true, dueAt: true, points: true, submissionType: true, submittedAt: true, late: true },
-        })
-      : null;
-  return { course, assignment };
+  if (assignment) {
+    const { course, ...rest } = assignment;
+    return { course, assignment: rest };
+  }
+  const course = courseId
+    ? await db.course.findFirst({ where: { id: courseId, userId, hidden: false }, select: courseFields })
+    : null;
+  return { course, assignment: null };
 }

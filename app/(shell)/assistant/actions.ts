@@ -77,8 +77,8 @@ export async function startConversation(formData: FormData) {
       userId: id,
       kind: "assistant",
       situation,
-      courseId,
-      assignmentId,
+      courseId: result.context.course?.id ?? null,
+      assignmentId: result.context.assignment?.id ?? null,
       title: result.draft.subject || question.slice(0, 60),
       messages: {
         create: [
