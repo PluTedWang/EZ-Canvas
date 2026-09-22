@@ -66,7 +66,12 @@ export function zonedTime(timeZone: string, year: number, month: number, day: nu
   const wall = Date.UTC(year, month - 1, day, hour, minute);
   const first = wall - offsetMs(new Date(wall), timeZone);
   // A second pass settles instants near a daylight saving change.
-  return new Date(wall - offsetMs(new Date(first), timeZone));
+  const second = wall - offsetMs(new Date(first), timeZone);
+  if (second === first) return new Date(first);
+  // In a gap, a local time that does not exist (midnight in Santiago on the day clocks spring
+  // forward), keep the guess that is still on the requested calendar day.
+  const requested = new Date(wall).toISOString().slice(0, 10);
+  return new Date(dayKey(new Date(second), timeZone) === requested ? second : first);
 }
 
 // "2026-09-21": the local calendar day, also the format of the ?week= parameter.

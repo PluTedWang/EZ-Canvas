@@ -84,3 +84,13 @@ test("only real IANA zones are accepted", () => {
   expect(isTimeZone("")).toBe(false);
   expect(isTimeZone(42)).toBe(false);
 });
+
+// Santiago springs forward at midnight on 6 September 2026, so that midnight never happens.
+test("a day whose midnight is skipped still starts on that day", () => {
+  const santiago = "America/Santiago";
+  const start = zonedTime(santiago, 2026, 9, 6);
+  expect(dayKey(start, santiago)).toBe("2026-09-06");
+  const monday = startOfWeek(at("2026-09-03T12:00:00-04:00"), santiago);
+  const days = Array.from({ length: 7 }, (_, i) => dayKey(addDays(monday, i, santiago), santiago));
+  expect(days).toEqual(["2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-06"]);
+});
