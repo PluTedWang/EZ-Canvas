@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { openWork } from "../lib/calendar";
+import { openWork, visibleHours } from "../lib/calendar";
 
 const now = new Date("2026-09-16T12:00:00-04:00");
 const hours = (h: number) => h * 3600_000;
@@ -43,4 +43,14 @@ test("submitted and past due work is not open", () => {
   const submitted = { ...assignment([]), submittedAt: new Date("2026-09-15T10:00:00-04:00") };
   const pastDue = { ...assignment([]), id: "a2", dueAt: new Date("2026-09-15T23:59:00-04:00") };
   expect(openWork({ assignments: [submitted, pastDue] }, now)).toEqual([]);
+});
+
+test("the week grid shows 9 to 7 and stretches for earlier or later lectures", () => {
+  const ny = "America/New_York";
+  const event = (start: string, end: string) => ({ start: new Date(`${start}-04:00`), end: new Date(`${end}-04:00`) });
+  expect(visibleHours([], ny)).toEqual({ first: 9, last: 19 });
+  expect(visibleHours([event("2026-09-16T10:10:00", "2026-09-16T11:25:00")], ny)).toEqual({ first: 9, last: 19 });
+  expect(visibleHours([event("2026-09-16T08:00:00", "2026-09-16T09:15:00")], ny)).toEqual({ first: 8, last: 19 });
+  expect(visibleHours([event("2026-09-16T19:30:00", "2026-09-16T20:45:00")], ny)).toEqual({ first: 9, last: 21 });
+  expect(visibleHours([event("2026-09-16T22:00:00", "2026-09-17T01:00:00")], ny)).toEqual({ first: 9, last: 24 });
 });

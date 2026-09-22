@@ -162,6 +162,7 @@
     "submitted": "{title} 已提交",
     "aboutLeft": "约剩 {hours} 小时",
     "suggested": "建议",
+    "timeRange": "{start}至{end}",
     "filters": {
       "lectures": "课程安排",
       "blocks": "建议的学习时段"

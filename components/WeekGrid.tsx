@@ -1,10 +1,10 @@
 import { getFormatter, getTimeZone, getTranslations } from "next-intl/server";
 import { courseSolid } from "@/components/course-color";
+import { visibleHours } from "@/lib/calendar";
 import { addDays, daysPerWeek, hourOfDay, sameDay, zonedParts } from "@/lib/week";
-import { dayEndHour, dayStartHour } from "@/lib/study-blocks";
 
+// Matches h-[52px] and the 52px gridlines below, which Tailwind needs spelled out.
 const hourHeight = 52;
-const hours = Array.from({ length: dayEndHour - dayStartHour }, (_, i) => dayStartHour + i);
 
 export type GridEvent = {
   id: string;
@@ -32,11 +32,19 @@ export async function WeekGrid({
   const [t, format, timeZone] = await Promise.all([getTranslations("calendar"), getFormatter(), getTimeZone()]);
   const days = Array.from({ length: daysPerWeek }, (_, i) => addDays(weekStart, i, timeZone));
   const isToday = (day: Date) => sameDay(day, now, timeZone);
-  const offsetPx = (time: Date) => ((hourOfDay(time, timeZone) - dayStartHour) * hourHeight).toFixed(1);
+  const { first, last } = visibleHours(events, timeZone);
+  const hours = Array.from({ length: last - first }, (_, i) => first + i);
+  const gridHeight = hours.length * hourHeight;
+  // An event past midnight ends at the bottom of its own day's column.
+  const offset = (time: Date, day: Date) => (sameDay(time, day, timeZone) ? hourOfDay(time, timeZone) : 24) - first;
   const time = (value: Date) => format.dateTime(value, { hour: "numeric", minute: "2-digit" });
+  const nowHour = hourOfDay(now, timeZone);
 
   return (
-    <section className="grid min-w-0 grow self-start overflow-hidden rounded-card border border-border bg-surface [grid-template-columns:56px_repeat(7,minmax(0,1fr))] [grid-template-rows:56px_auto_520px]">
+    <section
+      className="grid min-w-0 grow self-start overflow-hidden rounded-card border border-border bg-surface [grid-template-columns:56px_repeat(7,minmax(0,1fr))]"
+      style={{ gridTemplateRows: `56px auto ${gridHeight}px` }}
+    >
       <div />
       {days.map((day) => {
         const today = isToday(day);
@@ -95,19 +103,23 @@ export async function WeekGrid({
       {days.map((day) => (
         <div
           key={`col-${day.toISOString()}`}
-          className={`relative h-[520px] border-l border-line [background-image:repeating-linear-gradient(to_bottom,var(--ez-line)_0_1px,transparent_1px_52px)] ${
-            isToday(day) ? "bg-[#F6FAF9]" : ""
+          className={`relative border-l border-line [background-image:repeating-linear-gradient(to_bottom,var(--ez-line)_0_1px,transparent_1px_52px)] ${
+            isToday(day) ? "bg-today" : ""
           }`}
+          style={{ height: `${gridHeight}px` }}
         >
           {events
             .filter((event) => sameDay(event.start, day, timeZone))
             .map((event) => (
               <div
                 key={event.id}
-                style={{ top: `${offsetPx(event.start)}px`, height: `${Number(offsetPx(event.end)) - Number(offsetPx(event.start))}px` }}
+                style={{
+                  top: `${(offset(event.start, day) * hourHeight).toFixed(1)}px`,
+                  height: `${((offset(event.end, day) - offset(event.start, day)) * hourHeight).toFixed(1)}px`,
+                }}
                 className={`absolute right-1 left-1 flex flex-col gap-[1px] overflow-hidden rounded-lg px-2 py-[6px] text-[13px] leading-[1.3] ${
                   event.suggested
-                    ? "border-[1.5px] border-dashed border-teal bg-[#F2F8F7] text-teal-deep"
+                    ? "border-[1.5px] border-dashed border-teal bg-teal-tint text-teal-deep"
                     : event.color
                       ? `${courseSolid(event.color)} text-white`
                       : "bg-teal text-white"
@@ -115,14 +127,14 @@ export async function WeekGrid({
               >
                 <span className="font-semibold">{event.title}</span>
                 <span className="text-[12.5px] opacity-85">
-                  {[`${time(event.start)} – ${time(event.end)}`, event.location, event.suggested ? t("suggested") : null]
+                  {[t("timeRange", { start: time(event.start), end: time(event.end) }), event.location, event.suggested ? t("suggested") : null]
                     .filter(Boolean)
                     .join(" · ")}
                 </span>
               </div>
             ))}
-          {isToday(day) && hourOfDay(now, timeZone) >= dayStartHour && hourOfDay(now, timeZone) < dayEndHour && (
-            <div aria-hidden className="absolute right-0 left-0 h-[2px] bg-danger" style={{ top: `${offsetPx(now)}px` }} />
+          {isToday(day) && nowHour >= first && nowHour < last && (
+            <div aria-hidden className="absolute right-0 left-0 h-[2px] bg-danger" style={{ top: `${((nowHour - first) * hourHeight).toFixed(1)}px` }} />
           )}
         </div>
       ))}

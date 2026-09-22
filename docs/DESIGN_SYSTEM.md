@@ -36,6 +36,7 @@ Accent and semantic
 | `--ez-teal-hover` | `#215659` | Link hover |
 | `--ez-teal-soft` | `#EEF5F4` | Active nav, selected rows, info chips |
 | `--ez-teal-tint` | `#F2F8F7` | Suggested study blocks, AI panels |
+| `--ez-today` | `#F6FAF9` | Today's column in the calendar week grid |
 | `--ez-teal-border` | `#C9DCDB` | AI card borders |
 | `--ez-warn` / `--ez-warn-soft` | `#9A4A1A` / `#F9ECE3` | Due soon, changed deadlines, unclaimed |
 | `--ez-ok` / `--ez-ok-soft` | `#2F7A3E` / `#E3F1E5` | Synced, done, answered by professor |

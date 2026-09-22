@@ -1,7 +1,7 @@
 import { db } from "./db";
-import { addDays, daysPerWeek } from "./week";
+import { addDays, daysPerWeek, hourOfDay, sameDay } from "./week";
 import { hoursLeft, predictHours } from "./predict";
-import { planStudyBlocks, type PlannedAssignment } from "./study-blocks";
+import { dayEndHour, dayStartHour, planStudyBlocks, type PlannedAssignment } from "./study-blocks";
 
 const hourMs = 60 * 60 * 1000;
 const dayMs = 24 * hourMs;
@@ -104,6 +104,17 @@ export function proposeBlocks(week: Loaded, now: Date) {
     .filter((a) => a.unplanned > 0)
     .map((a) => ({ id: a.id, title: a.title, courseId: a.courseId, dueAt: a.dueAt, hoursLeft: a.unplanned }));
   return planStudyBlocks({ assignments, busy, from: week.weekStart, to: week.weekEnd, now, timeZone: week.timeZone });
+}
+
+// The week grid shows the study window, stretched to fit any earlier or later lecture.
+export function visibleHours(events: { start: Date; end: Date }[], timeZone: string) {
+  let first = dayStartHour;
+  let last = dayEndHour;
+  for (const event of events) {
+    first = Math.min(first, Math.floor(hourOfDay(event.start, timeZone)));
+    last = Math.max(last, sameDay(event.start, event.end, timeZone) ? Math.ceil(hourOfDay(event.end, timeZone)) : 24);
+  }
+  return { first, last };
 }
 
 const feedPastDays = 28;

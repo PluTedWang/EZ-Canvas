@@ -162,6 +162,7 @@
     "submitted": "{title} submitted",
     "aboutLeft": "about {hours} h left",
     "suggested": "suggested",
+    "timeRange": "{start} to {end}",
     "filters": {
       "lectures": "Lectures",
       "blocks": "Suggested study blocks"
