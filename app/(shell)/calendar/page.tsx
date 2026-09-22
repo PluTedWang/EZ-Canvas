@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getFormatter, getTimeZone, getTranslations } from "next-intl/server";
@@ -11,6 +10,7 @@ import { TodayPanel, type TodayEntry } from "@/components/TodayPanel";
 import { WeekGrid, type GridDue, type GridEvent } from "@/components/WeekGrid";
 import { WeekPlanCard } from "@/components/WeekPlanCard";
 import { openExport } from "./actions";
+import { appOrigin } from "@/lib/app-url";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { loadWeek, openWork, proposeBlocks } from "@/lib/calendar";
@@ -45,7 +45,7 @@ export default async function CalendarPage({ searchParams }: PageProps<"/calenda
     db.user.findUniqueOrThrow({ where: { id: session.user.id }, select: { calendarToken: true } }),
   ]);
   const showExport = query.export === "1" && user.calendarToken !== null;
-  const feedUrl = showExport ? `${new URL((await headers()).get("referer") ?? "http://localhost:3000").origin}/api/calendar/${user.calendarToken}` : "";
+  const feedUrl = showExport ? `${await appOrigin()}/api/calendar/${user.calendarToken}` : "";
   const colorOf = new Map<string, number>(week.courses.map((c) => [c.id, c.color]));
   const visible = (courseId: string | null) => filter.courses.length === 0 || (courseId !== null && filter.courses.includes(courseId));
 
