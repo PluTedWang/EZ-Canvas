@@ -20,7 +20,7 @@ test("loopback, private, link local and metadata addresses are private", () => {
   for (const address of ["127.0.0.1", "10.2.3.4", "172.20.0.1", "192.168.1.10", "169.254.169.254", "100.64.0.1", "0.0.0.0"]) {
     expect(isPrivateAddress(address)).toBe(true);
   }
-  for (const address of ["::1", "::", "fd00::1", "fe80::1", "::ffff:127.0.0.1", "not an ip"]) {
+  for (const address of ["::1", "::", "fd00::1", "fe80::1", "::ffff:127.0.0.1", "64:ff9b::7f00:1", "2002:7f00:1::1", "not an ip"]) {
     expect(isPrivateAddress(address)).toBe(true);
   }
   expect(isPrivateAddress("151.101.1.140")).toBe(false);

@@ -5,6 +5,7 @@ import { db } from "../db";
 import { materialChanged } from "../materials/notes";
 import { canvas } from "./index";
 import { CanvasError } from "./client";
+import { assertCanvasHost } from "./host";
 import {
   courseIdFromContext,
   mapAnnouncement,
@@ -196,6 +197,7 @@ export async function syncCanvas(connectionId: string) {
   const counts = { courses: 0, assignments: 0, materials: 0, lectures: 0, groups: 0 };
   try {
     const connection = await db.connection.findUniqueOrThrow({ where: { id: connectionId } });
+    await assertCanvasHost(connection.baseUrl);
     const api = canvas(connection.baseUrl, decrypt(connection.token));
     const rawCourses = await api.courses();
     const courseIds = new Map<number, string>();

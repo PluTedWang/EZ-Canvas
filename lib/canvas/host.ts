@@ -36,8 +36,13 @@ for (const [network, prefix] of [
 ] as const) {
   privateRanges.addSubnet(network, prefix, "ipv4");
 }
+// IPv6 also embeds IPv4: NAT64 (64:ff9b::/96, 64:ff9b:1::/48) and 6to4 (2002::/16) can reach private
+// IPv4 hosts, so those prefixes are refused too.
 for (const [network, prefix] of [
   ["::", 127],
+  ["64:ff9b::", 96],
+  ["64:ff9b:1::", 48],
+  ["2002::", 16],
   ["fc00::", 7],
   ["fe80::", 10],
   ["ff00::", 8],
@@ -55,8 +60,9 @@ export function isPrivateAddress(address: string) {
 
 export type HostCheck = "ok" | "insecure" | "private" | "unknown";
 
-// Checked before a token is stored, so a typed address can never point the server at itself or
-// at another machine on its network.
+// Checked before a token is stored and again before every sync and download, so an address can
+// never point the server at itself or at another machine on its network, even if its DNS changes
+// later. (A name that changes between this check and the request itself is not caught.)
 type Resolve = (host: string, options: { all: true }) => Promise<{ address: string }[]>;
 
 export async function checkCanvasHost(baseUrl: string, resolve: Resolve = lookup): Promise<HostCheck> {
@@ -69,4 +75,11 @@ export async function checkCanvasHost(baseUrl: string, resolve: Resolve = lookup
   } catch {
     return "unknown";
   }
+}
+
+// Mock mode never leaves the server, so any address works there.
+export async function assertCanvasHost(baseUrl: string) {
+  if (process.env.CANVAS_MOCK === "1") return;
+  const check = await checkCanvasHost(baseUrl);
+  if (check !== "ok") throw new Error(`Canvas address ${baseUrl} is not a public https host (${check}).`);
 }

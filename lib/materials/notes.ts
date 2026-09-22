@@ -1,6 +1,7 @@
 import { requireProvider } from "../ai";
 import { summarizeMaterial, type MaterialNotes } from "../ai/prompts/summarize-material";
 import { canvas } from "../canvas";
+import { assertCanvasHost } from "../canvas/host";
 import { decrypt } from "../crypto";
 import { db } from "../db";
 import { extractMaterial } from "./extract";
@@ -32,6 +33,7 @@ export function materialChanged(
 
 async function download(userId: string, url: string) {
   const connection = await db.connection.findUniqueOrThrow({ where: { userId_type: { userId, type: "canvas" } } });
+  await assertCanvasHost(connection.baseUrl);
   return canvas(connection.baseUrl, decrypt(connection.token)).download(url);
 }
 
