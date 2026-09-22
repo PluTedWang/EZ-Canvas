@@ -19,7 +19,7 @@ export async function EmailDraftCard({
   writingLanguage: string;
 }) {
   const t = await getTranslations("assistant.draft");
-  const result = styleCheck(draft.body);
+  const result = styleCheck(draft.body, writingLanguage);
 
   return (
     <section className="flex flex-col overflow-hidden rounded-card border border-border bg-surface">
