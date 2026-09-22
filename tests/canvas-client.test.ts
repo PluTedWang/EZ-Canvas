@@ -40,7 +40,18 @@ test("getAll follows pagination and sends the token, per_page and array params",
   expect(calls[1]).toBe("https://x.edu/api/v1/courses?page=2");
   expect((fetchImpl as ReturnType<typeof vi.fn>).mock.calls[0][1]).toEqual({
     headers: { Authorization: "Bearer tok" },
+    redirect: "error",
   });
+});
+
+test("downloads follow redirects but only start on the Canvas host", async () => {
+  const { fetchImpl, calls } = fakeFetch([{ body: "pdf" }]);
+  const client = createCanvasClient({ baseUrl: "https://x.edu", token: "tok", fetchImpl });
+  await client.getBytes("https://x.edu/files/5/download?verifier=abc");
+  expect(calls).toEqual(["https://x.edu/files/5/download?verifier=abc"]);
+  expect((fetchImpl as ReturnType<typeof vi.fn>).mock.calls[0][1]).toMatchObject({ redirect: "follow" });
+  await expect(client.getBytes("http://169.254.169.254/latest/meta-data")).rejects.toMatchObject({ status: 0 });
+  expect(calls).toHaveLength(1);
 });
 
 test("a rate limited 403 is retried after a pause", async () => {

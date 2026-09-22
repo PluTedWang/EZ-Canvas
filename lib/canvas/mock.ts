@@ -4,6 +4,7 @@ import path from "node:path";
 // Serves fixtures/canvas/*.json in place of the Canvas API when CANVAS_MOCK=1.
 
 const fixturesDir = path.join(process.cwd(), "fixtures", "canvas");
+export const mockBaseUrl = "https://canvas.example.edu";
 
 const singleFiles: Record<string, string> = {
   "/users/self/profile": "profile.json",

@@ -40,14 +40,17 @@ export function createCanvasClient({
   token: string;
   fetchImpl?: typeof fetch;
 }) {
-  const root = baseUrl.replace(/\/+$/, "") + "/api/v1";
+  const origin = new URL(baseUrl).origin;
+  const root = origin + "/api/v1";
 
-  async function request(url: string, path: string, attempt = 0): Promise<Response> {
-    const res = await fetchImpl(url, { headers: { Authorization: `Bearer ${token}` } });
+  // API calls never follow redirects, so a token cannot be walked off to another host.
+  // File downloads do: Canvas answers them with a redirect to its file store.
+  async function request(url: string, path: string, redirect: RequestRedirect = "error", attempt = 0): Promise<Response> {
+    const res = await fetchImpl(url, { headers: { Authorization: `Bearer ${token}` }, redirect });
     const remaining = Number(res.headers.get("x-rate-limit-remaining") ?? NaN);
     if (res.status === 403 && remaining <= 0 && attempt < maxRetries) {
       await sleep(retryMs);
-      return request(url, path, attempt + 1);
+      return request(url, path, redirect, attempt + 1);
     }
     if (!res.ok) throw new CanvasError(res.status, path);
     if (remaining < lowWater) await sleep(throttleMs);
@@ -60,8 +63,11 @@ export function createCanvasClient({
       return res.json();
     },
     // File downloads are absolute Canvas URLs, not API paths, but still need the bearer token.
+    // Only URLs on the connected Canvas host are fetched.
     async getBytes(url: string): Promise<Uint8Array> {
-      const res = await request(url, new URL(url).pathname);
+      const target = new URL(url);
+      if (target.origin !== origin) throw new CanvasError(0, target.pathname);
+      const res = await request(url, target.pathname, "follow");
       return new Uint8Array(await res.arrayBuffer());
     },
     async getAll<T>(path: string, params: CanvasParams = {}): Promise<T[]> {

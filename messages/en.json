@@ -49,7 +49,8 @@
       "continue": "Continue",
       "errors": {
         "missing": "Enter your Canvas URL and the access token.",
-        "token": "Canvas did not accept that token. Check the URL and the token and try again."
+        "token": "Canvas did not accept that token. Check the URL and the token and try again.",
+        "host": "Use your school's Canvas address, starting with https://."
       }
     }
   },

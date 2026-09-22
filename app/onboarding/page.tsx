@@ -54,7 +54,7 @@ export default async function OnboardingPage({ searchParams }: PageProps<"/onboa
               />
               <div className="flex flex-col gap-3">
                 <Button type="submit">{t("connect.submit")}</Button>
-                {error && <p className="text-[14.5px] leading-[1.5] text-danger">{t(`connect.errors.${error === "missing" ? "missing" : "token"}`)}</p>}
+                {error && <p className="text-[14.5px] leading-[1.5] text-danger">{t(`connect.errors.${error === "missing" || error === "host" ? error : "token"}`)}</p>}
               </div>
             </form>
           )}
