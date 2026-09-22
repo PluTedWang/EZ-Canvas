@@ -31,15 +31,10 @@ export async function EmailDraftCard({
             <form action={changeTone} key={tone}>
               <input type="hidden" name="conversationId" value={conversationId} />
               <input type="hidden" name="tone" value={tone} />
-              <button
-                type="submit"
-                aria-pressed={draft.tone === tone}
-                className={`h-7 rounded-chip border px-3 text-[13.5px] font-semibold whitespace-nowrap ${
-                  draft.tone === tone ? "border-teal bg-teal text-white" : "border-control-border bg-surface text-text-2"
-                }`}
-              >
+              {/* Button disables itself while the rewrite runs, so a double click does not pay twice. */}
+              <Button type="submit" size="chip" variant={draft.tone === tone ? "selected" : "choice"} aria-pressed={draft.tone === tone}>
                 {t(`tone.${tone as Tone}`)}
-              </button>
+              </Button>
             </form>
           ))}
         </div>

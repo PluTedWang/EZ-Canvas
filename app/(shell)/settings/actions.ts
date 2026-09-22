@@ -40,7 +40,12 @@ export async function saveAiKey(formData: FormData) {
   if (!key) redirect("/settings?error=missing");
 
   try {
-    await anthropicProvider(key).complete({ system: "Reply with the word OK.", messages: [{ role: "user", content: "OK?" }], maxTokens: 16 });
+    await anthropicProvider(key).complete({
+      system: "Reply with the word OK.",
+      messages: [{ role: "user", content: "OK?" }],
+      maxTokens: 16,
+      tier: "fast",
+    });
   } catch (error) {
     redirect(`/settings?error=${error instanceof AiError ? error.kind : "request"}`);
   }

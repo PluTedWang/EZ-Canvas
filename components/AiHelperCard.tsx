@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { removeAiKey, saveAiKey } from "@/app/(shell)/settings/actions";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
-import { anthropicModel } from "@/lib/ai/anthropic";
+import { anthropicModels } from "@/lib/ai/anthropic";
 
 // Only the Anthropic adapter exists today; the other providers arrive with their adapters.
 export async function AiHelperCard({ keyHint, error }: { keyHint: string | null; error?: string }) {
@@ -20,7 +20,7 @@ export async function AiHelperCard({ keyHint, error }: { keyHint: string | null;
         </div>
         {keyHint ? (
           <div className="flex flex-col gap-3">
-            <p className="text-[13.5px] text-text-3">{t("model", { model: anthropicModel })}</p>
+            <p className="text-[13.5px] text-text-3">{t("model", { model: anthropicModels.writing })}</p>
             <form action={removeAiKey}>
               <Button type="submit" variant="secondary" size="small">
                 {t("remove")}
