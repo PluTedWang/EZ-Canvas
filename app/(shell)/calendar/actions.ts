@@ -16,7 +16,8 @@ export async function acceptBlocks(formData: FormData) {
   if (Number.isNaN(weekStart.getTime())) redirect("/calendar");
 
   const now = new Date();
-  const blocks = proposeBlocks(await loadWeek(userId, weekStart), now);
+  const { timeZone } = await db.user.findUniqueOrThrow({ where: { id: userId }, select: { timeZone: true } });
+  const blocks = proposeBlocks(await loadWeek(userId, weekStart, timeZone), now);
   await db.calendarItem.createMany({
     data: blocks.map((block) => ({
       userId,

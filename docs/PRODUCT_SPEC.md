@@ -138,7 +138,7 @@ The style check strip reports three checks and the word count against the first 
 
 ## 9. Data model (entities)
 
-- User: id, name, email, interface language, explanation language, writing language, term handling flags, AI provider and encrypted key, homework default mode.
+- User: id, name, email, interface language, explanation language, writing language, time zone (reported by the browser), term handling flags, AI provider and encrypted key, homework default mode.
 - Connection: user, type (canvas, ed), base URL, encrypted token, last sync, status.
 - Course: canvas id, code, name, term, instructor, meeting times, color, AI policy text, syllabus, hidden flag.
 - Assignment: course, canvas id, title, description, due at, points, submission type, late policy, rubric (sections with points), attachments, group flag, parsed questions (title, points, status), predicted hours, hours done, actual hours.

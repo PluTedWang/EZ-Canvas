@@ -22,6 +22,8 @@ model User {
   interfaceLanguage   String    @default("en")
   explanationLanguage String    @default("en")
   writingLanguage     String    @default("en")
+  // IANA zone reported by the student's browser; all day and hour maths use it.
+  timeZone            String    @default("UTC")
   sessions            Session[]
   connections         Connection[]
   courses             Course[]

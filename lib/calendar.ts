@@ -4,11 +4,12 @@ import { hoursLeft, predictHours } from "./predict";
 import { planStudyBlocks, type PlannedAssignment } from "./study-blocks";
 
 const hourMs = 60 * 60 * 1000;
+const dayMs = 24 * hourMs;
 
-const endOfWeek = (weekStart: Date) => new Date(addDays(weekStart, daysPerWeek).getTime() - 1);
+const endOfWeek = (weekStart: Date, timeZone: string) => new Date(addDays(weekStart, daysPerWeek, timeZone).getTime() - 1);
 
-export async function loadWeek(userId: string, weekStart: Date) {
-  const weekEnd = endOfWeek(weekStart);
+export async function loadWeek(userId: string, weekStart: Date, timeZone: string) {
+  const weekEnd = endOfWeek(weekStart, timeZone);
   const [courses, items, assignments] = await Promise.all([
     db.course.findMany({
       where: { userId, hidden: false },
@@ -38,7 +39,7 @@ export async function loadWeek(userId: string, weekStart: Date) {
       },
     }),
   ]);
-  return { courses, items, assignments, weekStart, weekEnd };
+  return { courses, items, assignments, weekStart, weekEnd, timeZone };
 }
 
 type Loaded = Awaited<ReturnType<typeof loadWeek>>;
@@ -81,7 +82,7 @@ export function proposeBlocks(week: Loaded, now: Date) {
   const assignments: PlannedAssignment[] = openWork(week, now)
     .filter((a) => a.left > 0)
     .map((a) => ({ id: a.id, title: a.title, courseId: a.courseId, dueAt: a.dueAt, hoursLeft: a.left }));
-  return planStudyBlocks({ assignments, busy, from: week.weekStart, to: week.weekEnd, now });
+  return planStudyBlocks({ assignments, busy, from: week.weekStart, to: week.weekEnd, now, timeZone: week.timeZone });
 }
 
 const feedPastDays = 28;
@@ -89,8 +90,8 @@ const feedFutureDays = 120;
 
 // Everything the .ics feed carries: lectures, accepted study blocks and assignment deadlines.
 export async function feedEvents(userId: string, now = new Date()) {
-  const from = addDays(now, -feedPastDays);
-  const to = addDays(now, feedFutureDays);
+  const from = new Date(now.getTime() - feedPastDays * dayMs);
+  const to = new Date(now.getTime() + feedFutureDays * dayMs);
   const [items, assignments] = await Promise.all([
     db.calendarItem.findMany({
       where: { userId, startAt: { gte: from, lte: to } },

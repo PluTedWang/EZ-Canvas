@@ -18,16 +18,29 @@ async function userId() {
 }
 
 const isTone = (value: string): value is Tone => tones.includes(value as Tone);
-const shortDate = (date: Date) => date.toISOString().slice(0, 16).replace("T", " ") + " UTC";
+// Dates reach the email as the student reads them: their own zone, named, so the professor can check it.
+const factDate = (timeZone: string) => {
+  const format = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
+  return (date: Date) => format.format(date);
+};
 
 // Writes the advice and the email, grounded only in the Canvas facts gathered here.
 async function writeDraft(id: string, situation: string, question: string, tone: Tone, courseId: string | null, assignmentId: string | null) {
   const [user, provider, context] = await Promise.all([
-    db.user.findUniqueOrThrow({ where: { id }, select: { name: true, email: true, writingLanguage: true, explanationLanguage: true } }),
+    db.user.findUniqueOrThrow({ where: { id }, select: { name: true, email: true, writingLanguage: true, explanationLanguage: true, timeZone: true } }),
     requireProvider(id),
     loadContext(id, courseId, assignmentId),
   ]);
-  const facts = buildFacts(context.course, context.assignment, shortDate);
+  const facts = buildFacts(context.course, context.assignment, factDate(user.timeZone));
   const draft = await draftForSituation(provider, {
     situation,
     question,

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getFormatter, getTimeZone, getTranslations } from "next-intl/server";
 import { AssistantPromptBox } from "@/components/AssistantPromptBox";
 import { LinkButton } from "@/components/Button";
 import { CourseList } from "@/components/CourseList";
@@ -10,6 +10,7 @@ import { TopBar } from "@/components/TopBar";
 import { auth } from "@/lib/auth";
 import { dueSoonDays, loadDashboard } from "@/lib/dashboard";
 import { db } from "@/lib/db";
+import { zonedParts } from "@/lib/week";
 
 const timeOfDay = (hour: number) => (hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening");
 
@@ -17,9 +18,10 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/signin");
   const now = new Date();
-  const [t, format, user, data] = await Promise.all([
+  const [t, format, timeZone, user, data] = await Promise.all([
     getTranslations("dashboard"),
     getFormatter(),
+    getTimeZone(),
     db.user.findUniqueOrThrow({
       where: { id: session.user.id },
       select: { name: true, email: true, connections: { where: { type: "canvas" }, select: { status: true, lastSyncAt: true } } },
@@ -37,7 +39,7 @@ export default async function DashboardPage() {
       <div className="flex items-end justify-between gap-6">
         <div className="flex flex-col gap-[6px]">
           <h1 className="font-title text-[36px] leading-[1.1] tracking-[-0.01em]">
-            {t(`greeting.${timeOfDay(now.getHours())}`, { name: firstName })}
+            {t(`greeting.${timeOfDay(zonedParts(now, timeZone).hour)}`, { name: firstName })}
           </h1>
           <p className="text-[16px] text-text-2">
             {format.dateTime(now, { weekday: "long", month: "long", day: "numeric" })} ·{" "}
